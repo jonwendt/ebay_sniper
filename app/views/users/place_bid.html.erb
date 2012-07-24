@@ -1,0 +1,9 @@
+<p>User <%= @user.name %> with auth_token:</p>
+
+<p><%= @user.auth_token %></p>
+
+<p>sent the PlaceOffer api request to eBay, and got a response of:</p>
+
+<p><%= @item.body[:place_offer_response] %></p>
+
+<p><%= @item.body[:place_offer_response][:timestamp] %></p>

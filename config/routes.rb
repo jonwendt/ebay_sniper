@@ -2,6 +2,7 @@ EbaySniper::Application.routes.draw do
   resources :users do
     member do
       get :get_time
+      get :get_item
     end
   end
 

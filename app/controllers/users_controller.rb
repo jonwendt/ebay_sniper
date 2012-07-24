@@ -83,23 +83,14 @@ class UsersController < ApplicationController
   
   def get_time
     @user = User.find(params[:id])
-    @action = "GeteBayOfficialTime"
-    
-    @client ||= Savon::Client.new do
-     wsdl.endpoint = "https://api.sandbox.ebay.com/wsapi?siteid=0&routing=beta&callname=" + @action + "&version=423&appid=Leviona4d-c40e-454f-9d49-dd510693f96"
-     wsdl.namespace = "urn:ebay:apis:eBLBaseComponents"
-    end
-
-    @response = @client.request @action + "Request" do
-     soap.body = { "Version" => "423" }
-     soap.input = @action + "Request", { "xmlns" => "urn:ebay:apis:eBLBaseComponents" }
-     soap.header = { "ebl:RequesterCredentials" => { "ebl:eBayAuthToken" => "AgAAAA**AQAAAA**aAAAAA**n8gNUA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhCZGGqQqdj6x9nY+seQ**194BAA**AAMAAA**RKYUL774WkhrRJGrHi1wS+VHDL2lOxG+Hoi9xx7Mm7jdbrh5BRv2UC93JN3Msn2EdwmnqhDwF2qxKFJYtY38YMMqKfpp+/GVB+WAta570T+LlCO5kKitdVTOal6EBhQRiMiKU9t7vGhTsi+ByQrShFpjH4Re3X6bQXNOGTjeWb1G+RdYOuH9NMELf7mVs6CBmWmhOdCuRow+Ekb/yVbGe1ZUfBcl55wYGI4AefPJTqoHgZuDEThrTeRs7TGFd3RaH5Cct+nMQrZRBEpUVeraUYEwCEct04qaRyfLm/EA4fvJcxp1znRr3BwGNwEam4OFeioQA4/bJMgmqU5eA8Unj8g7lLhYo2kWkspAG4aU5RkoFbMYctUDS2kSlQ3VtHJgmPwAHJVcPsWg2SO0B6Z+/SoPyToXiTFfNRSvgZXjxbzHmzringmRQ4yMwGdxDkD8rjFzTJTTCune42QH9WIqpjNPFwx+K3Y+V4qkPc2Q2b6VXQE/VOae0d5/4FrSQ8PMZB6SAbWSD/MfiX5ofpruOAHUGBG/9zpGXbPeESel2Jvv4DYpkRf0CLRiOAXrgW3PP1D1AnbHaVAR7PC/L9Lm0/BjJbWVlhKbaJyq/LIlv1JLwn4HInbWiR9XuXUGXshAGS+gZnGmzgNbAFllwT75opRiFdm2E1q4mOAntc9+1uviAYc5CxMs3igohPNut0JYdKDyQQyrGBOizIb1yM8kQRwfYiGRiTlyq/xrmkcjlK0+qM1dyFoaYaXvVQrh/sDc" }, :attributes! => { "ebl:RequesterCredentials" => { "xmlns:ebl" => "urn:ebay:apis:eBLBaseComponents"} } }
-    end
-    
-    return @response
+    @ebay = EbayAction.new.time
     
     respond_to do |format|
       format.html
     end
+  end
+  
+  def place_bid
+    @ebay = EbayAction.new.place_bid(1)
   end
 end

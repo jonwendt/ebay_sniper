@@ -3,6 +3,7 @@ EbaySniper::Application.routes.draw do
     member do
       get :get_time
       get :get_item
+      get :place_bid
     end
   end
 

@@ -2,7 +2,18 @@ Need to get official ebay time and model internally (when getting initially, acc
 
 Maintain the full abstraction to the ebay API request function, and build around it in the ebay_action model
 
+Add support for tracking a bid:
+Input item ID into form, will check the item's end bid time, minus ebay's current time, and save it into a variable called time_till_end. Start a new task for cron to execute at Time.now + time_till_end - small_offset (this is in local time). The task will start a thread to again measure the difference between the end bid time and ebay's current time. Sleep for that amount of time - the time it takes to execute a place_offer request to ebay's API, and then execute the place_offer request.
 
+
+Use resque and cron. Set the task in the task queue
+
+Use redis store to store session
+
+
+Use twilio to notify users
+
+MySQL2
 
 
 Thoughts about calculating best bid: take average of all bid increases, check last bid increase. Find out how MaxBid works in "chinese" auctions
@@ -12,10 +23,23 @@ Thoughts about calculating best bid: take average of all bid increases, check la
 
 
 
+
+----------Things to install and implement---------------
+MySQL2 - (user: levion@localhost pass: levion)
+Devise - user auth
+Resque - task queueing
+Resque Scheduler
+Redis
+Redis store - session storing (config/initializers/session-store.rb)
+Twilio (text message alerts if item price has passed user defined threshold. prompt if user wants to increase)
+Bootstrap - Twitter CSS
+
+
+
+
 ----------Sandbox info----------------
 Item IDs
 Harry Potter - 110101001019
-
 
 
 #seller auth_token
@@ -32,7 +56,8 @@ Harry Potter - 110101001019
 
 
 
----------------EXAMPLE----------------
+
+---------------API REQUEST EXAMPLE----------------
 
 def getTimeTest
 

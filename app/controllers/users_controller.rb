@@ -85,7 +85,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @ebay = EbayAction.new.ebay_time
   end
-
+  
   def get_item
     @user = User.find(params[:id])
     @item = EbayAction.new.get_item(params[:item])

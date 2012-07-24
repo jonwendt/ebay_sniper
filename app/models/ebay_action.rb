@@ -12,12 +12,17 @@ class EbayAction
     Time.parse(response.body[:gete_bay_official_time_response][:timestamp])
   end
 
-  def measure_time_diff
-    result_time = nil
-    benchmark_time = Benchmark::measure {
-      result_time = (Time.now.to_f - self.time.to_f)
-    }
-    result_time = (result_time - benchmark_time.real)
+  def measure_request_offset
+    #result_time = nil
+    #benchmark_time = Benchmark::measure {
+    #  result_time = (Time.now.to_f - self.time.to_f)
+    #}
+    #result_time = (result_time - benchmark_time.real)
+    t1 = Time.now
+    place_bid(110101001019, 15)
+    t2 = Time.now
+    puts delta = t2 - t1
+    puts Time.now
   end
 
   def add_item(item={})

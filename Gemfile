@@ -20,10 +20,18 @@ end
 
 gem 'jquery-rails'
 
+
 gem 'savon'
-
 gem 'mysql2'
-
+gem 'devise'
+gem 'redis'
+gem 'redis-store'
+gem 'redis-actionpack'
+#to set up
+gem 'resque'
+gem 'resque-scheduler'
+gem 'twilio'
+gem 'bootstrap'
 
 
 # To use ActiveModel has_secure_password

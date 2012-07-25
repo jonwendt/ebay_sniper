@@ -1,0 +1,16 @@
+<p>Hello world!</p>
+
+<%= form_tag "/home/get_item", :method => "get" do %>
+	<%= label_tag :item_id, "Get the item's information" %>
+	<%= text_field_tag :item_id %>
+	<%= submit_tag "Submit" %>
+<% end %>
+<%= form_tag "/home/place_bid", :method => "post" do %>
+	<%= label_tag :item_id, "Place a bid on the item" %>
+	<%= text_field_tag :item_id %>
+	<%= label_tag :amount, "for" %>
+	<%= text_field_tag :amount %> dollars.
+	<%= submit_tag "Submit" %>
+<% end %>
+
+<p><%= link_to "Signout", destroy_user_session_path, :method => :delete %></p>

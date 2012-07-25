@@ -1,10 +1,18 @@
 EbaySniper::Application.routes.draw do
+  devise_for :users do
+  end
+  
   resources :users do
     member do
       get :get_time
       get :get_item
       get :place_bid
     end
+  end
+  
+  resources :home do
+      get :get_item, on: :member
+      post :place_bid, on: :collection
   end
 
   # The priority is based upon order of creation:
@@ -58,6 +66,10 @@ EbaySniper::Application.routes.draw do
   # just remember to delete public/index.html.
   # root :to => 'welcome#index'
 
+    root :to => "home#index"
+
+    #match "secret", :to => "home#secret"
+  
   # See how all your routes lay out with "rake routes"
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.

@@ -8,7 +8,6 @@ class HomeController < ApplicationController
   end
   
   def show
-    @item = get_item
   end
   
   def get_item

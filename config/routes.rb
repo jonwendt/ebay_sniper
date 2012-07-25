@@ -2,16 +2,8 @@ EbaySniper::Application.routes.draw do
   devise_for :users do
   end
   
-  resources :users do
-    member do
-      get :get_time
-      get :get_item
-      get :place_bid
-    end
-  end
-  
   resources :home do
-      get :get_item, on: :member
+      get :get_item, on: :collection
       post :place_bid, on: :collection
   end
 
@@ -66,7 +58,7 @@ EbaySniper::Application.routes.draw do
   # just remember to delete public/index.html.
   # root :to => 'welcome#index'
 
-    root :to => "home#index"
+  root :to => "home#index"
 
     #match "secret", :to => "home#secret"
   

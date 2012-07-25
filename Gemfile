@@ -31,7 +31,7 @@ gem 'redis-actionpack'
 gem 'resque'
 gem 'resque-scheduler'
 gem 'twilio'
-gem 'bootstrap'
+gem 'bootstrap-sass'
 
 
 # To use ActiveModel has_secure_password

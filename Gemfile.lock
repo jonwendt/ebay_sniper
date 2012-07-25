@@ -70,7 +70,10 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.19)
     multi_json (1.3.6)
+<<<<<<< HEAD
     multi_xml (0.5.1)
+=======
+>>>>>>> 376ef231e335f2ce8519d3444d7f9c4c3454640b
     mysql2 (0.3.11)
     nokogiri (1.5.5)
     nori (1.1.3)
@@ -184,5 +187,8 @@ DEPENDENCIES
   resque-scheduler
   sass-rails (~> 3.2.3)
   savon
+<<<<<<< HEAD
   twilio
+=======
+>>>>>>> 376ef231e335f2ce8519d3444d7f9c4c3454640b
   uglifier (>= 1.0.3)

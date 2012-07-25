@@ -1,10 +1,19 @@
 EbaySniper::Application.routes.draw do
+  
   devise_for :users do
   end
   
   resources :home do
       get :get_item, on: :collection
       post :place_bid, on: :collection
+  end
+      
+  resources :users do
+    member do
+      get :get_time
+      get :get_item
+      get :place_bid
+    end
   end
 
   # The priority is based upon order of creation:

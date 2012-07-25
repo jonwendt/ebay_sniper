@@ -26,7 +26,11 @@ Thoughts about calculating best bid: take average of all bid increases, check la
 
 ----------Things to install and implement---------------
 MySQL2 - (user: levion@localhost pass: levion)
+<<<<<<< HEAD
 Devise - user auth (tie to ebay account)
+=======
+Devise - user auth
+>>>>>>> 376ef231e335f2ce8519d3444d7f9c4c3454640b
 Resque - task queueing
 Resque Scheduler
 Redis

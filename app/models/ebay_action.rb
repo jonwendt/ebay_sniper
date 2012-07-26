@@ -31,6 +31,7 @@ class EbayAction
   
   def get_item(item_id)
     response = self.request :endpoint => "GetItem", :body => { "ItemID" => item_id }
+    response.body #Testing
   end
   
   def place_bid(item_id, amount)

@@ -11,7 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120724234129) do
+ActiveRecord::Schema.define(:version => 20120726001639) do
+
+  create_table "auctions", :force => true do |t|
+    t.string   "item_id"
+    t.integer  "user_id"
+    t.integer  "max_bid"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.text     "item"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "", :null => false

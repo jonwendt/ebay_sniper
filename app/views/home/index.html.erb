@@ -1,7 +1,22 @@
-<h1>Welcome to the Levion eBay Sniper tool!</h1>
+<h1 align="CENTER">Welcome to the Levion eBay Sniper tool!</h1>
 
 <br>
 <br>
+
+Levion is always working to give our customer's a leg up on the competition, which is why we made this <%= link_to "eBay sniper", "http://en.wikipedia.org/wiki/Auction_sniping" %>. You can use this to add an item on eBay that you would like to bid on, tell us the maximum amount you're willing to pay, and let the us help you win it! This tool will automatically get information about the auction from eBay, and at the last possible millisecond, place a bid on the item for you (as long as it is within the constraints you specify). If you would like to try it out, visit the <%= link_to "Add Auction", new_auction_path, :method => "get" %> page to tell us what eBay item you'd like to win. To view the auctions that you are currently trying to win, visit the <%= link_to "My Auctions", auctions_path, :method => "get" %> page.
+
+<br>
+<br>
+<br>
+
+This tool is brought to you by <%= link_to "Levion", "http://www.levion.com" %>.
+
+<br>
+<br>
+<br>
+
+
+
 <%= form_tag "/home/get_item", :method => "get" do %>
 	<%= label_tag :item_id, "Get the item's information" %>
 	<%= text_field_tag :item_id %>
@@ -14,5 +29,3 @@
 	<%= text_field_tag :amount %> dollars.
 	<%= submit_tag "Submit" %>
 <% end %>
-
-<p><%= link_to "Signout", destroy_user_session_path, :method => :delete %></p>

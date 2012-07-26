@@ -27,14 +27,11 @@ gem 'devise'
 gem 'redis'
 gem 'redis-store'
 gem 'redis-actionpack'
+gem 'bootstrap-sass'
 #to set up
 gem 'resque'
 gem 'resque-scheduler'
 gem 'twilio'
-gem 'bootstrap-sass'
-
-
-gem 'mysql2'
 
 
 

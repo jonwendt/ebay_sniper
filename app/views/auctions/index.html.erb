@@ -1,0 +1,28 @@
+<h1>My Auctions</h1>
+<br>
+<table class="table table-striped">
+  <thead>
+  <tr>
+	<th>Picture</th>
+    <th>Item</th>
+    <th>Max bid</th>
+    <th></th>
+  </tr>
+  </thead>
+
+<tbody>
+<% @auctions.each do |auction| %>
+  <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
+	<td><%= image_tag auction.item[:get_item_response][:item][:picture_details][:external_picture_url],
+			:height => '100', :width => '100' %></td>
+    <td><h3><%= auction.item[:get_item_response][:item][:title] %></h3></td>
+    <td><%= auction.max_bid %></td>
+    <td><%= link_to 'Remove Auction', auction, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</tbody>
+</table>
+
+<br />
+
+<%= link_to 'New Auction', new_auction_path %>

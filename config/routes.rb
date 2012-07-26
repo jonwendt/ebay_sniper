@@ -1,12 +1,9 @@
 EbaySniper::Application.routes.draw do
-  
+
   devise_for :users do
   end
   
-  resources :home do
-      get :get_item, on: :collection
-      post :place_bid, on: :collection
-  end
+  resources :home
       
   resources :users do
     member do
@@ -15,6 +12,8 @@ EbaySniper::Application.routes.draw do
       get :place_bid
     end
   end
+  
+  resources :auctions
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -68,6 +67,8 @@ EbaySniper::Application.routes.draw do
   # root :to => 'welcome#index'
 
   root :to => "home#index"
+  
+  match "user_root", :to => "auctions#index"
 
     #match "secret", :to => "home#secret"
   

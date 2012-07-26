@@ -1,0 +1,23 @@
+<div class="row"><br>
+<div class="span3"><br>
+<%= image_tag @auction.item[:get_item_response][:item][:picture_details][:external_picture_url],
+	:size => '300x300' %>
+</div><br>
+
+<div class="span9"><br>
+<h1><u><%= @auction.item[:get_item_response][:item][:title] %></u></h1>
+<br>
+<%= @auction.item[:get_item_response][:item][:return_policy][:description]%>
+<br>
+<%= @auction.max_bid %>
+<br>
+<%= link_to 'Remove Auction', @auction, method: :delete, data: { confirm: 'Are you sure?' } %>
+<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<%= link_to 'Show', @auction %> |
+<%= link_to 'Back', auctions_path %>

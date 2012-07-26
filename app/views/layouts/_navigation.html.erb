@@ -1,12 +1,19 @@
-<%= link_to "Home", root_path, :class => 'brand' %>
 <ul class="nav">
+  <li class="active">
+	<a class="brand" href="http://www.levion.com"><%= image_tag "logo.png", :size => "135x33" %></a>
+  </li>
+
+  <%= link_to "Home", root_path, :class => 'brand' %>
+  <%= link_to "My Auctions", auctions_path, :class => 'brand' %>
+  <%= link_to "Add Auction", new_auction_path, :class => 'brand' %>
+
   <% if user_signed_in? %>
     <li>
     <%= link_to('Logout', destroy_user_session_path, :method=>'delete') %>        
     </li>
   <% else %>
     <li>
-    <%= link_to('Login', new_user_session_path)  %>  
+    <%= link_to('Login', new_user_session_path)  %>
     </li>
   <% end %>
   <% if user_signed_in? %>

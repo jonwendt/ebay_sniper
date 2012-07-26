@@ -24,18 +24,21 @@ class EbayAction
     puts delta = t2 - t1
     puts Time.now
   end
-
+  
   def add_item(item={})
-    response = self.request :endpoint => "AddItem", :body => { "Item" => item }
+    response = self.request :endpoint => "AddItem",
+      :body => { "Item" => item }
   end
   
   def get_item(item_id)
-    response = self.request :endpoint => "GetItem", :body => { "ItemID" => item_id }
+    response = self.request :endpoint => "GetItem",
+      :body => { "ItemID" => item_id, "DetailLevel" => "ItemReturnDescription" }
     response.body #Testing
   end
   
   def place_bid(item_id, amount)
-    response = self.request :endpoint => "PlaceOffer", :body => { "ItemID" => item_id, "Offer" => { "Action" => "Bid", "MaxBid" => amount, "Quantity" => "1" }, "EndUserIP" => "127.0.0.1" }
+    response = self.request :endpoint => "PlaceOffer",
+      :body => { "ItemID" => item_id, "Offer" => { "Action" => "Bid", "MaxBid" => amount, "Quantity" => "1" }, "EndUserIP" => "127.0.0.1" }
   end
   
   def request(values={})
@@ -44,7 +47,7 @@ class EbayAction
 
     response = @client.request "#{values[:endpoint]}Request" do
       soap.endpoint = "https://api.sandbox.ebay.com/wsapi?siteid=0&routing=beta&callname=" + values[:endpoint] + "&version=423&appid=Leviona4d-c40e-454f-9d49-dd510693f96"
-      soap.body = { :Version => "423" }
+      soap.body = { :Version => "783" }
       soap.input = "#{values[:endpoint]}Request", { :xmlns => "urn:ebay:apis:eBLBaseComponents" }
       soap.header = { "ebl:RequesterCredentials" => { "ebl:eBayAuthToken" =>
         #seller auth_token

@@ -45,6 +45,20 @@ class AuctionsController < ApplicationController
     @auction = Auction.new(params[:auction])
     @auction.user = current_user
     @auction.item = EbayAction.new.get_item(@auction.item_id)
+    
+    #Load the listing's pictures
+    if @auction.item[:get_item_response][:item][:picture_details][:photo_display] == "None"
+      @auction.picture.push "http://p.ebaystatic.com/aw/pics/nextGenVit/imgNoImg.gif"
+    else
+      #This is ugly, but it works. Rewrite when able.
+      if @auction.item[:get_item_response][:item][:picture_details][:picture_url][0].length != 1
+        @auction.item[:get_item_response][:item][:picture_details][:picture_url].each do |picture|
+          @auction.picture.push picture.to_s
+        end
+      else
+          @auction.picture.push @auction.item[:get_item_response][:item][:picture_details][:picture_url].to_s
+      end
+    end
 
     respond_to do |format|
       if @auction.save

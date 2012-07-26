@@ -7,6 +7,13 @@ Input item ID into form, will check the item's end bid time, minus ebay's curren
 
 Thoughts about calculating best bid: take average of all bid increases, check last bid increase. Find out how MaxBid works in "chinese" auctions
 
+In item's create(), find the appropriate picture to use (external picture url, pictureURL, or GalleryURL). If Gallery, save all the picture urls in a hash/array and enable the arrow buttons to cycle through.
+
+Still not getting gallery pictures in get_item response
+
+Make sure to change the currency based on get_item location
+
+Use OutputSelector on get_item requests once I know all of the required field for the layout to shorten response time and server load
 
 
 

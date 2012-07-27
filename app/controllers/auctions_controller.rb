@@ -50,6 +50,9 @@ class AuctionsController < ApplicationController
   def create
     @auction = Auction.new(params[:auction])
     @auction.user = current_user
+    
+    # Parse the eBay item URL for the item's ID, then get the item's info
+    @auction.item_id = self.parse_url_for_item_id(@auction.item_id)
     @auction.item = EbayAction.new.get_item(@auction.item_id)
     
     # Load the listing's pictures. If the item's seller didn't include a picture, load ebay's
@@ -105,5 +108,10 @@ class AuctionsController < ApplicationController
       format.html { redirect_to auctions_url }
       format.json { head :no_content }
     end
+  end
+  
+  # Extracts the item_id from the URL
+  def parse_url_for_item_id(url)
+    @item_id = url.match(/item=\d*\D/).to_s.gsub!(/\D+/, "")
   end
 end

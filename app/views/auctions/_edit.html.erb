@@ -1,0 +1,15 @@
+<%= image_tag @auction.picture[@picture_id],
+	:size => '300x300' %>
+<br>
+<div align="center">
+<% if @picture_id > 0 %>
+	<%= link_to "<=", edit_auction_path(:pic => @picture_id - 1) %> | 
+<% else %>
+    <= |
+<% end %>	
+<% if @picture_id < @auction.picture.length - 1 %>
+	<%= link_to "=>", edit_auction_path(:pic => @picture_id + 1) %>
+<% else %>
+    =>
+<% end %>	
+</div>

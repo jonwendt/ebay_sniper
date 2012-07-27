@@ -37,6 +37,12 @@ class AuctionsController < ApplicationController
   # GET /auctions/1/edit
   def edit
     @auction = Auction.find(params[:id])
+    @picture_id = params[:pic].to_i
+    
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # POST /auctions
@@ -46,17 +52,19 @@ class AuctionsController < ApplicationController
     @auction.user = current_user
     @auction.item = EbayAction.new.get_item(@auction.item_id)
     
-    #Load the listing's pictures
+    # Load the listing's pictures. If the item's seller didn't include a picture, load ebay's
+    # default picture. Else, check if there are multiple pictures. If true, push them all into the
+    # pictures array. If there's only one picture, then push that in.
     if @auction.item[:get_item_response][:item][:picture_details][:photo_display] == "None"
       @auction.picture.push "http://p.ebaystatic.com/aw/pics/nextGenVit/imgNoImg.gif"
     else
-      #This is ugly, but it works. Rewrite when able.
-      if @auction.item[:get_item_response][:item][:picture_details][:picture_url][0].length != 1
-        @auction.item[:get_item_response][:item][:picture_details][:picture_url].each do |picture|
+      @pictures = @auction.item[:get_item_response][:item][:picture_details][:picture_url]
+      if @pictures.respond_to?(:each)
+        @pictures.each do |picture|
           @auction.picture.push picture.to_s
         end
       else
-          @auction.picture.push @auction.item[:get_item_response][:item][:picture_details][:picture_url].to_s
+          @auction.picture.push @pictures.to_s
       end
     end
 

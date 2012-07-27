@@ -1,28 +1,25 @@
-<ul class="nav">
-  <li class="active">
-	<a class="brand" href="http://www.levion.com"><%= image_tag "logo.png", :size => "135x33" %></a>
-  </li>
-
-  <%= link_to "Home", root_path, :class => 'brand' %>
-  <%= link_to "My Auctions", auctions_path, :class => 'brand' %>
-  <%= link_to "Add Auction", new_auction_path, :class => 'brand' %>
-
-  <% if user_signed_in? %>
-    <li>
-    <%= link_to('Logout', destroy_user_session_path, :method=>'delete') %>        
-    </li>
-  <% else %>
-    <li>
-    <%= link_to('Login', new_user_session_path)  %>
-    </li>
-  <% end %>
-  <% if user_signed_in? %>
-    <li>
-    <%= link_to('Edit account', edit_user_registration_path) %>
-    </li>
-  <% else %>
-    <li>
-    <%= link_to('Sign up', new_user_registration_path)  %>
-    </li>
-  <% end %>
-</ul>
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+	<div class="container">
+	  <ul class="nav">
+		<li class="active">
+		  <a class="brand" href="http://www.levion.com"><%= image_tag "logo.png", :size => "135x33" %></a>
+		</li>
+		
+		<li><%= link_to "Home", root_path %></li>
+		<li><%= link_to "My Auctions", auctions_path %></li>
+		<li><%= link_to "Add Auction", new_auction_path %></li>
+		<% if user_signed_in? %>
+		  <li><%= link_to('Logout', destroy_user_session_path, :method=>'delete') %></li>
+  		<% else %>
+	      <li><%= link_to('Login', new_user_session_path) %></li>
+	  	<% end %>
+		<% if user_signed_in? %>
+    	  <li><%= link_to('Edit account', edit_user_registration_path) %></li>
+  		<% else %>
+    	  <li><%= link_to('Sign up', new_user_registration_path) %></li>
+  		<% end %>
+	  </ul>
+	</div>
+  </div>
+</div>

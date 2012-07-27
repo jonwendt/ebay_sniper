@@ -7,22 +7,23 @@ Input item ID into form, will check the item's end bid time, minus ebay's curren
 
 Thoughts about calculating best bid: take average of all bid increases, check last bid increase. Find out how MaxBid works in "chinese" auctions
 
-In item's create(), find the appropriate picture to use (external picture url, pictureURL, or GalleryURL). If Gallery, save all the picture urls in a hash/array and enable the arrow buttons to cycle through.
+Need to enable cycling through pictures in the auction edit page (ajax?)
 
-Still not getting gallery pictures in get_item response
-
-Make sure to change the currency based on get_item location
+Make sure to change the currency based on get_item location (I think I got this to work, test currencies other than USD)
 
 Use OutputSelector on get_item requests once I know all of the required field for the layout to shorten response time and server load
 
 
+Ajax not working properly for edit auction pic cycle buttons. Add remote: true to link_to in _edit and retry
+Redo buttons in edit auction page to cycle through pics
+
+
+Fix get_time_remaining in auctions helper to subtract current time and format it in a readable time
+
+
 
 ----------UI Bugs----------------
-Links not vertically centered
-
-More spacing between logo and page links
-
-Alight account-related links to right of nav-bar
+Align account-related links to right of nav-bar
 
 
 
@@ -41,6 +42,15 @@ Twilio (text message alerts if item price has passed user defined threshold. pro
 Bootstrap - Twitter CSS
 
 
+
+
+if @auction.item[:get_item_response][:item][:picture_details][:picture_url][0].length != 1
+@auction.item[:get_item_response][:item][:picture_details][:picture_url].each do |picture|
+@auction.picture.push picture.to_s
+end
+else
+@auction.picture.push @auction.item[:get_item_response][:item][:picture_details][:picture_url].to_s
+end
 
 
 ----------Sandbox info----------------
@@ -64,6 +74,22 @@ Harry Potter - 110101001019
 
 
 ---------------API REQUEST EXAMPLE----------------
+
+
+<%= form_tag "/home/get_item", :method => "get" do %>
+	<%= label_tag :item_id, "Get the item's information" %>
+	<%= text_field_tag :item_id %>
+	<%= submit_tag "Submit" %>
+<% end %>
+<%= form_tag "/home/place_bid", :method => "post" do %>
+	<%= label_tag :item_id, "Place a bid on the item" %>
+	<%= text_field_tag :item_id %>
+	<%= label_tag :amount, "for" %>
+	<%= text_field_tag :amount %> dollars.
+	<%= submit_tag "Submit" %>
+<% end %>
+
+
 
 def getTimeTest
 

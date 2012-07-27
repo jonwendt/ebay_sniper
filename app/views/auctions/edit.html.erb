@@ -1,13 +1,13 @@
-<div class="row"><br>
-<div class="span3"><br>
-<%= image_tag @auction.picture[0],
-	:size => '300x300' %>
-</div><br>
+<div class="row">
+<div class="span3">
+<%= render "edit" %>
+</div>
 
-<div class="span9"><br>
+<div class="span9">
 <h1><u><%= @auction.item[:get_item_response][:item][:title] %></u></h1>
 <br>
 <%= sanitize(@auction.item[:get_item_response][:item][:description])%>
+<br>
 <br>
 <%= @auction.max_bid %>
 <br>

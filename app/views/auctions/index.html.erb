@@ -1,28 +1,33 @@
 <h1>My Auctions</h1>
 <br>
+
 <table class="table table-striped">
   <thead>
-  <tr>
-	<th>Picture</th>
-    <th>Item</th>
-    <th>Max bid</th>
-    <th></th>
-  </tr>
+    <tr>
+	  <th>Picture</th>
+      <th width="60%" } >Item</th>
+	  <th>Time Left</th>
+      <th>Max bid</th>
+    </tr>
   </thead>
 
-<tbody>
-<% @auctions.each do |auction| %>
-  <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
-	<td><%= image_tag auction.picture[0],
-			:height => '100', :width => '100' %></td>
-    <td><h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 50) %></h3></td>
-    <td><%= number_to_currency(auction.max_bid, :locale => auction.item[:get_item_response][:item][:currency]) %></td>
-    <td><%= link_to 'Remove Auction', auction, :method => :delete, :data => { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
-</tbody>
+  <tbody>
+    <% @auctions.each do |auction| %>
+	  <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
+		<td><%= image_tag auction.picture[0], :height => '100', :width => '100' %></td>
+		<td>
+		<h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 60) %></h3>
+		<%= truncate(strip_tags(auction.item[:get_item_response][:item][:description]),
+								:length => 300, :separator => ' ') %>
+		</td>
+		<td><%= get_time_remaining auction %></td>
+		<td><%= number_to_currency(auction.max_bid, :locale => auction.item[:get_item_response][:item][:currency]) %></td>
+		<td><%= link_to 'Remove Auction', auction, :method => :delete, :data => { confirm: 'Are you sure?' } %></td>
+	  </tr>
+	<% end %>
+  </tbody>
 </table>
 
-<br />
+<br>
 
 <%= link_to 'New Auction', new_auction_path %>

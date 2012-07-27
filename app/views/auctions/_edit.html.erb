@@ -1,6 +1,11 @@
-<%= image_tag @auction.picture[@picture_id],
-	:size => '300x300' %>
+<div class="vcenter">
+<div class="canvas">
+<%= image_tag @auction.picture[@picture_id] %>
+</div>
+</div>
+
 <br>
+
 <div align="center">
 <% if @picture_id > 0 %>
 	<%= link_to "<=", edit_auction_path(:pic => @picture_id - 1) %> | 

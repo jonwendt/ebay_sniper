@@ -4,8 +4,8 @@
 <table class="table table-striped">
   <thead>
     <tr>
-	  <th>Picture</th>
-      <th width="60%" } >Item</th>
+	  <th width="10%">Picture</th>
+      <th width="60%">Item</th>
 	  <th>Time Left</th>
       <th>Max bid</th>
     </tr>
@@ -14,7 +14,7 @@
   <tbody>
     <% @auctions.each do |auction| %>
 	  <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
-		<td><%= image_tag auction.picture[0], :height => '100', :width => '100' %></td>
+		<td><%= image_tag auction.picture[0], :maxsize => "100x100" %></td>
 		<td>
 		<h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 60) %></h3>
 		<%= truncate(strip_tags(auction.item[:get_item_response][:item][:description]),

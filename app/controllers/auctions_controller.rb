@@ -70,6 +70,9 @@ class AuctionsController < ApplicationController
           @auction.picture.push @pictures.to_s
       end
     end
+    
+    Resque.enqueue_in(self.get_enqueue_time(@auction.item[:get_item_response][:item][:listing_details][:end_time]).seconds,
+                      SomeJob, @auction.user.id)
 
     respond_to do |format|
       if @auction.save
@@ -110,8 +113,18 @@ class AuctionsController < ApplicationController
     end
   end
   
-  # Extracts the item_id from the URL
+  # Extracts the item_id from the URL if the entry is not only digits. Otherwise, the entry is just returned.
   def parse_url_for_item_id(url)
-    @item_id = url.match(/item=\d*\D/).to_s.gsub!(/\D+/, "")
+    if url.match(/\D*/).to_s.length != 0
+      @item_id = url.match(/item=\d*\D/).to_s.gsub!(/\D+/, "")
+    else
+      url
+    end
+  end
+  
+  # Calculates the time remaining on the auction minus 2 minutes
+  def get_enqueue_time(auction_end_time)
+    auction_end_time = Time.parse(auction_end_time).localtime
+    return auction_end_time - Time.now - 120.seconds
   end
 end

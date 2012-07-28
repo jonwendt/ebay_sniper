@@ -72,7 +72,7 @@ class AuctionsController < ApplicationController
     end
     
     Resque.enqueue_in(self.get_enqueue_time(@auction.item[:get_item_response][:item][:listing_details][:end_time]).seconds,
-                      SomeJob, @auction.user.id)
+                      AuctionBidder, @auction.id)
 
     respond_to do |format|
       if @auction.save

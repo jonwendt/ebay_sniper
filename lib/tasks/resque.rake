@@ -1,6 +1,8 @@
 # Resque tasks
 require 'resque/tasks'
 require 'resque_scheduler/tasks'
+require 'resque_scheduler'
+require 'resque_scheduler/server'
 
 task "resque:setup" => :environment
 
@@ -8,7 +10,6 @@ namespace :resque do
   task :setup do
     require 'resque'
     require 'resque_scheduler'
-    require 'resque_scheduler/server'
     require 'resque/scheduler'
 
     # you probably already have this somewhere
@@ -24,7 +25,7 @@ namespace :resque do
 
     # The schedule doesn't need to be stored in a YAML, it just needs to
     # be a hash.  YAML is usually the easiest.
-    #Resque.schedule = YAML.load_file('config/resque_schedule.yml')
+    #Resque.schedule = YAML.load_file(File.join(RAILS_ROOT, 'config/resque_schedule.yml')
     
 
     # If your schedule already has +queue+ set for each job, you don't

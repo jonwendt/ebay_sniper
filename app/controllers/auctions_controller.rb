@@ -4,7 +4,11 @@ class AuctionsController < ApplicationController
   # GET /auctions
   # GET /auctions.json
   def index
-    @auctions = current_user.auctions
+    if params[:status] == "All"
+      @auctions = current_user.auctions
+    else
+      @auctions = sort_auctions(params[:status])
+    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -54,6 +58,8 @@ class AuctionsController < ApplicationController
     # Parse the eBay item URL for the item's ID, then get the item's info
     @auction.item_id = self.parse_url_for_item_id(@auction.item_id)
     @auction.item = EbayAction.new.get_item(@auction.item_id)
+    
+    find_status(@auction)
     
     # Load the listing's pictures. If the item's seller didn't include a picture, load ebay's
     # default picture. Else, check if there are multiple pictures. If true, push them all into the
@@ -111,6 +117,43 @@ class AuctionsController < ApplicationController
       format.html { redirect_to auctions_url }
       format.json { head :no_content }
     end
+  end
+  
+  # Finds the current status of the auction (active, won, lost, etc)
+  def find_status(auction)
+    # If the auction is over, check if we won or lost
+    if auction.item[:get_item_response][:item][:time_left] == "PT0S"\
+      # Change current_user.name to wherever the user's ebay username is stored
+      if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == "testuser_jpwendt2"
+        auction.auction_status = "Won"
+      else
+        auction.auction_status = "Lost"
+      end
+    else
+      auction.auction_status = "Active"
+    end
+  end
+  
+  # Returns the appropriate auctions based on the user's selected auction status preference.
+  def sort_auctions(status)
+    @auctions = []
+    # If the status == "Ended" return all Won, Lost, and Ended
+    if status == "Ended"
+      status = %w[Won Lost Ended]
+      current_user.auctions.each do |auction|
+        if status.include? auction.auction_status
+          @auctions.push auction
+        end
+      end
+    # Else, just match the status
+    else
+      current_user.auctions.each do |auction|
+        if auction.auction_status == status.to_s
+          @auctions.push auction
+        end
+      end
+    end
+    @auctions
   end
   
   # Extracts the item_id from the URL if the entry is not only digits. Otherwise, the entry is just returned.

@@ -11,16 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120726185105) do
+ActiveRecord::Schema.define(:version => 20120730190703) do
 
   create_table "auctions", :force => true do |t|
     t.string   "item_id"
     t.integer  "user_id"
     t.integer  "max_bid"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
     t.binary   "item"
     t.string   "picture"
+    t.string   "auction_status"
   end
 
   create_table "users", :force => true do |t|

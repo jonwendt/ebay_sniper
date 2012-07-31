@@ -30,10 +30,11 @@ class EbayAction
       :body => { "Item" => item }
   end
   
-  def get_item(item_id)
+  # Separate output_selector with , and no spaces. Format like XML (ex: "timeleft,title")
+  def get_item(item_id, output_selector)
     response = self.request :endpoint => "GetItem",
-      :body => { "ItemID" => item_id, "DetailLevel" => "ItemReturnDescription" }
-    response.body #Testing
+      :body => { "ItemID" => item_id, "DetailLevel" => "ItemReturnDescription", "OutputSelector" => output_selector }
+    response.body
   end
   
   def place_bid(item_id, amount)

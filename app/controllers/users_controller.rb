@@ -81,22 +81,8 @@ class UsersController < ApplicationController
     end
   end
   
-  def get_time
-    @user = User.find(params[:id])
-    @ebay = EbayAction.new.ebay_time
-  end
-  
-  def get_item
-    @user = User.find(params[:id])
-    @item = EbayAction.new.get_item(params[:item])
-
-    respond_to do |format|
-      format.html
-    end
-  end
-  
-  def place_bid
-    @user = User.find(params[:id])
-    @item = EbayAction.new.place_bid(params[:item], params[:amount])
+  # Removes the user from OnlineUsers
+  def sign_out
+    OnlineUsers.remove current_user
   end
 end

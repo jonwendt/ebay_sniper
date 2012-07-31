@@ -25,6 +25,27 @@ On auction adding, validate item by checking response awk tag for success
 Center listing pictures vertically in auction index and edit
 
 
+I don't think I should schedule a task to update all user's active auctions. Only do for currently logged in users. So I can't do it through scheduler. Find devise's on user login method, and enqueue an update_auctions worker every 3 minutes. On login, dequeue worker.
+Still need to remove user from OnlineUsers on logout
+
+
+Fix update_user to only update required attributes
+
+
+Hours worked: 84.5 over 2 weeks
+
+
+
+update_item (broken)
+auction.item[:get_item_response][:item][:time_left] = @new_auction[:get_item_response][:item][:time_left]
+auction.item[:get_item_response][:item][:selling_status][:bid_count] = @new_auction[:get_item_response][:item][:selling_status][:bid_count]
+auction.item[:get_item_response][:item][:selling_status][:current_price] = @new_auction[:get_item_response][:item][:selling_status][:current_price]
+begin
+auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] = @new_auction[:get_item_response][:item][:selling_status][:high_bidder][:user_id]
+rescue
+end
+
+
 
 -------Processes to start----------
 rake resque:scheduler
@@ -32,6 +53,7 @@ rake resque:scheduler
 
 QUEUE=* rake environment resque:work
   - Starts the resque queue worker
+  - Priority (auction_bidder, update_auctions, send_notifications)
 
 
 

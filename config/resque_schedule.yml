@@ -1,5 +1,6 @@
-development: localhost:6379
-test: localhost:6379
-staging: redis1.se.github.com:6379
-fi: localhost:6379
-production: redis1.ae.github.com:6379
+update_auctions:
+  every: 3m
+  class: UpdateAuctions
+  queue: update_auctions
+  args: OnlineUsers.users
+  description: "This will update the auction information for all of the online users' auctions"

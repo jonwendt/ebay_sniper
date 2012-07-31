@@ -68,7 +68,7 @@ EbaySniper::Application.routes.draw do
 
   root :to => "home#index"
   
-  match "user_root", :to => "home#index"
+  match "user_root", :to => "home#login"
 
     #match "secret", :to => "home#secret"
   

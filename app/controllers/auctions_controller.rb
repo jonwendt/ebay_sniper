@@ -41,6 +41,7 @@ class AuctionsController < ApplicationController
   # GET /auctions/1/edit
   def edit
     @auction = Auction.find(params[:id])
+    @auction = update_auction(@auction)
     @picture_id = params[:pic].to_i
     
     respond_to do |format|
@@ -57,7 +58,7 @@ class AuctionsController < ApplicationController
     
     # Parse the eBay item URL for the item's ID, then get the item's info
     @auction.item_id = self.parse_url_for_item_id(@auction.item_id)
-    @auction.item = EbayAction.new.get_item(@auction.item_id)
+    @auction.item = EbayAction.new.get_item(@auction.item_id, "")
     
     find_status(@auction)
     
@@ -118,11 +119,24 @@ class AuctionsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def update_auction(auction)
+    if auction.auction_status == "Active"
+      # Sadly, this doesn't work because of the nested hashes.
+      # auction.item.merge! EbayAction.new.get_item(auction.item_id, "timeleft,bidcount,currentprice,userid")
+      
+      # Figure out how to update while only grabbing values needed
+      @new_auction = EbayAction.new.get_item(auction.item_id, "")
+      auction.item = auction.item.merge @new_auction
+      find_status(auction)
+    end
+    auction
+  end
   
   # Finds the current status of the auction (active, won, lost, etc)
   def find_status(auction)
     # If the auction is over, check if we won or lost
-    if auction.item[:get_item_response][:item][:time_left] == "PT0S"\
+    if auction.item[:get_item_response][:item][:time_left] == "PT0S"
       # Change current_user.name to wherever the user's ebay username is stored
       if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == "testuser_jpwendt2"
         auction.auction_status = "Won"

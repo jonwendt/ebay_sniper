@@ -27,7 +27,10 @@
 	
 <h1 align="center">Snipe Options</h1>
 <br>
-
+<%= @auction.item[:get_item_response][:timestamp] %>
+<br>
+<%= @auction.item[:get_item_response][:item][:time_left] %>
+<br>
 	
 <%= link_to 'Remove Auction', @auction, method: :delete, data: { confirm: 'Are you sure?' } %> |
 <%= link_to 'Back', auctions_path %>

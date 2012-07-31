@@ -50,6 +50,8 @@ end
 
 
 -------Processes to start----------
+redis-server
+
 rake resque:scheduler
   - Starts the resque scheduler
 

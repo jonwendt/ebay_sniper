@@ -8,21 +8,22 @@
         <li><%= msg %></li>
       <% end %>
       </ul>
-    </div>
+    </div>	
+	<br>
+	<br>
   <% end %>
 
-  <br>
-  <br>
+  <br><br>
 
   <div class="field">
-    <%= f.label :item_id, "eBay URL or item ID" %><br />
-    <%= f.text_field :item_id %>
+   	<%= f.label "eBay URL or item number" %><br />
+   	<%= f.text_field :item_id %>
   </div>
   <div class="field">
-    <%= f.label :max_bid %><br />
-    <%= f.number_field :max_bid %>
+   	<%= f.label :max_bid %><br />
+   	<%= f.number_field :max_bid %>
   </div>
   <div class="actions">
     <%= f.submit %>
-  </div>
+  </div>	
 <% end %>

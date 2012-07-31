@@ -14,7 +14,7 @@ module AuctionsHelper
     if days > 0
       "#{days}d #{hours % 24}h"
     elsif hours > 0
-      "#{hours}h #{mins % 60}h"
+      "#{hours}h #{mins % 60}m"
     elsif mins > 0
       "#{mins}m #{@time_left % 24}s"
     elsif secs >= 0

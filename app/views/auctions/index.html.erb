@@ -22,6 +22,7 @@
 	  <th width="10%">Picture</th>
       <th width="60%">Item</th>
 	  <th>Time Left</th>
+	  <th>Current price</th>
       <th>Max bid</th>
     </tr>
   </thead>
@@ -36,6 +37,7 @@
 								:length => 300, :separator => ' ') %>
 		</td>
 		<td><%= get_time_remaining auction %></td>
+		<td><%= auction.item[:get_item_response][:item][:selling_status][:current_price]%></td>
 		<td><%= number_to_currency(auction.max_bid, :locale => auction.item[:get_item_response][:item][:currency]) %></td>
 		<td><%= link_to 'Remove Auction', auction, :method => :delete, :data => { confirm: 'Are you sure?' } %></td>
 	  </tr>

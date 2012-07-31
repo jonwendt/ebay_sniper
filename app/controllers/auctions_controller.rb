@@ -4,7 +4,7 @@ class AuctionsController < ApplicationController
   # GET /auctions
   # GET /auctions.json
   def index
-    if params[:status] == "All"
+    if params[:status] == "All" || ""
       @auctions = current_user.auctions
     else
       @auctions = sort_auctions(params[:status])
@@ -46,7 +46,7 @@ class AuctionsController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.js
+      format.js { render 'auction' }
     end
   end
 
@@ -83,7 +83,7 @@ class AuctionsController < ApplicationController
 
     respond_to do |format|
       if @auction.save
-        format.html { redirect_to @auction, notice: 'Auction was successfully created.' }
+        format.html { redirect_to edit_auction_path(@auction.id), notice: 'Auction was successfully created.' }
         format.json { render json: @auction, status: :created, location: @auction }
       else
         format.html { render action: "new" }

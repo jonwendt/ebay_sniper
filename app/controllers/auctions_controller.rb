@@ -99,7 +99,7 @@ class AuctionsController < ApplicationController
 
     respond_to do |format|
       if @auction.update_attributes(params[:auction])
-        format.html { redirect_to @auction, notice: 'Auction was successfully updated.' }
+        format.html { redirect_to edit_auction_path, notice: 'Auction was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

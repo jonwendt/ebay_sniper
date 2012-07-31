@@ -1,0 +1,36 @@
+<%= form_for(@auction) do |f| %>
+  <% if @auction.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@auction.errors.count, "error") %> prohibited this auction from being saved:</h2>
+
+      <ul>
+      <% @auction.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>	
+	<br>
+	<br>
+  <% end %>
+
+  <div class="row">
+    <div class="span12">	
+	  <h1 align="center">Snipe Options</h1>
+	  <br>
+	  <br>
+  	  <div class="field">
+    	<%= f.label :max_bid %><br />
+    	<%= f.number_field :max_bid %>
+	  </div>
+	  <div class="actions">
+	    <%= f.submit %>
+	  </div>
+	  <br>
+	  <br>
+	  <%= @auction.item[:get_item_response][:timestamp] %>
+	  <br>
+	  <%= link_to 'Remove Auction', @auction, method: :delete, data: { confirm: 'Are you sure?' } %> |
+	  <%= link_to 'Back', auctions_path %>
+    </div>
+  </div>	
+<% end %>

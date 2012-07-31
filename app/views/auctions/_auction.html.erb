@@ -1,0 +1,47 @@
+<h1 align="center">Listing Details</h1>
+<br>
+<br>
+<div class="row">
+  <div class="span4" align="center">
+	<div class="vcenter">
+	  <div class="canvas">
+		<%= image_tag @auction.picture[@picture_id] %>
+	  </div>
+	</div>
+
+	<br>
+
+	<div align="center">
+	  <% if @picture_id > 0 %>
+		<%= link_to "<=", edit_auction_path(:pic => @picture_id - 1) %> | 
+	  <% else %>
+	    <= |
+	  <% end %>	
+	  <% if @picture_id < @auction.picture.length - 1 %>
+		<%= link_to "=>", edit_auction_path(:pic => @picture_id + 1) %>
+	  <% else %>
+	    =>
+	  <% end %>
+	</div>
+
+	<br>
+	<br>
+	<div align="left">
+	Item number: <%= @auction.item_id %>
+	<br>
+	Auction status: <%= @auction.auction_status %>
+
+	</div>
+  </div>
+
+  <div class="span8">
+	<h1><u><%= @auction.item[:get_item_response][:item][:title] %></u></h1>
+	<br>
+	<%= sanitize(@auction.item[:get_item_response][:item][:description])%>
+	<br>
+	<br>
+	Current price: <%= number_to_currency @auction.item[:get_item_response][:item][:selling_status][:current_price] %>
+	<br>
+	Time left: <%= get_time_remaining(@auction) %>
+  </div>
+</div>

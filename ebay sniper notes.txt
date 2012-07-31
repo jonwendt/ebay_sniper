@@ -26,8 +26,10 @@ Center listing pictures vertically in auction index and edit
 
 
 I don't think I should schedule a task to update all user's active auctions. Only do for currently logged in users. So I can't do it through scheduler. Find devise's on user login method, and enqueue an update_auctions worker every 3 minutes. On login, dequeue worker.
-Still need to remove user from OnlineUsers on logout
+Still need to remove user from OnlineUsers on logout and verify scheduler is working (added scheduled jobs tab)
 
+
+Change color of divider on auctions/edit, maybe add a different background color to listing details and snipe options to differentiate?
 
 Fix update_user to only update required attributes
 

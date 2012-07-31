@@ -1,41 +1,9 @@
-<div class="row">
-<div class="span4" align="center">
-<%= render "edit" %>
-</div>
+<%= render "auction" %>
 
-<div class="span8">
-<h1><u><%= @auction.item[:get_item_response][:item][:title] %></u></h1>
-<br>
-<%= sanitize(@auction.item[:get_item_response][:item][:description])%>
-<br>
-<br>
-<%= @auction.max_bid %>
-<br>
-<br>
-</div>
-</div>
-
-<br>
 <br>
 <br>
 <hr>
 <br>
 <br>
 
-<div class="row">
-<div class="span12">
-	
-<h1 align="center">Snipe Options</h1>
-<br>
-<%= @auction.item[:get_item_response][:timestamp] %>
-<br>
-<%= @auction.item[:get_item_response][:item][:time_left] %>
-<br>
-	
-<%= link_to 'Remove Auction', @auction, method: :delete, data: { confirm: 'Are you sure?' } %> |
-<%= link_to 'Back', auctions_path %>
-
-<br>
-<br>
-</div>
-</div>
+<%= render "snipe" %>

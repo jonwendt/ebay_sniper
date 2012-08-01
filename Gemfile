@@ -22,8 +22,7 @@ gem 'jquery-rails'
 
 
 gem 'savon'
-#gem 'mysql2'
-gem 'pg'
+gem 'mysql2'
 gem 'devise'
 gem 'redis'
 gem 'redis-store'

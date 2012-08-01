@@ -14,6 +14,9 @@ EbaySniper::Application.routes.draw do
   end
   
   resources :auctions
+  
+  resources :notifications
+  match "call_handler", :to => "notifications#new"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

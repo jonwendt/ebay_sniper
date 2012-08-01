@@ -16,9 +16,6 @@ Ajax not working properly for edit auction pic cycle buttons. Add remote: true t
 Redo buttons in edit auction page to cycle through pics
 
 
-Fix get_time_remaining in auctions helper to subtract current time and format it in a readable time
-
-
 On auction adding, validate item by checking response awk tag for success
 
 

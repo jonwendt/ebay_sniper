@@ -3,6 +3,7 @@ class AuctionUpdater
   
   # Updates each auction's info for every online user. If the auction has ended, update the status.
   def self.perform
+    #$online_users.each do |user|
     User.all.each do |user|
       user.auctions.each do |auction|
         if auction.auction_status.to_s == "Active"

@@ -28,9 +28,9 @@ gem 'redis'
 gem 'redis-store'
 gem 'redis-actionpack'
 gem 'bootstrap-sass'
-#to set up
 gem 'resque'
 gem 'resque-scheduler', :require => 'resque_scheduler'
+#to set up
 gem 'twilio'
 
 

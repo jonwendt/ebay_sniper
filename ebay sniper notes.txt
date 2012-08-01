@@ -43,7 +43,7 @@ rake resque:scheduler
 
 QUEUES=auction_bidder,auction_updater rake environment resque:work
   - Starts the resque queue worker
-  - Priority (auction_bidder, update_auctions, send_notifications)
+  - Priority (auction_bidder, auction_updater, notification_sender)
 
 
 

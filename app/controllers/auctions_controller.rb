@@ -60,38 +60,45 @@ class AuctionsController < ApplicationController
     @auction.item_id = self.parse_url_for_item_id(@auction.item_id)
     @auction.item = EbayAction.new.get_item(@auction.item_id, "")
     
-    find_status(@auction)
+    # If the auction is real
+    if @auction.item[:get_item_response][:ack] == "Success"
+      find_status(@auction)
     
-    # Load the listing's pictures. If the item's seller didn't include a picture, load ebay's
-    # default picture. Else, check if there are multiple pictures. If true, push them all into the
-    # pictures array. If there's only one picture, then push that in.
-    if @auction.item[:get_item_response][:item][:picture_details][:photo_display] == "None"
-      @auction.picture.push "http://p.ebaystatic.com/aw/pics/nextGenVit/imgNoImg.gif"
-    else
-      @pictures = @auction.item[:get_item_response][:item][:picture_details][:picture_url]
-      if @pictures.respond_to?(:each)
-        @pictures.each do |picture|
-          @auction.picture.push picture.to_s
-        end
+      # Load the listing's pictures. If the item's seller didn't include a picture, load ebay's
+      # default picture. Else, check if there are multiple pictures. If true, push them all into the
+      # pictures array. If there's only one picture, then push that in.
+      if @auction.item[:get_item_response][:item][:picture_details][:photo_display] == "None"
+        @auction.picture.push "http://p.ebaystatic.com/aw/pics/nextGenVit/imgNoImg.gif"
       else
+        @pictures = @auction.item[:get_item_response][:item][:picture_details][:picture_url]
+        if @pictures.respond_to?(:each)
+          @pictures.each do |picture|
+            @auction.picture.push picture.to_s
+          end
+        else
           @auction.picture.push @pictures.to_s
+        end
       end
-    end
     
-    if @auction.auction_status == "Active"
-      Resque.enqueue_in(
+      if @auction.auction_status == "Active"
+        Resque.enqueue_at(
         self.get_enqueue_time(@auction.item[:get_item_response][:item][:listing_details][:end_time]).seconds.from_now,
                               AuctionBidder, @auction.id)
-    end
-
-    respond_to do |format|
-      if @auction.save
-        format.html { redirect_to edit_auction_path(@auction.id), notice: 'Auction was successfully created.' }
-        format.json { render json: @auction, status: :created, location: @auction }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @auction.errors, status: :unprocessable_entity }
       end
+
+      respond_to do |format|
+        if @auction.save
+          format.html { redirect_to edit_auction_path(@auction.id), notice: 'Auction was successfully created.' }
+          format.json { render json: @auction, status: :created, location: @auction }
+        else
+          format.html { redirect_to new_auction_path, notice: "The auction's item ID was invalid." }
+          format.json { render json: @auction.errors, status: :unprocessable_entity }
+        end
+      end
+      
+    # The auction does not exist. Redirect to new auction page.
+    else
+      redirect_to new_auction_path, notice: "The auction's item ID was invalid."
     end
   end
 
@@ -115,6 +122,7 @@ class AuctionsController < ApplicationController
   # DELETE /auctions/1.json
   def destroy
     @auction = Auction.find(params[:id])
+    Resque.remove_delayed(AuctionBidder, @auction.id)
     @auction.destroy
 
     respond_to do |format|

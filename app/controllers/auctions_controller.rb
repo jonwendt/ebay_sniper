@@ -4,7 +4,7 @@ class AuctionsController < ApplicationController
   # GET /auctions
   # GET /auctions.json
   def index
-    if params[:status] == "All" || ""
+    if params[:status] == "All"
       @auctions = current_user.auctions
     else
       @auctions = sort_auctions(params[:status])
@@ -78,8 +78,11 @@ class AuctionsController < ApplicationController
       end
     end
     
-    Resque.enqueue_in(self.get_enqueue_time(@auction.item[:get_item_response][:item][:listing_details][:end_time]).seconds,
-                      AuctionBidder, @auction.id)
+    if @auction.auction_status == "Active"
+      Resque.enqueue_in(
+        self.get_enqueue_time(@auction.item[:get_item_response][:item][:listing_details][:end_time]).seconds.from_now,
+                              AuctionBidder, @auction.id)
+    end
 
     respond_to do |format|
       if @auction.save
@@ -115,7 +118,7 @@ class AuctionsController < ApplicationController
     @auction.destroy
 
     respond_to do |format|
-      format.html { redirect_to auctions_url }
+      format.html { redirect_to auctions_url + "?status=All" }
       format.json { head :no_content }
     end
   end
@@ -138,9 +141,13 @@ class AuctionsController < ApplicationController
     # If the auction is over, check if we won or lost
     if auction.item[:get_item_response][:item][:time_left] == "PT0S"
       # Change current_user.name to wherever the user's ebay username is stored
-      if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == "testuser_jpwendt2"
-        auction.auction_status = "Won"
-      else
+      begin
+        if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == "testuser_jpwendt2"
+          auction.auction_status = "Won"
+        else
+          auction.auction_status = "Lost"
+        end
+      rescue
         auction.auction_status = "Lost"
       end
     else
@@ -159,6 +166,9 @@ class AuctionsController < ApplicationController
           @auctions.push auction
         end
       end
+    # If there was no status parameter for some reason, just display all
+    elsif status == nil
+      return current_user.auctions
     # Else, just match the status
     else
       current_user.auctions.each do |auction|
@@ -182,6 +192,6 @@ class AuctionsController < ApplicationController
   # Calculates the time remaining on the auction minus 2 minutes
   def get_enqueue_time(auction_end_time)
     auction_end_time = Time.parse(auction_end_time).localtime
-    return auction_end_time - Time.now - 120.seconds
+    return auction_end_time - Time.now - 120
   end
 end

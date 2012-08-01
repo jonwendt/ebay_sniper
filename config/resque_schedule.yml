@@ -1,6 +1,5 @@
-update_auctions:
+update_all_auctions:
   every: 3m
-  class: UpdateAuctions
-  queue: update_auctions
-  args: OnlineUsers.users
+  class: AuctionUpdater
+  queue: auction_updater
   description: "This will update the auction information for all of the online users' auctions"

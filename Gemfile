@@ -31,7 +31,7 @@ gem 'bootstrap-sass'
 gem 'resque'
 gem 'resque-scheduler', :require => 'resque_scheduler'
 #to set up
-gem 'twilio'
+gem 'twilio-ruby'
 
 
 

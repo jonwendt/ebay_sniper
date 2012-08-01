@@ -13,6 +13,9 @@ class AuctionUpdater
             find_status(auction)
           end
           auction.save
+          
+          # If the item's current price is above max_bid, send notification to user.
+          Resque.enqueue(NotificationSender, auction.id)
         end
       end
     end

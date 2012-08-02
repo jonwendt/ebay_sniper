@@ -6,8 +6,8 @@ class Notification# < ActiveRecord::Base
   end
   
   def read_sms(body)
-    if body.to_s.match(/"yes"/)
-      @message = body.to_s.match(/\d*/)
+    if body.to_s.downcase.match(/yes/)
+      @message = body.to_s.match(/\d+/).to_s
       if @message.empty?
         return nil
       else

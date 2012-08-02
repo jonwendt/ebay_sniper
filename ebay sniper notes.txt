@@ -28,6 +28,9 @@ Change color of divider on auctions/edit, maybe add a different background color
 Fix update_auctions to only update online users' auctions using OutputSelector
 
 
+Need a way to keep track of auction.id through text message conversations.
+
+
 Hours worked: 84.5 over 2 weeks
 
 

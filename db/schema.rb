@@ -11,17 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120730190703) do
+ActiveRecord::Schema.define(:version => 20120802012653) do
 
   create_table "auctions", :force => true do |t|
     t.string   "item_id"
     t.integer  "user_id"
     t.integer  "max_bid"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
     t.binary   "item"
     t.string   "picture"
     t.string   "auction_status"
+    t.string   "user_notification"
+  end
+
+  create_table "notifications", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "users", :force => true do |t|
@@ -37,6 +43,7 @@ ActiveRecord::Schema.define(:version => 20120730190703) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
+    t.integer  "phone_number"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

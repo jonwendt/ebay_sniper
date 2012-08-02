@@ -1,5 +1,5 @@
 class Auction < ActiveRecord::Base
-  attr_accessible :item_id, :max_bid, :user_id, :item, :picture
+  attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification
   belongs_to :user
   
   serialize :picture, Array

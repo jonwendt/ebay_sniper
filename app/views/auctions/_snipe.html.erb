@@ -22,6 +22,10 @@
     	<%= f.label :max_bid %><br />
     	<%= f.number_field :max_bid %>
 	  </div>
+	  <div class="field">
+	 	<%= f.label "How would you like to be notified about critical auction updates (ex: being outbid)?" %><br />
+	 	<%= f.select :user_notification, ["Do not notify", "Call", "Text Message"] %>
+	  </div>
 	  <div class="actions">
 	    <%= f.submit %>
 	  </div>

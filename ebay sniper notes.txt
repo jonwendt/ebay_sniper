@@ -28,10 +28,22 @@ Change color of divider on auctions/edit, maybe add a different background color
 Fix update_auctions to only update online users' auctions using OutputSelector
 
 
-Need a way to keep track of auction.id through text message conversations.
+
+VALIDATE FOR DUPLICATE AUCTIONS
+
+VALIDATE USER PHONE NUMBER FOR COUNTRY CODE (+1)
+
+STOP REPLYING TO TEXTS WITH SEND_SMS. INSTEAD BUILD CORRECT XML RESPONSE USING TwiML AND RENDER.
 
 
 Hours worked: 84.5 over 2 weeks
+
+
+------------SMS tracking system---------------
+Need a way to keep track of auction.id through text message conversations.
+
+Have auction_updater send out a text saying "You've been outbid in the auction "Auction name...", ID: "10243593494". If you would like to change your bid, reply with YES, ID, and new bid. For help, reply with HELP"
+
 
 
 

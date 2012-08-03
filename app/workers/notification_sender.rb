@@ -4,6 +4,6 @@ class NotificationSender
   def self.perform(auction_id, message)
     @auction = Auction.find(auction_id)
     @user = @auction.user
-    Notification.new.send_sms(message, "6027383570") #@user.number
+    Notification.new.send_sms(message, @user.phone_number)
   end
 end

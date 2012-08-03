@@ -4,7 +4,7 @@ EbaySniper::Application.routes.draw do
   end
   
   resources :home
-      
+  
   resources :users do
     member do
       get :get_time

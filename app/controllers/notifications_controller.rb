@@ -1,21 +1,32 @@
 class NotificationsController < ApplicationController
   
-  # POST /notifications/receive
-  # POST /notifications/receive.xml
+  # GET /notifications/receive
+  # GET /notifications/receive.xml
   def receive
     @notification = Notification.new
-    @sms = @notification.read_sms(params['Body'])
-    if @sms != nil
-      # Do something with sms
-      @response = @notification.send_sms "Your max bid was changed to " + @sms, params['From']
-    else  
-      #@response = @notification.send_sms "Your max bid was not changed.", params[:From]
+    
+    @user = User.where(:phone_number => params['From']).first
+    # If there is no user account with the phone number
+    if @user == []
+      @xml = @notification.build_sms "This phone number is not associated with any user account for Levion's eBay Sniper. Please register an account or add this phone number to your current account."
+    
+    # If there is a user, try to parse their text and see if it merits action and a response
+    else
+      @response_text = @notification.read_sms(params['Body'], @user.id)
+    
+      # If the user should be sent back a reply, send them the appropriate reply (as determined by read_sms)
+      if @response_text != nil
+        @xml = @notification.build_sms @response_text
+      else
+      # Don't send a response
+        return
+      end
     end
     
-    #respond_to do |format|
-    #  format.html # new.html.erb
-    #  format.xml { render xml: @response.text }
-    #end
+    respond_to do |format|
+      #format.html # new.html.erb
+      format.xml { render xml: @xml.text }
+    end
   end
   
 end

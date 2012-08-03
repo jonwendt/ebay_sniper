@@ -1,5 +1,4 @@
 class AuctionUpdater
-  include ActionView::Helpers::TextHelper
   @queue = :auction_updater
   
   # Updates each auction's info for every online user. If the auction has ended, update the status.
@@ -16,13 +15,14 @@ class AuctionUpdater
           auction.save
           
           # If the item's current price is above max_bid, send notification to user.
-          if auction.item[:get_item_response][:item][:selling_status][:current_price].to_i > auction.max_bid && auction.user_notification == "Text Message"
+          if auction.item[:get_item_response][:item][:selling_status][:current_price].to_i > auction.max_bid &&
+          auction.user_notification == "Text Message" && user.phone_number != ""
             @title = auction.item[:get_item_response][:item][:title].to_s
             if @title.length > 38
               @title = @title[0,35] + "..."
             end
-            @message = "Your max bid for \"" + @title +
-              "\" has been outbid. If you would like to change your max bid, reply with YES and your new bid. Ex: YES 67"
+            @message = "You've been outbid for the item \"#{@title}\", ID: \"#{auction.item_id}\"." +
+              " Would you like to change your max bid? For help, reply with HELP."
             Resque.enqueue(NotificationSender, auction.id, @message)
           end
         end

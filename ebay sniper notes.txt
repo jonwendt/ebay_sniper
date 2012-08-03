@@ -21,7 +21,8 @@ Validations in auction model not displaying custom message on failing.
 
 Auction price being returned in Notification is not formatted to currency.
 
-Fix MVC (login in model from auctions_controller)
+
+REDO VALIDATION CHECKING THAT AUCTION EXISTS
 
 
 WORK ON LEAD TIME

@@ -1,9 +1,4 @@
-Need to get official ebay time and model internally (when getting initially, account for the time the request takes by measuring time before and after request, then adding that value to ebay's response)
-
 Maintain the full abstraction to the ebay API request function, and build around it in the ebay_action model
-
-Add support for tracking a bid:
-Input item ID into form, will check the item's end bid time, minus ebay's current time, and save it into a variable called time_till_end. Start a new task for cron to execute at Time.now + time_till_end - small_offset (this is in local time). The task will start a thread to again measure the difference between the end bid time and ebay's current time. Sleep for that amount of time - the time it takes to execute a place_offer request to ebay's API, and then execute the place_offer request.
 
 Thoughts about calculating best bid: take average of all bid increases, check last bid increase. Find out how MaxBid works in "chinese" auctions
 
@@ -11,39 +6,23 @@ Make sure to change the currency based on get_item location (I think I got this 
 
 Use OutputSelector on get_item requests once I know all of the required field for the layout to shorten response time and server load
 
-
 Ajax not working properly for edit auction pic cycle buttons. Add remote: true to link_to in _edit and retry
 Redo buttons in edit auction page to cycle through pics
 
-
-On auction adding, validate item by checking response awk tag for success
-
-
 Center listing pictures vertically in auction index and edit
-
 
 Change color of divider on auctions/edit, maybe add a different background color to listing details and snipe options to differentiate?
 
-
 Fix update_auctions to only update online users' auctions using OutputSelector
 
-
-
-VALIDATE FOR DUPLICATE AUCTIONS
+Add been_notified:string column to auction. Every time the user is notified about a change, save what the notification was regarding. Ex: notifying a user about being outbid would change been_notified to "bid". If the user replies back with a change bid command, blank out been_notified. When sending out notifications, verify been_notified does not match the issue the user is being notified about.
 
 VALIDATE USER PHONE NUMBER FOR COUNTRY CODE (+1)
 
-STOP REPLYING TO TEXTS WITH SEND_SMS. INSTEAD BUILD CORRECT XML RESPONSE USING TwiML AND RENDER.
+Validations in auction model not displaying custom message on failing.
 
 
 Hours worked: 84.5 over 2 weeks
-
-
-------------SMS tracking system---------------
-Need a way to keep track of auction.id through text message conversations.
-
-Have auction_updater send out a text saying "You've been outbid in the auction "Auction name...", ID: "10243593494". If you would like to change your bid, reply with YES, ID, and new bid. For help, reply with HELP"
-
 
 
 
@@ -53,7 +32,7 @@ redis-server
 rake resque:scheduler
   - Starts the resque scheduler
 
-QUEUES=auction_bidder,auction_updater rake environment resque:work
+QUEUES=auction_bidder,auction_updater,notification_sender rake environment resque:work
   - Starts the resque queue worker
   - Priority (auction_bidder, auction_updater, notification_sender)
 
@@ -80,21 +59,7 @@ Bootstrap - Twitter CSS
 
 
 
-
-if @auction.item[:get_item_response][:item][:picture_details][:picture_url][0].length != 1
-@auction.item[:get_item_response][:item][:picture_details][:picture_url].each do |picture|
-@auction.picture.push picture.to_s
-end
-else
-@auction.picture.push @auction.item[:get_item_response][:item][:picture_details][:picture_url].to_s
-end
-
-
 ----------Sandbox info----------------
-Item IDs
-Harry Potter - 110101001019
-
-
 #seller auth_token
 "AgAAAA**AQAAAA**aAAAAA**n8gNUA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhCZGGqQqdj6x9nY+seQ**194BAA**AAMAAA**RKYUL774WkhrRJGrHi1wS+VHDL2lOxG+Hoi9xx7Mm7jdbrh5BRv2UC93JN3Msn2EdwmnqhDwF2qxKFJYtY38YMMqKfpp+/GVB+WAta570T+LlCO5kKitdVTOal6EBhQRiMiKU9t7vGhTsi+ByQrShFpjH4Re3X6bQXNOGTjeWb1G+RdYOuH9NMELf7mVs6CBmWmhOdCuRow+Ekb/yVbGe1ZUfBcl55wYGI4AefPJTqoHgZuDEThrTeRs7TGFd3RaH5Cct+nMQrZRBEpUVeraUYEwCEct04qaRyfLm/EA4fvJcxp1znRr3BwGNwEam4OFeioQA4/bJMgmqU5eA8Unj8g7lLhYo2kWkspAG4aU5RkoFbMYctUDS2kSlQ3VtHJgmPwAHJVcPsWg2SO0B6Z+/SoPyToXiTFfNRSvgZXjxbzHmzringmRQ4yMwGdxDkD8rjFzTJTTCune42QH9WIqpjNPFwx+K3Y+V4qkPc2Q2b6VXQE/VOae0d5/4FrSQ8PMZB6SAbWSD/MfiX5ofpruOAHUGBG/9zpGXbPeESel2Jvv4DYpkRf0CLRiOAXrgW3PP1D1AnbHaVAR7PC/L9Lm0/BjJbWVlhKbaJyq/LIlv1JLwn4HInbWiR9XuXUGXshAGS+gZnGmzgNbAFllwT75opRiFdm2E1q4mOAntc9+1uviAYc5CxMs3igohPNut0JYdKDyQQyrGBOizIb1yM8kQRwfYiGRiTlyq/xrmkcjlK0+qM1dyFoaYaXvVQrh/sDc"
 
@@ -111,8 +76,6 @@ Harry Potter - 110101001019
 
 
 ---------------API REQUEST EXAMPLE----------------
-
-
 <%= form_tag "/home/get_item", :method => "get" do %>
 	<%= label_tag :item_id, "Get the item's information" %>
 	<%= text_field_tag :item_id %>

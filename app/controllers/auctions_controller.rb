@@ -80,15 +80,20 @@ class AuctionsController < ApplicationController
         end
       end
     
+      # If the auction is still going, enqueue an AuctionBidder worker to bid on the auction
       if @auction.auction_status == "Active"
-        Resque.enqueue_at(
-        self.get_enqueue_time(@auction.item[:get_item_response][:item][:listing_details][:end_time]).seconds.from_now,
-                              AuctionBidder, @auction.id)
+        Resque.enqueue_at(self.get_enqueue_time(@auction.item[:get_item_response][:item][:listing_details][:end_time]).seconds.from_now,
+                          AuctionBidder, @auction.id)
+      end
+      
+      # If the user wants updates on the auction, but has not provided a phone number with which to contact them, notify the user.
+      if @auction.user_notification != "Do not notify" && current_user.phone_number == ""
+        @phone_notice = " If you wish to receive notifications on your phone, please add your phone number on the \"Edit account\" page."
       end
 
       respond_to do |format|
         if @auction.save
-          format.html { redirect_to edit_auction_path(@auction.id), notice: 'Auction was successfully created.' }
+          format.html { redirect_to edit_auction_path(@auction.id), notice: "Auction was successfully created.#{@phone_notice}" }
           format.json { render json: @auction, status: :created, location: @auction }
         else
           format.html { redirect_to new_auction_path, notice: "The auction's item ID was invalid." }

@@ -19,14 +19,17 @@
    	<%= f.label "eBay URL or item number" %><br />
    	<%= f.text_field :item_id %>
   </div>
+  <br>
   <div class="field">
    	<%= f.label :max_bid %><br />
    	<%= f.number_field :max_bid %>
   </div>
+  <br>
   <div class="field">
  	<%= f.label "How would you like to be notified about critical auction updates (ex: being outbid)?" %><br />
  	<%= f.select :user_notification, ["Do not notify", "Call", "Text Message"] %>
   </div>
+  <br>
   <div class="actions">
     <%= f.submit %>
   </div>	

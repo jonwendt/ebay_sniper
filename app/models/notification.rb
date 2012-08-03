@@ -1,5 +1,4 @@
-class Notification# < ActiveRecord::Base
-  # attr_accessible :title, :body
+class Notification
   
   def initialize
     @client ||= Twilio::REST::Client.new "ACea16f0f349ef99c4c11c216735185678", "fb79bb560d3ab40a659d012e75371583"
@@ -9,18 +8,27 @@ class Notification# < ActiveRecord::Base
   def read_sms(body, user_id)
     # If the user types help anywhere, return the help message.
     if body.downcase.match(/help/)
-      return ["To change an auction, reply with COMMAND,ITEM ID,AMOUNT (if necessary), separated by commas. To change a bid," +
-        " use the BID command, to change the lead time, use", "the LEAD command, with the amount being the time (in seconds)." +
-        " To cancel a snipe, use CANCEL,ITEM ID. To get auction information use INFO,ITEM ID."]
-      
+      return ["To change an auction, reply with COMMAND,ITEM ID,AMOUNT (if necessary), separated by commas." +
+        " To change a bid, use the BID command, to change the lead time, use",
+        "the LEAD command, with the amount being the time (in seconds). To cancel a snipe, use CANCEL,ITEM ID." +
+        " To get auction information use INFO,ITEM ID."]
+    
     # If the user types bid, try to change the auction's max bid. If there's an error, return the error message.
     elsif body.downcase.match(/bid/)
-      @test
       begin
         body = body.split(",")
         @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
         @auction.update_attributes :max_bid => body[2].match(/\d+/).to_s.to_i
         return "Your max bid for the auction \"#{@auction.item[:get_item_response][:item][:title][0,97]}\" has been changed to #{@auction.max_bid.to_s[0,10]}."
+      rescue
+        return "There was an error. Please reply with HELP if you need assistance."
+      end
+    elsif body.downcase.match(/cancel/)
+      begin
+        body = body.split(",")
+        @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
+        @auction.destroy
+        return "The auction \"#{@auction.item[:get_item_response][:item][:title][0,97]}\" has been removed from your auction list."
       rescue
         return "There was an error. Please reply with HELP if you need assistance."
       end

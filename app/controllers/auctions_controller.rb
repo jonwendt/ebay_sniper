@@ -82,8 +82,8 @@ class AuctionsController < ApplicationController
     
       # If the auction is still going, enqueue an AuctionBidder worker to bid on the auction
       if @auction.auction_status == "Active"
-        Resque.enqueue_at(self.get_enqueue_time(@auction.item[:get_item_response][:item][:listing_details][:end_time]).seconds.from_now,
-                          AuctionBidder, @auction.id)
+        Resque.enqueue_at(self.get_enqueue_time(@auction.item[:get_item_response][:item][:listing_details][:end_time],
+                          @auction.lead_time).seconds.from_now, AuctionBidder, @auction.id)
       end
       
       # If the user wants updates on the auction, but has not provided a phone number with which to contact them, notify the user.
@@ -203,7 +203,7 @@ class AuctionsController < ApplicationController
   end
   
   # Calculates the time remaining on the auction minus 2 minutes
-  def get_enqueue_time(auction_end_time)
+  def get_enqueue_time(auction_end_time, lead_time)
     auction_end_time = Time.parse(auction_end_time).localtime
     return auction_end_time - Time.now - 120
   end

@@ -1,4 +1,5 @@
 class Notification
+  include AuctionsHelper # For get_time_remaining
   
   def initialize
     @client ||= Twilio::REST::Client.new "ACea16f0f349ef99c4c11c216735185678", "fb79bb560d3ab40a659d012e75371583"
@@ -19,7 +20,31 @@ class Notification
         body = body.split(",")
         @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
         @auction.update_attributes :max_bid => body[2].match(/\d+/).to_s.to_i
-        return "Your max bid for the auction \"#{@auction.item[:get_item_response][:item][:title][0,97]}\" has been changed to #{@auction.max_bid.to_s[0,10]}."
+        return "Your max bid for the auction \"#{@auction.item[:get_item_response][:item][:title][0,97]}\"" +
+          " has been changed to #{@auction.max_bid.to_s[0,10]}."
+      rescue
+        return "There was an error. Please reply with HELP if you need assistance."
+      end
+    # To impliment
+    #elsif body.downcase.match(/lead/)
+    #  begin
+    #    body = body.split(",")
+    #    @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
+    #    @auction.destroy
+    #    return "The auction \"#{@auction.item[:get_item_response][:item][:title][0,97]}\" has been removed from your auction list."
+    #  rescue
+    #    return "There was an error. Please reply with HELP if you need assistance."
+    #  end
+    elsif body.downcase.match(/info/)
+      begin
+        body = body.split(",")
+        @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
+        @title = @auction.item[:get_item_response][:item][:title]
+        if @title.length > 40
+          @title = @title[0, 37] + "..."
+        end
+        return "The auction \"#{@title}\" has a current price of #{@auction.item[:get_item_response][:item][:selling_status][:current_price][0,15]}." +
+          " Your max bid is #{@auction.max_bid.to_s[0,15]}. The auction ends in #{get_time_remaining @auction}."
       rescue
         return "There was an error. Please reply with HELP if you need assistance."
       end

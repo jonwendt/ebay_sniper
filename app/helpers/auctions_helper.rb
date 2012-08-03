@@ -21,4 +21,8 @@ module AuctionsHelper
       "#{@time_left} seconds"
     end
   end
+  
+  def test_method(price)
+    price.to_i += 100
+  end
 end

@@ -14,7 +14,7 @@ class NotificationsController < ApplicationController
     else
       @response_text = @notification.read_sms(params['Body'], @user.id)
     
-      # If the user should be sent back a reply, send them the appropriate reply (as determined by read_sms)
+      # If the user should be sent back a reply, build them the appropriate reply (as determined by read_sms)
       if @response_text != nil
         @xml = @notification.build_sms @response_text
       else
@@ -23,6 +23,7 @@ class NotificationsController < ApplicationController
       end
     end
     
+    # Builds the reply in XML, which Twilio sends back to the user.
     respond_to do |format|
       #format.html # new.html.erb
       format.xml { render xml: @xml.text }

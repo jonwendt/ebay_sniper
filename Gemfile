@@ -20,7 +20,7 @@ end
 
 gem 'jquery-rails'
 
-
+gem 'thin'
 gem 'savon'
 gem 'mysql2'
 gem 'devise'

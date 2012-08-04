@@ -50,6 +50,10 @@ class UsersController < Devise::RegistrationsController
     super
   end
   
+  def add_token
+    @user = User.find(params[:user_id])
+  end
+  
   # Removes the user from OnlineUsers
   def sign_out
     OnlineUsers.remove current_user

@@ -1,9 +1,0 @@
-<p>User <%= @user.name %> with auth_token:</p>
-
-<p><%= @user.auth_token %></p>
-
-<p>sent the GetItem api request to eBay, and got a response of:</p>
-
-<p><%= @item.body[:get_item_response] %></p>
-
-<p>The auction ends in <%= (Time.parse(@item.body[:get_item_response][:item][:listing_details][:end_time]) - Time.parse(@item.body[:get_item_response][:timestamp])) / 1.hour %> hours</p>

@@ -13,9 +13,8 @@ class Notification
         " To change a bid, use the BID command, to change the lead time, use",
         "the LEAD command, with the amount being the time (in seconds). To cancel a snipe, use CANCEL,ITEM ID." +
         " To get auction information use INFO,ITEM ID."]
-    
-    # If the user types bid, try to change the auction's max bid. If there's an error, return the error message.
-    elsif body.downcase.match(/bid/)
+    elsif body.downcase.match(/bid/)    
+      # If the user types bid, try to change the auction's max bid. If there's an error, return the error message.
       begin
         body = body.split(",")
         @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
@@ -36,6 +35,7 @@ class Notification
     #    return "There was an error. Please reply with HELP if you need assistance."
     #  end
     elsif body.downcase.match(/info/)
+      # If the user types info, return the auction's title, price, max_bid, and time remaining.
       begin
         body = body.split(",")
         @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
@@ -49,6 +49,7 @@ class Notification
         return "There was an error. Please reply with HELP if you need assistance."
       end
     elsif body.downcase.match(/cancel/)
+      # If the user types cancel, try to remove the appropriate auction.
       begin
         body = body.split(",")
         @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
@@ -58,7 +59,7 @@ class Notification
         return "There was an error. Please reply with HELP if you need assistance."
       end
     else
-      return nil
+      return "No command was detected. For help, reply with HELP."
     end
   end
   

@@ -1,5 +1,5 @@
 class Auction < ActiveRecord::Base
-  attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id
+  attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id, :user
   belongs_to :user
   validates_uniqueness_of :item_id, :scope => :user_id, :message => "has already been added."
   validates_presence_of :max_bid, :message => "must be entered."
@@ -57,9 +57,8 @@ class Auction < ActiveRecord::Base
         Resque.enqueue_at(get_enqueue_time(auction.item[:get_item_response][:item][:listing_details][:end_time],
                           auction.lead_time).seconds.from_now, AuctionBidder, auction.id)
       end
-    # The auction does not exist. Redirect to new auction page.
-    else
-      #redirect_to new_auction_path, notice: "The auction's item ID was invalid."
+    else  
+      # The auction does not exist. (For now, I'm just grabbing an item that I know exists. Fix with validation.)
       auction.item = EbayAction.new.get_item("110101276115", "")
     end
   end
@@ -78,7 +77,7 @@ class Auction < ActiveRecord::Base
   end
   
   # Returns the appropriate auctions based on the user's selected auction status preference.
-  def self.sort_auctions(status, current_user)
+  def sort_auctions(status, current_user)
     @auctions = []
     # If the status == "Ended" return all Won, Lost, and Ended
     if status == "Ended"
@@ -88,11 +87,11 @@ class Auction < ActiveRecord::Base
           @auctions.push auction
         end
       end
-    # If there was no status parameter for some reason, just display all
-    elsif status == nil
+    elsif status == nil  
+      # If there was no status parameter for some reason, just display all
       return current_user.auctions
-    # Else, just match the status
-    else
+    else  
+      # Else, just match the status
       current_user.auctions.each do |auction|
         if auction.auction_status == status.to_s
           @auctions.push auction
@@ -121,14 +120,14 @@ class Auction < ActiveRecord::Base
   def find_status(auction)
     # If the auction is over, check if we won or lost
     if auction.item[:get_item_response][:item][:time_left] == "PT0S"
-      # Change current_user.name to wherever the user's ebay username is stored
       begin
-        if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == "testuser_jpwendt2"
+        if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:email] == auction.user.email # Check user_ids instead
           auction.auction_status = "Won"
         else
           auction.auction_status = "Lost"
         end
       rescue
+        # There was no high_bidder, which means no one bid.
         auction.auction_status = "Lost"
       end
     else

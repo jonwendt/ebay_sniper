@@ -1,21 +1,12 @@
 EbaySniper::Application.routes.draw do
 
-  devise_for :users do
-  end
+  devise_for :users, :controllers => { :registrations => "users" }
   
   resources :home
-  
-  resources :users do
-    member do
-      get :get_time
-      get :get_item
-      get :place_bid
-    end
-  end
-  
+  resources :users
   resources :auctions
-  
   resources :notifications
+  
   match "call_handler", :to => "notifications#receive"
 
   # The priority is based upon order of creation:

@@ -17,8 +17,6 @@ Fix update_auctions to only update online users' auctions using OutputSelector
 
 Add been_notified:string column to auction. Every time the user is notified about a change, save what the notification was regarding. Ex: notifying a user about being outbid would change been_notified to "bid". If the user replies back with a change bid command, blank out been_notified. When sending out notifications, verify been_notified does not match the issue the user is being notified about.
 
-Validations in auction model not displaying custom message on failing.
-
 Auction price being returned in Notification is not formatted to currency.
 
 
@@ -30,6 +28,12 @@ WORK ON LEAD TIME
 
 Hours worked: 84.5 over 2 weeks
 
+
+
+----------Things to change once app is hosted elsewhere----------------
+Twilio SMS routing URL
+eBay consent form routing URL https://developer.ebay.com/DevZone/Account/AppSettings/Consent/?id=160565&s=1
+Once app goes live, change all sandbox to production URLs
 
 
 -------Processes to start----------

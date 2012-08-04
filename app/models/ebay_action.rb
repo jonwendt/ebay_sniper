@@ -7,22 +7,17 @@ class EbayAction
     end
   end
   
+  def get_session_id
+    runame = "Levion-Leviona4d-c40e--xkueiv"
+    session_id = self.request :endpoint => "GetSessionID",
+      :body => { "RuName" => runame }
+    consent_url = "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName=#{runame}&SessID=" +
+                  "#{session_id.body[:get_session_id_response][:session_id]}"
+  end
+  
   def ebay_time
     response = self.request :endpoint => "GeteBayOfficialTime"
     Time.parse(response.body[:gete_bay_official_time_response][:timestamp])
-  end
-
-  def measure_request_offset
-    #result_time = nil
-    #benchmark_time = Benchmark::measure {
-    #  result_time = (Time.now.to_f - self.time.to_f)
-    #}
-    #result_time = (result_time - benchmark_time.real)
-    t1 = Time.now
-    place_bid(110101001019, 15)
-    t2 = Time.now
-    puts delta = t2 - t1
-    puts Time.now
   end
   
   def add_item(item={})
@@ -45,9 +40,9 @@ class EbayAction
   def request(values={})
     values[:body] ||= {}
     values[:header] ||= {}
-
+    
     response = @client.request "#{values[:endpoint]}Request" do
-      soap.endpoint = "https://api.sandbox.ebay.com/wsapi?siteid=0&routing=beta&callname=" + values[:endpoint] + "&version=423&appid=Leviona4d-c40e-454f-9d49-dd510693f96"
+      soap.endpoint = "https://api.sandbox.ebay.com/wsapi?siteid=0&routing=beta&callname=" + values[:endpoint] + "&version=783&appid=Leviona4d-c40e-454f-9d49-dd510693f96"
       soap.body = { :Version => "783" }
       soap.input = "#{values[:endpoint]}Request", { :xmlns => "urn:ebay:apis:eBLBaseComponents" }
       soap.header = { "ebl:RequesterCredentials" => { "ebl:eBayAuthToken" =>

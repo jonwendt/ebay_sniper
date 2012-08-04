@@ -2,7 +2,6 @@
 
 <table>
   <tr>
-    <th>Name</th>
     <th>Auth token</th>
     <th></th>
     <th></th>
@@ -11,7 +10,6 @@
 
 <% @users.each do |user| %>
   <tr>
-    <td><%= user.name %></td>
     <td><%= user.auth_token %></td>
     <td><%= link_to 'Show', user %></td>
     <td><%= link_to 'Edit', edit_user_path(user) %></td>

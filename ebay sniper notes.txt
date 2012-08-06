@@ -30,11 +30,16 @@ REDO VALIDATION CHECKING THAT AUCTION EXISTS
 WORK ON LEAD TIME
 
 
+Work on authentication user ebay account linking. If consent fails, redirect to users/consent_failed which generates a link from get_session_id and enables them to try again. Whenever user tries to do an EbayAction, validate that auth_token exists (on failure response, redirect to consent_failed?)
+AUTHENTICATE AUTH_TOKEN ON USER SIGN IN. No need to authenticate existence with every EbayAction. On user sign_in, verify that auth_token exists and auth_token_exp has not passed. (Could create a rare problem if the user stays signed in and passes the auth_token_exp date, then all calls will fail without notice to user. Handle by checking exp date?)
+
+
 Hours worked: 84.5 over 2 weeks
 
 
 START SERVER WITH THIN
 thin start --ssl -p 3001
+
 ----------Things to change once app is hosted elsewhere----------------
 Twilio SMS routing URL
 eBay consent form routing URL https://developer.ebay.com/DevZone/Account/AppSettings/Consent/?id=160565&s=1

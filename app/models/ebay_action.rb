@@ -7,12 +7,25 @@ class EbayAction
     end
   end
   
-  def get_session_id
+  def get_session_id(user_id)
     runame = "Levion-Leviona4d-c40e--xkueiv"
     session_id = self.request :endpoint => "GetSessionID",
-      :body => { "RuName" => runame }
-    consent_url = "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName=#{runame}&SessID=" +
-                  "#{session_id.body[:get_session_id_response][:session_id]}"
+      :body => { "RuName" => runame, "MessageID" => user_id }
+    @user = User.find(user_id)
+    @user.session_id = session_id.body[:get_session_id_response][:session_id]
+    @user.save
+    consent_url = "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName=#{runame}" +
+                  "&SessID=#{session_id.body[:get_session_id_response][:session_id]}" +
+                  "&ruparams=user_id%3D#{session_id.body[:get_session_id_response][:correlation_id]}"
+  end
+  
+  def fetch_token(user_id)
+    @user = User.find(user_id)
+    auth_token = self.request :endpoint => "FetchToken",
+      :body => { "SessionID" => @user.session_id }
+    @user.auth_token = auth_token.body[:fetch_token_response][:e_bay_auth_token]  
+    @user.auth_token_exp = auth_token.body[:fetch_token_response][:hard_expiration_time]
+    return @user
   end
   
   def ebay_time

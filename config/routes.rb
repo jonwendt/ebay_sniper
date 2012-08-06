@@ -8,6 +8,13 @@ EbaySniper::Application.routes.draw do
   resources :notifications
   
   match "call_handler", :to => "notifications#receive"
+  
+  devise_scope :user do
+    match "user_root", :to => "users#check_token"
+    match "user/add_token", :to => "users#add_token"
+    match "user/check_token", :to => "users#check_token"
+    match "user/consent_failed", :to => "users#consent_failed"
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -61,10 +68,8 @@ EbaySniper::Application.routes.draw do
   # root :to => 'welcome#index'
 
   root :to => "home#index"
-  
-  match "user_root", :to => "home#login"
 
-    #match "secret", :to => "home#secret"
+  match "user_root", :to => "users#check_token"
   
   # See how all your routes lay out with "rake routes"
 

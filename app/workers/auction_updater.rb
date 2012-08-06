@@ -10,7 +10,7 @@ class AuctionUpdater
           #auction.item.merge! EbayAction.new.get_item(auction.item_id, "timeleft,bidcount,currentprice,userid")
           auction.item = EbayAction.new.get_item(auction.item_id, "")
           if auction.item[:get_item_response][:item][:time_left] == "PT0S"
-            find_status(auction)
+            find_status(auction, user.username)
           end
           auction.save
           
@@ -30,11 +30,11 @@ class AuctionUpdater
     end
   end
   
-  def self.find_status(auction)
+  def self.find_status(auction, username)
     # If the auction is over, check if we won or lost
     if auction.item[:get_item_response][:item][:time_left] == "PT0S"
-      # Change current_user.name to wherever the user's ebay username is stored
-      if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == "testuser_jpwendt2"
+      # Checks if the highest bidder's username is the user's username
+      if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == username
         auction.auction_status = "Won"
       else
         auction.auction_status = "Lost"

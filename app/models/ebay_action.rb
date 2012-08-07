@@ -19,13 +19,14 @@ class EbayAction
                   "&ruparams=user_id%3D#{session_id.body[:get_session_id_response][:correlation_id]}"
   end
   
-  def fetch_token(user_id)
+  def fetch_token(user_id, username)
     @user = User.find(user_id)
     auth_token = self.request :endpoint => "FetchToken",
       :body => { "SessionID" => @user.session_id }
     @user.auth_token = auth_token.body[:fetch_token_response][:e_bay_auth_token]  
     @user.auth_token_exp = auth_token.body[:fetch_token_response][:hard_expiration_time]
-    return @user
+    @user.username = username
+    @user.save
   end
   
   def ebay_time

@@ -121,7 +121,7 @@ class Auction < ActiveRecord::Base
     # If the auction is over, check if we won or lost
     if auction.item[:get_item_response][:item][:time_left] == "PT0S"
       begin
-        if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == auction.user.username # Check user_ids instead
+        if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == auction.user.username
           auction.auction_status = "Won"
         else
           auction.auction_status = "Lost"

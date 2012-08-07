@@ -54,13 +54,10 @@ class UsersController < Devise::RegistrationsController
   def add_token
     # Using rescue to make sure user doesn't stumble upon this without using the correct parameters.
     begin
-      # Use the session_id to fetch the user's auth token and username
-      @user = EbayAction.new.fetch_token(params[:user_id])
-      @user.username = params[:username]
-      @user.save
-    
-      current_user = @user
-    rescue    
+      # Use the session_id to fetch the user's auth token and username and save those values
+      EbayAction.new.fetch_token(params[:user_id], params[:username])
+    rescue
+      # If the user_id doesn't exist, do nothing
     end
       redirect_to new_user_session_path
   end

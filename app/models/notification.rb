@@ -43,8 +43,17 @@ class Notification
         if @title.length > 40
           @title = @title[0, 37] + "..."
         end
+        
+        # Gets the time remaining. If the auction is over, tells user if they won or lost. Else, tells user time remaining
+        @time_remaining = get_time_remaining @auction
+        if @time_remaining == "0 seconds"
+          @time_remaining = "You have #{@auction.auction_status.downcase} the auction."
+        else
+          @time_remaining = "The auction ends in #{@time_remaining}."
+        end
+        
         return "The auction \"#{@title}\" has a current price of #{@auction.item[:get_item_response][:item][:selling_status][:current_price][0,15]}." +
-          " Your max bid is #{@auction.max_bid.to_s[0,15]}. The auction ends in #{get_time_remaining @auction}."
+          " Your max bid is #{@auction.max_bid.to_s[0,15]}. #{@time_remaining}"
       rescue
         return "There was an error. Please reply with HELP if you need assistance."
       end
@@ -80,6 +89,18 @@ class Notification
       else
         r.Sms message
       end
+    end
+  end
+  
+  def respond(from, body)
+    @user = User.where(:phone_number => from).first
+    # If there is no user account with the phone number
+    if @user == nil
+      @xml = build_sms "This phone number is not associated with any user account for Levion's eBay Sniper. Please register an account or add this phone number to your current account."
+    else
+      # If there is a user, try to parse their text and generate a response
+      @response_text = read_sms(body, @user.id)
+      @xml = build_sms @response_text
     end
   end
 

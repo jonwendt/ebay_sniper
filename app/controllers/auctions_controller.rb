@@ -4,11 +4,7 @@ class AuctionsController < ApplicationController
   # GET /auctions
   # GET /auctions.json
   def index
-    if params[:status] == "All"
-      @auctions = current_user.auctions
-    else
-      @auctions = Auction.sort_auctions(params[:status], current_user)
-    end
+    @auctions = Auction.sort_auctions(params[:status], current_user)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -61,7 +57,7 @@ class AuctionsController < ApplicationController
         format.html { redirect_to edit_auction_path(@auction.id), notice: "Auction was successfully created." }
         format.json { render json: @auction, status: :created, location: @auction }
       else
-        format.html { render action: "new" }#redirect_to new_auction_path, notice: @auction.errors }#"The auction's item ID was invalid." }
+        format.html { render action: "new" }
         format.json { render json: @auction.errors, status: :unprocessable_entity }
       end
     end
@@ -88,11 +84,32 @@ class AuctionsController < ApplicationController
   def destroy
     @auction = Auction.find(params[:id])
     Resque.remove_delayed(AuctionBidder, @auction.id)
-    @auction.destroy
+    @auction.update_attributes :auction_status => "Deleted"
 
     respond_to do |format|
       format.html { redirect_to auctions_url + "?status=All" }
       format.json { head :no_content }
+    end
+  end
+  
+  # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
+  def remove_multiple
+    @auctions = Auction.find(params[:auction_ids])
+    @auctions.each do |auction|
+      auction.update_attributes!(params[:auction].reject { |k,v| v.blank? })
+    end
+  end
+  
+  def restore
+    @auction = Auction.find(params[:id])
+    @auction.find_status @auction
+    
+    respond_to do |format|
+      if @auction.save
+        format.html { redirect_to edit_auction_path, notice: 'Auction was successfully restored.' }
+      else
+        format.html { render action: "edit" }
+      end
     end
   end
 end

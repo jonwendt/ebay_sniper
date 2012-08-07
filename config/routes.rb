@@ -4,7 +4,14 @@ EbaySniper::Application.routes.draw do
   
   resources :home
   resources :users
-  resources :auctions
+  resources :auctions do
+    collection do
+      post :remove_multiple
+    end
+    member do
+      post :restore
+    end
+  end
   resources :notifications
   
   match "call_handler", :to => "notifications#receive"

@@ -1,5 +1,5 @@
 class Auction < ActiveRecord::Base
-  attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id, :user
+  attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id, :user, :auction_status
   belongs_to :user
   validates_uniqueness_of :item_id, :scope => :user_id, :message => "has already been added."
   validates_presence_of :max_bid, :message => "must be entered."
@@ -30,7 +30,7 @@ class Auction < ActiveRecord::Base
     
     # Parse the eBay item URL for the item's ID, then get the item's info
     auction.item_id = parse_url_for_item_id(auction.item_id)
-    auction.item = EbayAction.new.get_item(auction.item_id, "")
+    auction.item = EbayAction.new(auction.user).get_item(auction.item_id, "")
     
     # If the auction is real
     if auction.item[:get_item_response][:ack] == "Success"
@@ -59,7 +59,7 @@ class Auction < ActiveRecord::Base
       end
     else  
       # The auction does not exist. (For now, I'm just grabbing an item that I know exists. Fix with validation.)
-      auction.item = EbayAction.new.get_item("110101276115", "")
+      auction.item = EbayAction.new(auction.user).get_item("110101276115", "")
     end
   end
 
@@ -69,7 +69,7 @@ class Auction < ActiveRecord::Base
       # auction.item.merge! EbayAction.new.get_item(auction.item_id, "timeleft,bidcount,currentprice,userid")
       
       # Figure out how to update while only grabbing values needed
-      @new_auction = EbayAction.new.get_item(auction.item_id, "")
+      @new_auction = EbayAction.new(auction.user).get_item(auction.item_id, "")
       auction.item = auction.item.merge @new_auction
       find_status(auction)
       auction.save
@@ -87,9 +87,12 @@ class Auction < ActiveRecord::Base
           @auctions.push auction
         end
       end
-    elsif status == nil  
-      # If there was no status parameter for some reason, just display all
-      return current_user.auctions
+    elsif status == nil || status == "All"
+      current_user.auctions.each do |auction|
+        if auction.auction_status != "Deleted"
+          @auctions.push auction
+        end
+      end
     else  
       # Else, just match the status
       current_user.auctions.each do |auction|

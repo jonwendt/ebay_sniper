@@ -26,6 +26,11 @@ On auth_token consent fail, direct to app url page that explains they need to al
 
 WORK ON LEAD TIME
 
+Remove mechanize gem
+
+
+Have master job scheduled for every minute that checks auction end times. If they are within 5 minutes and have no job enqueued (save job ID upon auction add into the auctions db), enqueue that job (check for failure. If yes, enqueue a new job and save that to auction item). To check for active workers, use Resque.workers. Check Resque.workers.[WORKER_ID].job to find auction id.
+
 
 Possible rare bug: If the user stays signed in and passes the auth_token_exp date, then all eBay API calls will fail without notice to user. Handle by checking exp date on calls?
 
@@ -53,10 +58,14 @@ QUEUES=auction_bidder,auction_updater,notification_sender rake environment resqu
   - Starts the resque queue worker
   - Priority (auction_bidder, auction_updater, notification_sender)
 
+resque-web lib/resque-web.rb
+  - Opens the resque-web page in the browser with the resque-scheduler tabs included
+
 
 
 ----------UI Bugs----------------
 Align account-related links to right of nav-bar
+Severe UI bugs on low resolution displays (phone). Fix with percentages and max_sizes.
 
 
 

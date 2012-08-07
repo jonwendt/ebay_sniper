@@ -5,12 +5,12 @@
 <div class="row">  
 <div class="span8">  
 <ul class="nav nav-pills">  
-<li class="<%= 'active' if params[:status] == 'All' || params[:status] == nil %>"><a href="?status=All">All</a> </li>     
-<li class="<%= 'active' if params[:status] == 'Active' %>"><a href="?status=Active">Active</a> </li>  
-<li class="<%= 'active' if params[:status] == 'Won' %>"><a href="?status=Won">Won</a></li>   
-<li class="<%= 'active' if params[:status] == 'Lost' %>"><a href="?status=Lost">Lost</a></li>   
+<li class="<%= 'active' if params[:status] == 'All' || params[:status] == nil %>"><a href="?status=All">All</a></li>
+<li class="<%= 'active' if params[:status] == 'Active' %>"><a href="?status=Active">Active</a></li>
+<li class="<%= 'active' if params[:status] == 'Won' %>"><a href="?status=Won">Won</a></li>
+<li class="<%= 'active' if params[:status] == 'Lost' %>"><a href="?status=Lost">Lost</a></li>
+<li class="<%= 'active' if params[:status] == 'Ended' %>"><a href="?status=Ended">Ended</a></li>
 <li class="<%= 'active' if params[:status] == 'Deleted' %>"><a href="?status=Deleted">Deleted</a></li>
-<li class="<%= 'active' if params[:status] == 'Ended' %>"><a href="?status=Ended">Ended</a></li> 
 </ul>  
 </div>  
 </div>  
@@ -21,7 +21,7 @@
     <tr>
 	  <th width="10%">Picture</th>
       <th width="60%">Item</th>
-	  <th>Time Left</th>
+	  <th width="8%">Time Left</th>
 	  <th>Current price</th>
       <th>Max bid</th>
     </tr>
@@ -39,12 +39,16 @@
 		<td><%= get_time_remaining auction %></td>
 		<td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:current_price]%></td>
 		<td><%= number_to_currency auction.max_bid, :locale => auction.item[:get_item_response][:item][:currency] %></td>
-		<td><%= link_to 'Remove Auction', auction, :method => :delete, :data => { confirm: 'Are you sure?' } %></td>
 	  </tr>
+	  <% if false %><td><%= check_box_tag 'auction_ids[]', auction.id, false, :id => auction.id %></td><% end %>
 	<% end %>
   </tbody>
 </table>
 
 <br>
+
+<%= link_to "Remove all checked auctions", remove_multiple_auctions_path, :data => { confirm: 'Are you sure you want to delete all checked auctions?' }, :method => :post %>
+
+<br><br>
 
 <%= link_to 'New Auction', new_auction_path %>

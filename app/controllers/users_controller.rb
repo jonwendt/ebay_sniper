@@ -30,7 +30,7 @@ class UsersController < Devise::RegistrationsController
 
     respond_to do |format|
       if @user.save
-        format.html { redirect_to EbayAction.new.get_session_id(@user.id), notice: 'User was successfully created.' }
+        format.html { redirect_to EbayAction.new(@user).get_session_id, notice: 'User was successfully created.' }
         format.json { render json: @user, status: :created, location: @user }
       else
         format.html { render action: "new" }
@@ -55,7 +55,8 @@ class UsersController < Devise::RegistrationsController
     # Using rescue to make sure user doesn't stumble upon this without using the correct parameters.
     begin
       # Use the session_id to fetch the user's auth token and username and save those values
-      EbayAction.new.fetch_token(params[:user_id], params[:username])
+      @user = User.find(params[:user_id])
+      EbayAction.new(@user).fetch_token(params[:username])
     rescue
       # If the user_id doesn't exist, do nothing
     end
@@ -64,7 +65,7 @@ class UsersController < Devise::RegistrationsController
   
   def consent_failed
     @user = User.find(params[:user_id])
-    @consent_url = EbayAction.new.get_session_id(params[:user_id])
+    @consent_url = EbayAction.new(@user).get_session_id
   end
   
   def check_token

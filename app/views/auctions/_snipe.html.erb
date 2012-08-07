@@ -33,7 +33,11 @@
 	  <br>
 	  <%= @auction.item[:get_item_response][:timestamp] %>
 	  <br>
-	  <%= link_to 'Remove Auction', @auction, method: :delete, data: { confirm: 'Are you sure?' } %> |
+	  <% if @auction.auction_status != "Deleted" %>
+	  	<%= link_to 'Remove Auction', @auction, method: :delete, data: { confirm: 'Are you sure?' } %> |
+	  <% else %>
+		<%= link_to 'Restore Auction', restore_auction_path(:id => @auction.id), method: :post, data: { confirm: 'Are you sure?' } %> |
+	  <% end %>
 	  <%= link_to 'Back', auctions_path %>
     </div>
   </div>	

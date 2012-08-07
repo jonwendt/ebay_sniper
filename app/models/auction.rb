@@ -1,5 +1,5 @@
 class Auction < ActiveRecord::Base
-  attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id, :user, :auction_status
+  attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id, :user, :auction_status, :lead_time
   belongs_to :user
   validates_uniqueness_of :item_id, :scope => :user_id, :message => "has already been added."
   validates_presence_of :max_bid, :message => "must be entered."

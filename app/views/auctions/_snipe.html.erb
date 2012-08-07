@@ -19,12 +19,16 @@
 	  <br>
 	  <br>
   	  <div class="field">
-    	<%= f.label :max_bid %><br />
-    	<%= f.number_field :max_bid %>
+    	<%= f.label :max_bid %><br>
+    	<%= f.number_field :max_bid %><br><br>
 	  </div>
 	  <div class="field">
-	 	<%= f.label "How would you like to be notified about critical auction updates (ex: being outbid)?" %><br />
-	 	<%= f.select :user_notification, ["Do not notify", "Call", "Text Message"] %>
+	   	<%= f.label "Lead time (in seconds)" %><br>
+	   	<%= f.number_field :lead_time %><br><br>
+	  </div>
+	  <div class="field">
+	 	<%= f.label "How would you like to be notified about critical auction updates (ex: being outbid)?" %><br>
+	 	<%= f.select :user_notification, ["Do not notify", "Call", "Text Message"] %><br><br>
 	  </div>
 	  <div class="actions">
 	    <%= f.submit %>

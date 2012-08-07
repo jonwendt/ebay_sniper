@@ -23,11 +23,9 @@ Pass the user ID when sending auth token request after user signup. Then in add_
 
 On auth_token consent fail, direct to app url page that explains they need to allow this app to access their account, grab a new session_id and provide them a link to consent. 
 
-
 WORK ON LEAD TIME
 
 Remove mechanize gem
-
 
 Have master job scheduled for every minute that checks auction end times. If they are within 5 minutes and have no job enqueued (save job ID upon auction add into the auctions db), enqueue that job (check for failure. If yes, enqueue a new job and save that to auction item). To check for active workers, use Resque.workers. Check Resque.workers.[WORKER_ID].job to find auction id.
 

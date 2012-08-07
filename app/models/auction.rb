@@ -1,7 +1,7 @@
 class Auction < ActiveRecord::Base
   attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id, :user, :auction_status, :lead_time
   belongs_to :user
-  validates_uniqueness_of :item_id, :scope => :user_id, :message => "has already been added."
+  validates_uniqueness_of :item_id, :scope => :user_id, :message => "has already been added."#, :if => :auction_status != "Deleted"
   validates_presence_of :max_bid, :message => "must be entered."
   validate :user_has_phone_if_notify
   
@@ -55,7 +55,7 @@ class Auction < ActiveRecord::Base
       # If the auction is still going, enqueue an AuctionBidder worker to bid on the auction
       if auction.auction_status == "Active"
         Resque.enqueue_at(get_enqueue_time(auction.item[:get_item_response][:item][:listing_details][:end_time],
-                          auction.lead_time).seconds.from_now, AuctionBidder, auction.id)
+                          auction.lead_time).seconds.from_now, AuctionBidder, 78)
       end
     else  
       # The auction does not exist. (For now, I'm just grabbing an item that I know exists. Fix with validation.)

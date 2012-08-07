@@ -25,6 +25,8 @@ WORK ON LEAD TIME
 
 Remove mechanize gem
 
+Adding items fails even when auction status is deleted. Include "unless" check in validation.
+
 Have master job scheduled for every minute that checks auction end times. If they are within 5 minutes and have no job enqueued (save job ID upon auction add into the auctions db), enqueue that job (check for failure. If yes, enqueue a new job and save that to auction item). To check for active workers, use Resque.workers. Check Resque.workers.[WORKER_ID].job to find auction id.
 
 
@@ -34,8 +36,6 @@ Possible rare bug: If the user stays signed in and passes the auth_token_exp dat
 Hours worked: 84.5 over first 2 weeks
 
 
-START SERVER WITH THIN
-thin start --ssl -p 3001
 
 ----------Things to change once app is hosted elsewhere----------------
 
@@ -45,6 +45,9 @@ Once app goes live, change all sandbox to production URLs
 
 
 -------Processes to start----------
+thin start --ssl -p 3001
+  - Start web server with thin (for ssl support)
+
 redis-server
 
 rake resque:scheduler

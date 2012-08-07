@@ -12,12 +12,11 @@ class AuctionUpdater
           if auction.item[:get_item_response][:item][:time_left] == "PT0S"
             find_status(auction, user.username)
           end
-          auction.save
           
           # If the item's current price is above max_bid, send notification to user.
           if auction.item[:get_item_response][:item][:selling_status][:current_price].to_i > auction.max_bid &&
-          auction.user_notification == "Text Message" && user.phone_number != "" &&
-          (auction.been_notified.gsub(/\A\d+/) != auction.id && auction.been_notified.gsub(/\Z\w+/ != "outbid")
+          auction.user_notification == "Text Message" && auction.user.phone_number != "" &&
+          auction.been_notified.to_s.split(",")[0] != auction.id && auction.been_notified.to_s.split(",")[1] != "outbid"
             @title = auction.item[:get_item_response][:item][:title].to_s
             if @title.length > 38
               @title = @title[0,35] + "..."
@@ -25,8 +24,10 @@ class AuctionUpdater
             @message = "You've been outbid for the item \"#{@title}\", ID: \"#{auction.item_id}\"." +
               " Would you like to change your max bid? For help, reply with HELP."
             Resque.enqueue(NotificationSender, auction.id, @message)
-            auction.been_notified = auction.id + ",outbid"
+            auction.been_notified = auction.id.to_s + ",outbid"
           end
+          
+          auction.save
         end
       end
     end

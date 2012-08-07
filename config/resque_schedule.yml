@@ -1,5 +1,5 @@
 update_all_auctions:
-  every: 3m
+  every: 10s
   class: AuctionUpdater
   queue: auction_updater
   description: "This will update the auction information for all of the online users' auctions"

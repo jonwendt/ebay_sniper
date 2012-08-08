@@ -6,17 +6,10 @@ class Auction < ActiveRecord::Base
   validates_presence_of :item_id, :message => "must be entered."
   validates_presence_of :user
   
-  validate :auction_exists?, :on => :save
+  validate :prepare
   validate :user_has_phone_if_notify
   
   serialize :picture, Array
-  validate :prepare
-  
-  def auction_exists?
-    if item[:get_item_response][:ack] != "Success"
-      errors.add :item_id, "does not exist. Please try adding the auction's Item ID or URL."
-    end
-  end
   
   # If the user specifies that they want to be notified on updates, but didn't provide a number, raise error.
   def user_has_phone_if_notify
@@ -39,12 +32,12 @@ class Auction < ActiveRecord::Base
   
   def prepare
     # Parse the eBay item URL for the item's ID, then get the item's info
-    self.item_id = parse_url_for_item_id(self.item_id)
+    self.item_id = self.parse_url_for_item_id
     self.item = EbayAction.new(self.user).get_item(self.item_id, "")
 
-    # If the self is real
+    # If the auction is real
     if self.item[:get_item_response][:ack] == "Success"
-      find_status(self)
+      self.find_status
 
       # Load the listing's pictures. If the item's seller didn't include a picture, load ebay's
       # default picture. Else, check if there are multiple pictures. If true, push them all into the
@@ -62,31 +55,28 @@ class Auction < ActiveRecord::Base
         end
       end
     else  
-      # The self does not exist. (For now, I'm just grabbing an item that I know exists. Fix with validation.)
-      # self.item = EbayAction.new(self.user).get_item("110101276115", "")
-      self.item = nil
+      # The auction does not exist.
       errors.add :item_id, "does not exist. Please try adding the auction's Item ID or URL."
     end
   end
   
-  def enqueue_job(auction)
+  def enqueue_job
     # If the auction is still going, enqueue an AuctionBidder worker to bid on the auction
-    if auction.auction_status == "Active"
-      Resque.enqueue_at(get_enqueue_time(auction.item[:get_item_response][:item][:listing_details][:end_time],
-                        auction.lead_time).seconds.from_now, AuctionBidder, auction.id)
+    if self.auction_status == "Active"
+      Resque.enqueue_in(self.get_enqueue_time.seconds, AuctionBidder, self.id) # If doesn't work, use enqueue_at and seconds.from_now
     end
   end
 
-  def update_auction(auction)
-    if auction.auction_status == "Active"
+  def update_auction
+    if self.auction_status == "Active"
       # Sadly, this doesn't work because of the nested hashes.
       # auction.item.merge! EbayAction.new.get_item(auction.item_id, "timeleft,bidcount,currentprice,userid")
       
       # Figure out how to update while only grabbing values needed
-      @new_auction = EbayAction.new(auction.user).get_item(auction.item_id, "")
-      auction.item = auction.item.merge @new_auction
-      find_status(auction)
-      auction.save
+      @new_auction = EbayAction.new(self.user).get_item(self.item_id, "")
+      self.item = self.item.merge @new_auction
+      self.find_status
+      self.save
     end
   end
   
@@ -119,36 +109,35 @@ class Auction < ActiveRecord::Base
   end
   
   # Calculates the time remaining on the auction minus 5 minutes
-  def get_enqueue_time(auction_end_time, lead_time)
-    auction_end_time = Time.parse(auction_end_time).localtime
-    return auction_end_time - Time.now - 300
+  def get_enqueue_time
+    return Time.parse(self.item[:get_item_response][:item][:listing_details][:end_time]).localtime - Time.now - 300
   end
   
   # Extracts the item_id from the URL if the entry is not only digits. Otherwise, the entry is just returned.
-  def parse_url_for_item_id(url)
-    if url.match(/\D*/).to_s.length != 0
-      @item_id = url.match(/item=\d*\D/).to_s.gsub!(/\D+/, "")
+  def parse_url_for_item_id
+    if self.item_id.match(/\D*/).to_s.length != 0
+      return self.item_id.match(/item=\d*\D/).to_s.gsub!(/\D+/, "")
     else
-      url
+      return self.item_id
     end
   end
   
   # Finds the current status of the auction (active, won, lost, etc)
-  def find_status(auction)
+  def find_status
     # If the auction is over, check if we won or lost
-    if auction.item[:get_item_response][:item][:time_left] == "PT0S"
+    if self.item[:get_item_response][:item][:time_left] == "PT0S"
       begin
-        if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == auction.user.username
-          auction.auction_status = "Won"
+        if self.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == self.user.username
+          self.auction_status = "Won"
         else
-          auction.auction_status = "Lost"
+          self.auction_status = "Lost"
         end
       rescue
         # There was no high_bidder, which means no one bid.
-        auction.auction_status = "Lost"
+        self.auction_status = "Lost"
       end
     else
-      auction.auction_status = "Active"
+      self.auction_status = "Active"
     end
   end
   

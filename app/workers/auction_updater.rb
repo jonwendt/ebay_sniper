@@ -12,6 +12,7 @@ class AuctionUpdater
             find_status(auction, user.username)
           end
           
+          # --------------- Handle Notifications --------------- #
           # If the item's current price is above max_bid, send notification to user.
           if auction.item[:get_item_response][:item][:selling_status][:current_price].to_i > auction.max_bid &&
           auction.user_notification == "Text Message" && auction.user.phone_number != "" &&

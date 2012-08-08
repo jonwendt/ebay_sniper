@@ -8,8 +8,8 @@ class QueueAuctionBidder
       if auction.auction_status == "Active" && Time.parse(auction.item[:get_item_response][:item][:listing_details][:end_time]).localtime - Time.now < 300
         #if @auction_keys.include? "ebaysniper:auction:#{auction.id}"
         #  @auction_keys.delete "ebaysniper:auction:#{auction.id}"
-          # Should I delete redis key if it exists and just trust that the bidder will continue? I mean, if it fails, there's no point in
-          # restarting the bidding process anyways, because 
+          # Should I delete redis key if it exists and just trust that the bidder will continue? If it fails, there's no point in
+          # restarting the bidding process anyways, because the auction will have ended.
         if $redis.keys("ebay_sniper:auction:*").include? "ebaysniper:auction:#{auction.id}"
           $redis.del("ebaysniper:auction:#{auction.id}")
         else

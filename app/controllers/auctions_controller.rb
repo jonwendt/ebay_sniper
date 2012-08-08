@@ -54,7 +54,8 @@ class AuctionsController < ApplicationController
 
     respond_to do |format|
       if @auction.save
-        @auction.enqueue_job @auction # Needs to be enqueued after save so auction has ID
+        # Needs to be enqueued after save so auction has ID
+        @auction.enqueue_job
         format.html { redirect_to edit_auction_path(@auction.id), notice: "Auction was successfully created." }
         format.json { render json: @auction, status: :created, location: @auction }
       else

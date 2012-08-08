@@ -31,8 +31,6 @@ Add search function that searches through existing auctions, matching for attrib
 
 Search eBay funcationality.
 
-
-
 Just start like 50 workers for the auction_bidder job for now, then work on dynamic worker creation (with a ceiling)
 ENV['COUNT'] = '2'
 ENV['QUEUE'] = "auction_bidder"

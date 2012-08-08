@@ -6,7 +6,7 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-ebay = EbayAction.new
+ebay = EbayAction.new(User.first)
 
 ebay.add_item( { "Title" => "Harry Potter and the Something Something Something", "Description" => "This is a long description of the product" * 10,
   "PrimaryCategory" => { "CategoryID" => "377" }, "StartPrice" => "1", "ConditionID" => "3000", "Currency" => "USD", "Country" => "US",

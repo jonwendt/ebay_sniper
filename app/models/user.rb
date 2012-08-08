@@ -11,4 +11,17 @@ class User < ActiveRecord::Base
     :message => "should include your country code. A US number would be +1##########." }
   validates_uniqueness_of :phone_number, :allow_blank => true, :message => "is already tied to an account."
   has_many :auctions, dependent: :destroy
+  
+  def self.currently_online
+    online_ids = $redis.keys("ebaysniper:online_users:*").map { |v| v.gsub("ebaysniper:online_users:", "") }
+    User.where(:id => online_ids)
+  end
+  
+  def online?
+    if self.id
+      return $redis.get("ebaysniper:online_users:#{self.id}") == "1"
+    end
+    return false
+  end
+  
 end

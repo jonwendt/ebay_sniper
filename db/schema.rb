@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120807041954) do
+ActiveRecord::Schema.define(:version => 20120808003831) do
 
   create_table "auctions", :force => true do |t|
     t.string   "item_id"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(:version => 20120807041954) do
     t.string   "user_notification"
     t.integer  "lead_time"
     t.string   "been_notified"
+    t.string   "job_id"
   end
 
   create_table "notifications", :force => true do |t|

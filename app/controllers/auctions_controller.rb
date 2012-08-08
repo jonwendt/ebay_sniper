@@ -50,10 +50,11 @@ class AuctionsController < ApplicationController
   # POST /auctions.json
   def create
     @auction = Auction.new(params[:auction])
-    @auction.prepare @auction, current_user
+    @auction.user = self.current_user
 
     respond_to do |format|
       if @auction.save
+        @auction.enqueue_job @auction # Needs to be enqueued after save so auction has ID
         format.html { redirect_to edit_auction_path(@auction.id), notice: "Auction was successfully created." }
         format.json { render json: @auction, status: :created, location: @auction }
       else
@@ -102,6 +103,7 @@ class AuctionsController < ApplicationController
   
   def restore
     @auction = Auction.find(params[:id])
+    Resque.remove_delayed(AuctionBidder, @auction.id)
     @auction.find_status @auction
     
     respond_to do |format|

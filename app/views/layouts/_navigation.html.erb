@@ -9,17 +9,36 @@
 		<li><%= link_to "Home", root_path %></li>
 		<li><%= link_to "My Auctions", auctions_path + "?status=All" %></li>
 		<li><%= link_to "Add Auction", new_auction_path %></li>
+		
 		<% if user_signed_in? %>
-		  <li><%= link_to('Logout', destroy_user_session_path, :method=>'delete') %></li>
+		  <li class="account"><%= link_to('Logout', destroy_user_session_path, :method=>'delete') %></li>
   		<% else %>
-	      <li><%= link_to('Login', new_user_session_path) %></li>
+	      <li class="account"><%= link_to('Login', new_user_session_path) %></li>
 	  	<% end %>
 		<% if user_signed_in? %>
-    	  <li><%= link_to('Edit account', edit_user_registration_path) %></li>
+    	  <li class="account"><%= link_to('Edit Account', edit_user_registration_path) %></li>
   		<% else %>
-    	  <li><%= link_to('Sign up', new_user_registration_path) %></li>
+    	  <li class="account"><%= link_to('Sign up', new_user_registration_path) %></li>
   		<% end %>
 	  </ul>
 	</div>
-  </div>
+  </div>	
+	<% if false %>
+  <div class="navbar-right">
+	<div class="container">
+	  <ul class="nav">
+		<% if user_signed_in? %>
+		  <li class="account"><%= link_to('Logout', destroy_user_session_path, :method=>'delete') %></li>
+		<% else %>
+	      <li class="account"><%= link_to('Login', new_user_session_path) %></li>
+	  	<% end %>
+		<% if user_signed_in? %>
+  	  <li class="account"><%= link_to('Edit Account', edit_user_registration_path) %></li>
+		<% else %>
+  	  <li class="account"><%= link_to('Sign up', new_user_registration_path) %></li>
+		<% end %>
+	  </ul>
+	</div>
+  </div>	
+	<% end %>
 </div>

@@ -1,6 +1,10 @@
 class EbayAction
   
   def initialize(user)
+    if user.auth_token_exp < Time.now
+      # Force user to sign out.
+      # Devise::SessionsController::destroy
+    end
     @client ||= Savon::Client.new do
       wsdl.endpoint = "https://api.sandbox.ebay.com/wsapi"
       wsdl.namespace = "urn:ebay:apis:eBLBaseComponents"
@@ -11,7 +15,7 @@ class EbayAction
   def get_session_id
     runame = "Levion-Leviona4d-c40e--xkueiv"
     session_id = self.request :endpoint => "GetSessionID",
-      :body => { "RuName" => runame, "MessageID" => user_id }
+      :body => { "RuName" => runame, "MessageID" => @@user.id }
     @@user.session_id = session_id.body[:get_session_id_response][:session_id]
     @@user.save
     consent_url = "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName=#{runame}" +

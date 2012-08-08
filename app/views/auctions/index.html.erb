@@ -30,7 +30,7 @@
   <tbody>
     <% @auctions.each do |auction| %>
 	  <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
-		<td><%= image_tag auction.picture[0], :maxsize => "100x100" %></td>
+		<td class="ebay-pic"><%= image_tag auction.picture[0], :maxsize => "100x100" %></td>
 		<td>
 		<h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 60) %></h3>
 		<%= truncate(strip_tags(auction.item[:get_item_response][:item][:description]),

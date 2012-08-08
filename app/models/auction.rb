@@ -1,15 +1,27 @@
 class Auction < ActiveRecord::Base
   attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id, :user, :auction_status, :lead_time
   belongs_to :user
-  validates_uniqueness_of :item_id, :scope => :user_id, :message => "has already been added."#, :if => :auction_status != "Deleted"
+  validates_uniqueness_of :item_id, :scope => :user_id, :message => "has already been added.", :on => :create#, :unless => :auction_deleted?
   validates_presence_of :max_bid, :message => "must be entered."
+  validates_presence_of :item_id, :message => "must be entered."
+  validates_presence_of :user
+  
+  validate :auction_exists?, :on => :save
   validate :user_has_phone_if_notify
   
   serialize :picture, Array
+  validate :prepare
   
+  def auction_exists?
+    if item[:get_item_response][:ack] != "Success"
+      errors.add :item_id, "does not exist. Please try adding the auction's Item ID or URL."
+    end
+  end
+  
+  # If the user specifies that they want to be notified on updates, but didn't provide a number, raise error.
   def user_has_phone_if_notify
     if user_notification != "Do not notify" && user.phone_number == ""
-      errors.add :user_notification, "requires that you provide a phone number under the \"Edit account\" page."
+      errors.add :user_notification, "requires that you provide a phone number under the \"Edit Account\" page."
     end
   end
   
@@ -25,41 +37,43 @@ class Auction < ActiveRecord::Base
     end
   end
   
-  def prepare(auction, current_user)
-    auction.user = current_user
-    
+  def prepare
     # Parse the eBay item URL for the item's ID, then get the item's info
-    auction.item_id = parse_url_for_item_id(auction.item_id)
-    auction.item = EbayAction.new(auction.user).get_item(auction.item_id, "")
-    
-    # If the auction is real
-    if auction.item[:get_item_response][:ack] == "Success"
-      find_status(auction)
-    
+    self.item_id = parse_url_for_item_id(self.item_id)
+    self.item = EbayAction.new(self.user).get_item(self.item_id, "")
+
+    # If the self is real
+    if self.item[:get_item_response][:ack] == "Success"
+      find_status(self)
+
       # Load the listing's pictures. If the item's seller didn't include a picture, load ebay's
       # default picture. Else, check if there are multiple pictures. If true, push them all into the
       # pictures array. If there's only one picture, then push that in.
-      if auction.item[:get_item_response][:item][:picture_details][:photo_display] == "None"
-        auction.picture.push "http://p.ebaystatic.com/aw/pics/nextGenVit/imgNoImg.gif"
+      if self.item[:get_item_response][:item][:picture_details][:photo_display] == "None"
+        self.picture.push "http://p.ebaystatic.com/aw/pics/nextGenVit/imgNoImg.gif"
       else
-        @pictures = auction.item[:get_item_response][:item][:picture_details][:picture_url]
+        @pictures = self.item[:get_item_response][:item][:picture_details][:picture_url]
         if @pictures.respond_to?(:each)
           @pictures.each do |picture|
-            auction.picture.push picture.to_s
+            self.picture.push picture.to_s
           end
         else
-          auction.picture.push @pictures.to_s
+          self.picture.push @pictures.to_s
         end
       end
-    
-      # If the auction is still going, enqueue an AuctionBidder worker to bid on the auction
-      if auction.auction_status == "Active"
-        Resque.enqueue_at(get_enqueue_time(auction.item[:get_item_response][:item][:listing_details][:end_time],
-                          auction.lead_time).seconds.from_now, AuctionBidder, 78)
-      end
     else  
-      # The auction does not exist. (For now, I'm just grabbing an item that I know exists. Fix with validation.)
-      auction.item = EbayAction.new(auction.user).get_item("110101276115", "")
+      # The self does not exist. (For now, I'm just grabbing an item that I know exists. Fix with validation.)
+      # self.item = EbayAction.new(self.user).get_item("110101276115", "")
+      self.item = nil
+      errors.add :item_id, "does not exist. Please try adding the auction's Item ID or URL."
+    end
+  end
+  
+  def enqueue_job(auction)
+    # If the auction is still going, enqueue an AuctionBidder worker to bid on the auction
+    if auction.auction_status == "Active"
+      Resque.enqueue_at(get_enqueue_time(auction.item[:get_item_response][:item][:listing_details][:end_time],
+                        auction.lead_time).seconds.from_now, AuctionBidder, auction.id)
     end
   end
 
@@ -104,10 +118,10 @@ class Auction < ActiveRecord::Base
     @auctions
   end
   
-  # Calculates the time remaining on the auction minus 2 minutes
+  # Calculates the time remaining on the auction minus 5 minutes
   def get_enqueue_time(auction_end_time, lead_time)
     auction_end_time = Time.parse(auction_end_time).localtime
-    return auction_end_time - Time.now - 120
+    return auction_end_time - Time.now - 300
   end
   
   # Extracts the item_id from the URL if the entry is not only digits. Otherwise, the entry is just returned.

@@ -15,22 +15,36 @@ Change color of divider on auctions/edit, maybe add a different background color
 
 Fix update_auctions to only update online users' auctions using OutputSelector
 
-Add been_notified:string column to auction. Every time the user is notified about a change, save what the notification was regarding. Ex: notifying a user about being outbid would change been_notified to "bid". If the user replies back with a change bid command, blank out been_notified. When sending out notifications, verify been_notified does not match the issue the user is being notified about.
-
 Auction price being returned in Notification is not formatted to currency.
 
-Pass the user ID when sending auth token request after user signup. Then in add_token in users_controller, find the user using :user_id param and then save the auth_token (and session id?) to user. When making ebay API calls, validate user auth_token exists. If not, redirect to a page telling them they have to allow app to access account, then grab another session_id and provide them a link to consent.
+Find out how to force a sign out from a model, and add into ebay_action's initialize auth_token_exp check.
 
 WORK ON LEAD TIME
 
 Remove mechanize gem
 
-Adding items fails even when auction status is deleted. Include "unless" check in validation.
-
-Have master job scheduled for every minute that checks auction end times. If they are within 5 minutes and have no job enqueued (save job ID upon auction add into the auctions db), enqueue that job (check for failure. If yes, enqueue a new job and save that to auction item). To check for active workers, use Resque.workers. Check Resque.workers.[WORKER_ID].job to find auction id.
-
+Adding items uniqueness validation fails when auction status is deleted. Include "unless" check in validation and figure out how to alter the already existing entry's attributes on uniqueness fail.
 
 Possible rare bug: If the user stays signed in and passes the auth_token_exp date, then all eBay API calls will fail without notice to user. Handle by checking exp date on calls?
+
+Add search function that searches through existing auctions, matching for attributes such as Title (use a match to see if title contains like 80% of search query anywhere in it, so user doesn't have to spell it perfectly. Also, not case sensitive. Everything else should be exact.), Item ID, Max_bid.
+
+Search eBay funcationality.
+
+
+
+Just start like 50 workers for the auction_bidder job for now, then work on dynamic worker creation (with a ceiling)
+ENV['COUNT'] = '2'
+ENV['QUEUE'] = "auction_bidder"
+Rake::Task['resque:workers'].execute
+
+# In AuctionBidder, use $redis.setex("ebaysniper:auction:#{auction.id}") = "#{Socket.gethostname}:#{Process.pid}" to create a key
+# that expires in 6 minutes (or just longer than the job will need to complete). Then, in QueueAuctionBidder, get a collection of
+# all active auctions that end in less than 5 minutes (or auctions that should have their own workers). Then, get a collection of
+# all redis keys pertaining to bidder jobs that should be running by calling $redis.keys("ebaysniper:auction:*"). Then, loop through
+# the collection of redis keys, checking the auction.id in the keys against every auction that should be running. If there are any
+# auctions that should be running, but no keys exist pertaining to that auction, then Resque.Enqueue(AuctionBidder, auction.id)
+If auction job failed, kill process by pid
 
 
 Hours worked: 84.5 over first 2 weeks
@@ -53,9 +67,9 @@ redis-server
 rake resque:scheduler
   - Starts the resque scheduler
 
-QUEUES=auction_bidder,auction_updater,notification_sender rake environment resque:work
+QUEUES=auction_bidder,queue_auction_bidder,auction_updater,notification_sender rake environment resque:work
   - Starts the resque queue worker
-  - Priority (auction_bidder, auction_updater, notification_sender)
+  - Priority (auction_bidder, queue_auction_bidder, auction_updater, notification_sender)
 
 resque-web lib/resque-web.rb
   - Opens the resque-web page in the browser with the resque-scheduler tabs included

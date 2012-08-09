@@ -17,13 +17,13 @@ ActiveRecord::Schema.define(:version => 20120808003831) do
     t.string   "item_id"
     t.integer  "user_id"
     t.integer  "max_bid"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.binary   "item"
     t.string   "picture"
     t.string   "auction_status"
     t.string   "user_notification"
-    t.integer  "lead_time"
+    t.integer  "lead_time",         :default => 0
     t.string   "been_notified"
     t.string   "job_id"
   end
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(:version => 20120808003831) do
     t.datetime "updated_at",                                                :null => false
     t.string   "phone_number"
     t.text     "auth_token",                                                :null => false
-    t.datetime "auth_token_exp",         :default => '2012-08-08 22:50:04', :null => false
+    t.datetime "auth_token_exp",         :default => '2012-08-09 00:58:44', :null => false
     t.string   "username"
     t.string   "session_id"
   end

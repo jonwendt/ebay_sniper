@@ -3,6 +3,11 @@ EbaySniper::Application.routes.draw do
   devise_for :users, :controllers => { :registrations => "users", :sessions => "sessions" }
   
   resources :home
+  resources :search do
+    member do
+      post :new
+    end
+  end
   resources :users
   resources :auctions do
     collection do
@@ -10,6 +15,7 @@ EbaySniper::Application.routes.draw do
     end
     member do
       post :restore
+      post :update_auction
     end
   end
   resources :notifications

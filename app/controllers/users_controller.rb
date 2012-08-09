@@ -82,9 +82,4 @@ class UsersController < Devise::RegistrationsController
       redirect_to new_user_session_path
     end
   end
-  
-  # Removes the user from OnlineUsers
-  def sign_out
-    OnlineUsers.remove current_user
-  end
 end

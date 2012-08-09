@@ -15,9 +15,7 @@ Change color of divider on auctions/edit, maybe add a different background color
 
 Fix update_auctions to only update online users' auctions using OutputSelector
 
-Auction price being returned in Notification is not formatted to currency.
-
-Find out how to force a sign out from a model, and add into ebay_action's initialize auth_token_exp check.
+Auction price being returned in Notification is not formatted to currency
 
 Remove mechanize gem
 
@@ -29,10 +27,9 @@ Add search function that searches through existing auctions, matching for attrib
 
 Search eBay funcationality.
 
+Instead of automatically reloading an active auction's data when it's clicked, make a button.
+
 Just start like 50 workers for the auction_bidder job for now, then work on dynamic worker creation (with a ceiling)
-ENV['COUNT'] = '2'
-ENV['QUEUE'] = "auction_bidder"
-Rake::Task['resque:workers'].execute
 
 # In AuctionBidder, use $redis.setex("ebaysniper:auction:#{auction.id}") = "#{Socket.gethostname}:#{Process.pid}" to create a key
 # that expires in 6 minutes (or just longer than the job will need to complete). Then, in QueueAuctionBidder, get a collection of
@@ -41,6 +38,8 @@ Rake::Task['resque:workers'].execute
 # the collection of redis keys, checking the auction.id in the keys against every auction that should be running. If there are any
 # auctions that should be running, but no keys exist pertaining to that auction, then Resque.Enqueue(AuctionBidder, auction.id)
 If auction job failed, kill process by pid
+
+Instead of using buttons to cycle through pics, just have thumbnails of pics under large pic as links.
 
 
 Hours worked: 84.5 over first 2 weeks
@@ -75,7 +74,6 @@ resque-web lib/resque-web.rb
 
 
 ----------UI Bugs----------------
-Align account-related links to right of nav-bar
 Severe UI bugs on low resolution displays (phone). Fix with percentages and max_sizes.
-
+Account-related links not vertically aligned.
 

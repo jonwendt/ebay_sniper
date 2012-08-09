@@ -11,10 +11,6 @@ end
 
 module EbaySniper
   class Application < Rails::Application
-    config.after_initialize do
-      OnlineUsers.users
-    end
-    
     # Ebay requires an HTTPS URL to direct their users to.
     config.force_ssl = true
     

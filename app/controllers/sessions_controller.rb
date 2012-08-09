@@ -6,5 +6,4 @@ class SessionsController < Devise::SessionsController
       $redis.del("ebaysniper:online_users:#{self.current_user.id}")
     end
   end
-  
 end

@@ -1,10 +1,6 @@
 class EbayAction
   
   def initialize(user)
-    if user.auth_token_exp < Time.now
-      # Force user to sign out.
-      # Devise::SessionsController::destroy
-    end
     @client ||= Savon::Client.new do
       wsdl.endpoint = "https://api.sandbox.ebay.com/wsapi"
       wsdl.namespace = "urn:ebay:apis:eBLBaseComponents"
@@ -21,27 +17,6 @@ class EbayAction
           "DevId" => "55831621-5890-4bb6-8efb-83e22e4e731b",
           "AuthCert" => "2a4a78d9-3e13-40c1-86eb-5606300231da" }
       } }
-    
-    
-    #session_id = @client.request "GetSessionIDRequest" do
-    #  soap.endpoint = "https://api.sandbox.ebay.com/wsapi?siteid=0&routing=new&callname=GetSessionID&version=783&appid=Leviona4d-c40e-454f-9d49-dd510693f96"
-    #  soap.body = { :Version => "783", "RuName" => runame, "MessageID" => @@user.id }
-    #  soap.input = "GetSessionIDRequest", { :xmlns => "urn:ebay:apis:eBLBaseComponents" }
-    #  soap.header = { "ebl:RequesterCredentials" => {
-    #  "ebl:Credentials" => {
-    #    "AppId" => "Leviona4d-c40e-454f-9d49-dd510693f96",
-    #    "DevId" => "55831621-5890-4bb6-8efb-83e22e4e731b",
-    #    "AuthCert" => "2a4a78d9-3e13-40c1-86eb-5606300231da" }
-    #  }, :attributes! => { "ebl:RequesterCredentials" => { "xmlns:ebl" => "urn:ebay:apis:eBLBaseComponents" } } }
-
-    #  values = Hash[:endpoint => soap.endpoint, :body => soap.body, :input => soap.input, :header => soap.header]
-      
-    #  values.keys.each do |key|
-    #    if soap.send(key).is_a?(Hash)
-    #      soap.send("#{key}=", soap.send(key))#.merge(values[key]))
-    #    end
-    #  end
-    #end
     
     @@user.session_id = session_id.body[:get_session_id_response][:session_id]
     @@user.save
@@ -88,6 +63,13 @@ class EbayAction
   def request(values={})
     values[:body] ||= {}
     values[:header] ||= {}
+    
+    # Unless the app is trying to link the user to an eBay account, make sure the auth_token has not expired.
+    unless values[:endpoint] == "GetSessionID" || values[:endpoint] == "FetchToken"
+      if @@user.auth_token_exp < Time.now
+        # Force user to sign out
+      end
+    end
     
     response = @client.request "#{values[:endpoint]}Request" do
       soap.endpoint = "https://api.sandbox.ebay.com/wsapi?siteid=0&routing=beta&callname=" + values[:endpoint] +

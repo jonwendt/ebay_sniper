@@ -23,7 +23,7 @@
     	<%= f.number_field :max_bid %><br><br>
 	  </div>
 	  <div class="field">
-	   	<%= f.label "Lead time (in seconds between 0 and 3)" %><br>
+	   	<%= f.label "Lead time (in seconds from 0 to 3)" %><br>
 	   	<%= f.number_field :lead_time %><br><br>
 	  </div>
 	  <div class="field">
@@ -38,11 +38,11 @@
 	  <%= @auction.item[:get_item_response][:timestamp] %>
 	  <br>
 	  <% if @auction.auction_status != "Deleted" %>
-	  	<%= link_to 'Remove Auction', @auction, method: :delete, data: { confirm: 'Are you sure?' } %> |
+	  	<%= link_to 'Remove Auction', @auction, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger" %> |
 	  <% else %>
-		<%= link_to 'Restore Auction', restore_auction_path(:id => @auction.id), method: :post, data: { confirm: 'Are you sure?' } %> |
+		<%= link_to 'Restore Auction', restore_auction_path(:id => @auction.id), method: :post, data: { confirm: 'Are you sure?' }, :class => "btn" %> |
 	  <% end %>
-	  <%= link_to 'Back', auctions_path %>
+	  <%= link_to 'Back', auctions_path, :class => "btn" %>
     </div>
   </div>	
 <% end %>

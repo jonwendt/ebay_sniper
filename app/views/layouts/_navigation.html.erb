@@ -10,16 +10,25 @@
 		<li><%= link_to "My Auctions", auctions_path + "?status=All" %></li>
 		<li><%= link_to "Add Auction", new_auction_path %></li>
 		
+		<li><%= form_tag(new_search_path, { :class => "navbar-search pull-left" }) do |f| %>
+				<%= text_field_tag :search, nil, { :class => "search-query", :placeholder => "Search your auctions" } %>
+			<% end %></li>
+	  </ul>
+	  <ul class="nav pull-right">
+		<li class="divider-vertical"></li>
+		
 		<% if user_signed_in? %>
-		  <li class="account"><%= link_to('Logout', destroy_user_session_path, :method=>'delete') %></li>
+		  <li class="pull-right"><%= link_to('Logout', destroy_user_session_path, :method=>'delete') %></li>
   		<% else %>
-	      <li class="account"><%= link_to('Login', new_user_session_path) %></li>
+	      <li class="pull-right"><%= link_to('Login', new_user_session_path) %></li>
 	  	<% end %>
 		<% if user_signed_in? %>
-    	  <li class="account"><%= link_to('Edit Account', edit_user_registration_path) %></li>
+    	  <li class="pull-right"><%= link_to('Edit Account', edit_user_registration_path) %></li>
   		<% else %>
-    	  <li class="account"><%= link_to('Sign up', new_user_registration_path) %></li>
+    	  <li class="pull-right"><%= link_to('Sign up', new_user_registration_path) %></li>
   		<% end %>
+
+		<li class="divider-vertical"></li>
 	  </ul>
 	</div>
   </div>	

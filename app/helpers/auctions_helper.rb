@@ -17,12 +17,8 @@ module AuctionsHelper
       "#{hours}h #{mins % 60}m"
     elsif mins > 0
       "#{mins}m #{@time_left % 24}s"
-    elsif secs >= 0
+    else
       "#{@time_left} seconds"
     end
-  end
-  
-  def test_method(price)
-    price.to_i += 100
   end
 end

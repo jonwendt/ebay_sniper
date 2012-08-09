@@ -37,7 +37,7 @@ class AuctionsController < ApplicationController
   # GET /auctions/1/edit
   def edit
     @auction = Auction.find(params[:id])
-    @auction.update_auction @auction
+    @auction.update_auction
     @picture_id = params[:pic].to_i
     
     respond_to do |format|
@@ -105,7 +105,7 @@ class AuctionsController < ApplicationController
   def restore
     @auction = Auction.find(params[:id])
     Resque.remove_delayed(AuctionBidder, @auction.id)
-    @auction.find_status @auction
+    @auction.find_status
     
     respond_to do |format|
       if @auction.save

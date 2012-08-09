@@ -56,7 +56,8 @@ class UsersController < Devise::RegistrationsController
     begin
       # Use the session_id to fetch the user's auth token and username and save those values
       @user = User.find(params[:user_id])
-      EbayAction.new(@user).fetch_token(params[:username])
+      @user.username = params[:username]
+      EbayAction.new(@user).fetch_token
     rescue
       # If the user_id doesn't exist, do nothing
     end

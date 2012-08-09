@@ -1,9 +1,10 @@
 class Auction < ActiveRecord::Base
   attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id, :user, :auction_status, :lead_time
   belongs_to :user
-  validates_uniqueness_of :item_id, :scope => :user_id, :message => "has already been added.", :on => :create#, :unless => :auction_deleted?
+  validates_uniqueness_of :item_id, :scope => :user_id, :message => "has already been added.", :on => :create
   validates_presence_of :max_bid, :message => "must be entered."
   validates_presence_of :item_id, :message => "must be entered."
+  validates_inclusion_of :lead_time, :in => 0..3, :allow_blank => true, :message => "can only be between 0 and 3 seconds."
   validates_presence_of :user
   
   validate :prepare
@@ -55,7 +56,7 @@ class Auction < ActiveRecord::Base
         end
       end
     else  
-      # The auction does not exist.
+      # eBay sent back a "Failure" ack, meaning the auction does not exist.
       errors.add :item_id, "does not exist. Please try adding the auction's Item ID or URL."
     end
   end
@@ -136,7 +137,7 @@ class Auction < ActiveRecord::Base
         # There was no high_bidder, which means no one bid.
         self.auction_status = "Lost"
       end
-    else
+    elsif self.auction_status != "Deleted"
       self.auction_status = "Active"
     end
   end

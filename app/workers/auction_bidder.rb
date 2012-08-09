@@ -21,11 +21,11 @@ class AuctionBidder
       # Places bid at lead_time or 2 seconds before end.
       @lead_time = @auction.lead_time
       @lead_time ||= 2
-    
+      
       # Sleeps for the time remaining in the auction, minus the time it took to send a place_bid request,
       # and subtracts two more seconds just for good measure (for testing).
       sleep(Time.parse(@auction.item[:get_item_response][:item][:listing_details][:end_time]).localtime - Time.now - @time_diff - @lead_time)
-    
+      
       # Places the bid
       ebay.place_bid(@auction.item_id, @auction.max_bid)
     end

@@ -15,7 +15,34 @@ class EbayAction
   def get_session_id
     runame = "Levion-Leviona4d-c40e--xkueiv"
     session_id = self.request :endpoint => "GetSessionID",
-      :body => { "RuName" => runame, "MessageID" => @@user.id }
+      :body => { "RuName" => runame, "MessageID" => @@user.id },
+      :header => { "ebl:RequesterCredentials" => { "ebl:Credentials" => {
+          "AppId" => "Leviona4d-c40e-454f-9d49-dd510693f96",
+          "DevId" => "55831621-5890-4bb6-8efb-83e22e4e731b",
+          "AuthCert" => "2a4a78d9-3e13-40c1-86eb-5606300231da" }
+      } }
+    
+    
+    #session_id = @client.request "GetSessionIDRequest" do
+    #  soap.endpoint = "https://api.sandbox.ebay.com/wsapi?siteid=0&routing=new&callname=GetSessionID&version=783&appid=Leviona4d-c40e-454f-9d49-dd510693f96"
+    #  soap.body = { :Version => "783", "RuName" => runame, "MessageID" => @@user.id }
+    #  soap.input = "GetSessionIDRequest", { :xmlns => "urn:ebay:apis:eBLBaseComponents" }
+    #  soap.header = { "ebl:RequesterCredentials" => {
+    #  "ebl:Credentials" => {
+    #    "AppId" => "Leviona4d-c40e-454f-9d49-dd510693f96",
+    #    "DevId" => "55831621-5890-4bb6-8efb-83e22e4e731b",
+    #    "AuthCert" => "2a4a78d9-3e13-40c1-86eb-5606300231da" }
+    #  }, :attributes! => { "ebl:RequesterCredentials" => { "xmlns:ebl" => "urn:ebay:apis:eBLBaseComponents" } } }
+
+    #  values = Hash[:endpoint => soap.endpoint, :body => soap.body, :input => soap.input, :header => soap.header]
+      
+    #  values.keys.each do |key|
+    #    if soap.send(key).is_a?(Hash)
+    #      soap.send("#{key}=", soap.send(key))#.merge(values[key]))
+    #    end
+    #  end
+    #end
+    
     @@user.session_id = session_id.body[:get_session_id_response][:session_id]
     @@user.save
     consent_url = "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName=#{runame}" +
@@ -23,12 +50,16 @@ class EbayAction
                   "&ruparams=user_id%3D#{session_id.body[:get_session_id_response][:correlation_id]}"
   end
   
-  def fetch_token(username)
+  def fetch_token
     auth_token = self.request :endpoint => "FetchToken",
-      :body => { "SessionID" => @@user.session_id }
+      :body => { "SessionID" => @@user.session_id },
+      :header => { "ebl:RequesterCredentials" => { "ebl:Credentials" => {
+          "AppId" => "Leviona4d-c40e-454f-9d49-dd510693f96",
+          "DevId" => "55831621-5890-4bb6-8efb-83e22e4e731b",
+          "AuthCert" => "2a4a78d9-3e13-40c1-86eb-5606300231da" }
+      } }
     @@user.auth_token = auth_token.body[:fetch_token_response][:e_bay_auth_token]  
     @@user.auth_token_exp = auth_token.body[:fetch_token_response][:hard_expiration_time]
-    @@user.username = username
     @@user.save
   end
   
@@ -63,7 +94,12 @@ class EbayAction
         "&version=783&appid=Leviona4d-c40e-454f-9d49-dd510693f96"
       soap.body = { :Version => "783" }
       soap.input = "#{values[:endpoint]}Request", { :xmlns => "urn:ebay:apis:eBLBaseComponents" }
-      soap.header = { "ebl:RequesterCredentials" => { "ebl:eBayAuthToken" => @@user.auth_token },
+      soap.header = { "ebl:RequesterCredentials" => { "ebl:eBayAuthToken" => @@user.auth_token,
+        "ebl:Credentials" => {
+            "AppId" => "Leviona4d-c40e-454f-9d49-dd510693f96",
+            "DevId" => "55831621-5890-4bb6-8efb-83e22e4e731b",
+            "AuthCert" => "2a4a78d9-3e13-40c1-86eb-5606300231da" }
+        },
         :attributes! => { "ebl:RequesterCredentials" => { "xmlns:ebl" => "urn:ebay:apis:eBLBaseComponents"} } }
 
       values.keys.each do |key|

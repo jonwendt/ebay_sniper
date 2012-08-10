@@ -41,6 +41,7 @@ If auction job failed, kill process by pid
 
 Instead of using buttons to cycle through pics, just have thumbnails of pics under large pic as links.
 
+Go through the other generated devise views and bootstrapify them.
 
 Check if has_reserve_price == true, then if converted_reserve_price is higher than max bid. If yes, notify the user.
 
@@ -81,5 +82,5 @@ resque-web lib/resque-web.rb
 
 ----------UI Bugs----------------
 Severe UI bugs on low resolution displays (phone). Fix with percentages and max_sizes.
-Account-related links not vertically aligned.
+Account-related links not vertically aligned. (fixed with padding, but not optimal)
 

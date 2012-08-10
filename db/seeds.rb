@@ -8,10 +8,12 @@
 
 ebay = EbayAction.new(User.first)
 
-ebay.add_item( { "Title" => "Harry Potter and the Something Something Something", "Description" => "This is a long description of the product" * 10,
+ebay.add_item( { "Title" => "Harry Potter and the Something Something Something", "Description" => "This is a long description of the product. " * 30,
   "PrimaryCategory" => { "CategoryID" => "377" }, "StartPrice" => "1", "ConditionID" => "3000", "Currency" => "USD", "Country" => "US",
   "ListingDuration" => "Days_1", "Location" => "US", "PaymentMethods" => "PayPal", "PayPalEmailAddress" => "test@test.com",
-  "PictureDetails" => { "PictureURL" => "http://www.levion.com/assets/themes/levion/images/LevionLogoNew.png" },
+  "PictureDetails" => { "PictureURL" => "Users/leviontesting/Documents/Ruby/ebay_sniper/app/assets/images/logo.png",
+  "PictureURL" => "Users/leviontesting/Documents/Ruby/ebay_sniper/app/assets/images/rails.png",
+  "PictureURL" => "Users/leviontesting/Downloads/ebay-logo.jpeg" },
   "DispatchTimeMax" => "3", "ReturnPolicy" => { "ReturnsAcceptedOption" => "ReturnsAccepted", "RefundOption" => "MoneyBack",
   "ReturnsWithinOption" => "Days_30", "Description" => "Harry Potter book in bad condition", "ShippingCostPaidByOption" => "Buyer" },
   "ShippingDetails" => { "ShippingType" => "Flat", "ShippingServiceOptions" => { "ShippingServicePriority" => "1",

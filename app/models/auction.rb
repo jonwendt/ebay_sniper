@@ -7,7 +7,7 @@ class Auction < ActiveRecord::Base
   validates_inclusion_of :lead_time, :in => 0..3, :allow_blank => true, :message => "can only be between 0 and 3 seconds."
   validates_presence_of :user
   
-  validate :prepare
+  validate :prepare, :on => :save
   validate :user_has_phone_if_notify
   
   serialize :picture, Array
@@ -48,8 +48,8 @@ class Auction < ActiveRecord::Base
       else
         @pictures = self.item[:get_item_response][:item][:picture_details][:picture_url]
         if @pictures.respond_to?(:each)
-          @pictures.each do |picture|
-            self.picture.push picture.to_s
+          @pictures.each do |pic|
+            self.picture.push pic.to_s
           end
         else
           self.picture.push @pictures.to_s

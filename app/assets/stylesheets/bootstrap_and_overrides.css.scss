@@ -12,11 +12,8 @@ body { padding-top: 60px; }
   font-size: 20px;
 }
 
-.navbar .nav.pull-right {
-  float:right;
-  display:inline-block;
-  *display:inline; /* ie7 fix */
-  *zoom:1; /* hasLayout ie7 trigger */
+.navbar .nav .pull-right {
+  padding-top: 7px;
   vertical-align: middle;
   font-size: 20px;
 }

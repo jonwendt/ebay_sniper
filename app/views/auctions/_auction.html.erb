@@ -36,7 +36,7 @@
 	<%= sanitize(@auction.item[:get_item_response][:item][:description])%>
 	<br>
 	<br>
-	Current price: <%= number_to_currency @auction.item[:get_item_response][:item][:selling_status][:current_price] %>
+	Current price: <%= number_to_currency @auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %>
 	<br>
 	Time left: <%= get_time_remaining(@auction) %>
   </div>

@@ -13,7 +13,7 @@ class AuctionBidder
       
       # See how long it takes to place a bid by testing with the smallest possible bid
       @time_start = Time.now
-      ebay.place_bid(@auction.item_id, @auction.item[:get_item_response][:item][:selling_status][:current_price].to_f +
+      ebay.place_bid(@auction.item_id, @auction.item[:get_item_response][:item][:selling_status][:converted_current_price].to_f +
                      @auction.item[:get_item_response][:item][:selling_status][:bid_increment].to_f)
       @time_end = Time.now
       @time_diff = @time_end - @time_start

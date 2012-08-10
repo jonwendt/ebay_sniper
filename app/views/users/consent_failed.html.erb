@@ -1,9 +1,10 @@
-<h1>eBay Account Linking</h1>
+<legend>eBay Account Linking</legend>
 
 <br>
 
 Either your eBay account's authorization token has expired, or you have failed to consent to allow our application to access your eBay account. It is necessary for you to allow this if you wish to use this application. Please click the link below, sign in to your eBay account and click the "I agree" button.
 
-<br><br>
+<br><br><br>
 
-<a href=<%= @consent_url %>>Authenticate account</a>
+
+<%= link_to "Authenticate account", @consent_url, :class => "btn btn-primary" %>

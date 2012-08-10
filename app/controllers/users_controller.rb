@@ -61,7 +61,7 @@ class UsersController < Devise::RegistrationsController
     rescue
       # If the user_id doesn't exist, do nothing
     end
-      redirect_to new_user_session_path
+      redirect_to root_path
   end
   
   def consent_failed

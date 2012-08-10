@@ -1,4 +1,4 @@
-<h1>My Auctions</h1>
+<legend>My Auctions</legend>
 <br>
 
 <div class="container">  
@@ -37,7 +37,7 @@
 								:length => 300, :separator => ' ') %>
 		</td>
 		<td><%= get_time_remaining auction %></td>
-		<td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:current_price]%></td>
+		<td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price]%></td>
 		<td><%= number_to_currency auction.max_bid, :locale => auction.item[:get_item_response][:item][:currency] %></td>
 	  </tr>
 	  <% if false %><td><%= check_box_tag 'auction_ids[]', auction.id, false, :id => auction.id %></td><% end %>
@@ -47,8 +47,6 @@
 
 <br>
 
-<%= link_to "Remove all checked auctions", remove_multiple_auctions_path, :data => { confirm: 'Are you sure you want to delete all checked auctions?' }, :method => :post %>
-
-<br><br>
-
-<%= link_to 'New Auction', new_auction_path %>
+<%= link_to 'New Auction', new_auction_path, :class => "btn btn-primary" %>
+|
+<%= link_to "Remove Checked Auctions", remove_multiple_auctions_path, :data => { confirm: 'Are you sure you want to delete all checked auctions?' }, :method => :post, :class => "btn btn-danger" %>

@@ -18,30 +18,37 @@
 	  <h1 align="center">Snipe Options</h1>
 	  <br>
 	  <br>
-  	  <div class="field">
-    	<%= f.label :max_bid %><br>
-    	<%= f.number_field :max_bid %><br><br>
-	  </div>
-	  <div class="field">
-	   	<%= f.label "Lead time (in seconds from 0 to 3)" %><br>
-	   	<%= f.number_field :lead_time %><br><br>
-	  </div>
-	  <div class="field">
-	 	<%= f.label "How would you like to be notified about critical auction updates (ex: being outbid)?" %><br>
-	 	<%= f.select :user_notification, ["Do not notify", "Call", "Text Message"] %><br><br>
-	  </div>
-	  <div class="actions">
-	    <%= f.submit %>
+	  <div class="control-group">  
+	    <label class="control-label" for="max_bid">Max bid</label>  
+	    <div class="controls">  
+	  	  <%= f.text_field :max_bid %>
+	    </div> 
 	  </div>
 	  <br>
+	  <div class="control-group">  
+	    <label class="control-label" for="lead_time">Lead time (in seconds from 0 to 3)</label>  
+	    <div class="controls">  
+	  	  <%= f.text_field :lead_time %>
+	    </div> 
+	  </div>
 	  <br>
-	  <%= @auction.item[:get_item_response][:timestamp] %>
+	  <div class="control-group">  
+	    <label class="control-label" for="select01">How would you like to be notified about critical auction updates (ex: being outbid)?</label>  
+	    <div class="controls">  
+		  <%= f.select :user_notification, ["Do not notify", "Call", "Text Message"] %>
+	    </div>  
+	  </div>
 	  <br>
+	  <button type="submit" class="btn btn-primary">Update Auction</button> |
+	
 	  <% if @auction.auction_status != "Deleted" %>
-	  	<%= link_to 'Remove Auction', @auction, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger" %> |
+	  	<%= link_to 'Remove Auction', @auction, :method => :delete, :data => {
+			confirm: 'Are you sure? you want to restore this auction?' }, :class => "btn btn-danger" %> |
 	  <% else %>
-		<%= link_to 'Restore Auction', restore_auction_path(:id => @auction.id), method: :post, data: { confirm: 'Are you sure?' }, :class => "btn" %> |
+		<%= link_to 'Restore Auction', restore_auction_path(:id => @auction.id), :method => :post,
+			:data => { confirm: 'Are you sure? you want to restore this auction?' }, :class => "btn" %> |
 	  <% end %>
+	
 	  <%= link_to 'Back', auctions_path, :class => "btn" %>
     </div>
   </div>	

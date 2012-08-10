@@ -42,6 +42,12 @@ If auction job failed, kill process by pid
 Instead of using buttons to cycle through pics, just have thumbnails of pics under large pic as links.
 
 
+Check if has_reserve_price == true, then if converted_reserve_price is higher than max bid. If yes, notify the user.
+
+
+Override links that have already been clicked. Color shouldn't change.
+
+
 Hours worked: 84.5 over first 2 weeks
 
 

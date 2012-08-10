@@ -8,34 +8,42 @@
         <li><%= msg %></li>
       <% end %>
       </ul>
-    </div>	
+    </div>
 	<br>
 	<br>
   <% end %>
 
-  <br><br>
-
-  <div class="field">
-   	<%= f.label "eBay URL or item number" %><br />
-   	<%= f.text_field :item_id %>
+<fieldset>
+  <legend>New Auction</legend>
+	
+  <div class="control-group">
+    <label class="control-label" for="item_id">eBay URL or item number</label>
+    <div class="controls">
+  	  <%= f.text_field :item_id %>
+    </div> 
   </div>
   <br>
-  <div class="field">
-   	<%= f.label :max_bid %><br />
-   	<%= f.number_field :max_bid %>
+  <div class="control-group">
+    <label class="control-label" for="max_bid">Max bid</label>
+    <div class="controls">
+  	  <%= f.text_field :max_bid %>
+    </div> 
   </div>
   <br>
-  <div class="field">
-   	<%= f.label "Lead time (in seconds from 0 to 3)" %><br />
-   	<%= f.number_field :lead_time %>
+  <div class="control-group">
+    <label class="control-label" for="lead_time">Lead time (in seconds from 0 to 3)</label>
+    <div class="controls">
+  	  <%= f.text_field :lead_time %>
+    </div>
   </div>
   <br>
-  <div class="field">
- 	<%= f.label "How would you like to be notified about critical auction updates (ex: being outbid)?" %><br />
- 	<%= f.select :user_notification, ["Do not notify", "Call", "Text Message"] %>
+  <div class="control-group">
+    <label class="control-label" for="select01">How would you like to be notified about critical auction updates (ex: being outbid)?</label>
+    <div class="controls">
+	  <%= f.select :user_notification, ["Do not notify", "Call", "Text Message"] %>
+    </div>
   </div>
   <br>
-  <div class="actions">
-    <%= f.submit %>
-  </div>	
+  <button type="submit" class="btn btn-primary">Save changes</button> |
+  <%= link_to 'Cancel', auctions_path, :class => "btn btn-action" %>
 <% end %>

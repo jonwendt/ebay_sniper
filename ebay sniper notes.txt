@@ -51,6 +51,8 @@ Override links that have already been clicked. Color shouldn't change.
 
 Hours worked: 84.5 over first 2 weeks
 
+Start 9:30 pm
+
 
 
 ----------Things to change once app is hosted elsewhere----------------

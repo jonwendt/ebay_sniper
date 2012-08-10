@@ -37,7 +37,7 @@ class AuctionsController < ApplicationController
   # GET /auctions/1/edit
   def edit
     @auction = Auction.find(params[:id])
-    @auction.update_auction
+    @auction.prepare
     @picture_id = params[:pic].to_i
     
     respond_to do |format|

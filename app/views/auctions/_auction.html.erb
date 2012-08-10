@@ -11,27 +11,14 @@
 	<br>
 	<div align="center">
 	
-	<% if false %>
-	  <% if @picture_id > 0 %>
-		<%= link_to "<=", edit_auction_path(:pic => @picture_id - 1), :class => "btn" %> | 
-	  <% else %>
-	    <= |
-	  <% end %>	
-	  <% if @picture_id < @auction.picture.length - 1 %>
-		<%= link_to "=>", edit_auction_path(:pic => @picture_id + 1), :class => "btn" %>
-	  <% else %>
-	    =>
-	  <% end %>
-	<% end %>
-	
 	<% hash = Hash[@auction.picture.map.with_index{|*ki| ki}] %>
+		<ul class="thumbnails">
 	<% @auction.picture.each do |pic| %>
-	<ul class="thumbnails">
 	  <li class="span2">
 		<%= link_to image_tag(pic), edit_auction_path(:pic => hash[pic]), :class => "btn" %>
 	  </li>
-	</ul>
 	<% end %>
+	</ul>
 	
 	
 	</div>

@@ -7,7 +7,7 @@ class Auction < ActiveRecord::Base
   validates_inclusion_of :lead_time, :in => 0..3, :allow_blank => true, :message => "can only be between 0 and 3 seconds."
   validates_presence_of :user
   
-  validate :prepare, :on => :save
+  validate :prepare, :on => :create
   validate :user_has_phone_if_notify
   
   serialize :picture, Array
@@ -32,6 +32,7 @@ class Auction < ActiveRecord::Base
   end
   
   def prepare
+    puts "Prepare is being called."
     # Parse the eBay item URL for the item's ID, then get the item's info
     self.item_id = self.parse_url_for_item_id
     self.item = EbayAction.new(self.user).get_item(self.item_id, "")
@@ -43,6 +44,7 @@ class Auction < ActiveRecord::Base
       # Load the listing's pictures. If the item's seller didn't include a picture, load ebay's
       # default picture. Else, check if there are multiple pictures. If true, push them all into the
       # pictures array. If there's only one picture, then push that in.
+      self.picture = []
       if self.item[:get_item_response][:item][:picture_details][:photo_display] == "None"
         self.picture.push "http://p.ebaystatic.com/aw/pics/nextGenVit/imgNoImg.gif"
       else
@@ -68,18 +70,18 @@ class Auction < ActiveRecord::Base
     end
   end
 
-  def update_auction
-    if self.auction_status == "Active"
+  #def update_auction
+  #  if self.auction_status == "Active"
       # Sadly, this doesn't work because of the nested hashes.
       # auction.item.merge! EbayAction.new.get_item(auction.item_id, "timeleft,bidcount,currentprice,userid")
       
       # Figure out how to update while only grabbing values needed
-      @new_auction = EbayAction.new(self.user).get_item(self.item_id, "")
-      self.item = self.item.merge @new_auction
-      self.find_status
-      self.save
-    end
-  end
+      #@new_auction = EbayAction.new(self.user).get_item(self.item_id, "")
+  #    self.item = EbayAction.new(self.user).get_item(self.item_id, "")
+  #    self.find_status
+  #    self.save
+  #  end
+  #end
   
   # Returns the appropriate auctions based on the user's selected auction status preference.
   def self.sort_auctions(status, current_user)

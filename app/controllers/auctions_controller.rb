@@ -42,7 +42,7 @@ class AuctionsController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.js { render 'auction' }
+      format.js
     end
   end
 

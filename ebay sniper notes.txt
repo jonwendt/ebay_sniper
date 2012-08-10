@@ -48,6 +48,8 @@ Check if has_reserve_price == true, then if converted_reserve_price is higher th
 
 Override links that have already been clicked. Color shouldn't change.
 
+Thumbnail hover background color shouldn't be black
+
 
 Hours worked: 84.5 over first 2 weeks
 

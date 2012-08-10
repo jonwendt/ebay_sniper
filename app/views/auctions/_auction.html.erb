@@ -7,20 +7,15 @@
 	  <div class="canvas">
 		<%= image_tag @auction.picture[@picture_id] %>
 	  </div>
-	</div>
 	<br>
-	<div align="center">
-	
-	<% hash = Hash[@auction.picture.map.with_index{|*ki| ki}] %>
-		<ul class="thumbnails">
-	<% @auction.picture.each do |pic| %>
-	  <li class="span2">
-		<%= link_to image_tag(pic), edit_auction_path(:pic => hash[pic]), :class => "btn" %>
-	  </li>
-	<% end %>
-	</ul>
-	
-	
+	  <% hash = Hash[@auction.picture.map.with_index{|*ki| ki}] %>
+	  <ul class="thumbnails">
+	    <% @auction.picture.each do |pic| %>
+	      <li class="span1">
+		    <%= link_to image_tag(pic), edit_auction_path(:pic => hash[pic]), :class => "thumbnail" %>
+	      </li>
+	    <% end %>
+	  </ul>
 	</div>
 	<br>
 	<br>

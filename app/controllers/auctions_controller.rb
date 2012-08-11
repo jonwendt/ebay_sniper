@@ -4,7 +4,7 @@ class AuctionsController < ApplicationController
   # GET /auctions
   # GET /auctions.json
   def index
-    @auctions = Auction.sort_auctions(params[:status], current_user)
+    @auctions = Auction.sort_auctions(params[:status], params[:sort], current_user)
 
     respond_to do |format|
       format.html # index.html.erb

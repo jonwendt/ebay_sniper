@@ -3,7 +3,7 @@
 
 <div class="container">  
 <div class="row">  
-<div class="span8">  
+<div class="span12">  
 <ul class="nav nav-pills">  
 <li class="<%= 'active' if params[:status] == 'All' || params[:status] == nil %>"><a href="?status=All">All</a></li>
 <li class="<%= 'active' if params[:status] == 'Active' %>"><a href="?status=Active">Active</a></li>
@@ -11,6 +11,10 @@
 <li class="<%= 'active' if params[:status] == 'Lost' %>"><a href="?status=Lost">Lost</a></li>
 <li class="<%= 'active' if params[:status] == 'Ended' %>"><a href="?status=Ended">Ended</a></li>
 <li class="<%= 'active' if params[:status] == 'Deleted' %>"><a href="?status=Deleted">Deleted</a></li>
+<li class="pull-right"><b>Sort by </b><select id="select01"><option>Time: sooner-later</option>
+	<option>Time: later-sooner</option><option>Title: A-Z</option><option>Title: Z-A</option>  
+    <option>Current Price: low-high</option><option>Current Price: high-low</option><option>Max Bid: low-high</option>
+	<option>Max Bid: high-low</option></select></li>
 </ul>  
 </div>  
 </div>  
@@ -38,7 +42,7 @@
 		</td>
 		<td><%= get_time_remaining auction %></td>
 		<td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price]%></td>
-		<td><%= number_to_currency auction.max_bid, :locale => auction.item[:get_item_response][:item][:currency] %></td>
+		<td><%= number_to_currency auction.max_bid %></td>
 	  </tr>
 	  <% if false %><td><%= check_box_tag 'auction_ids[]', auction.id, false, :id => auction.id %></td><% end %>
 	<% end %>

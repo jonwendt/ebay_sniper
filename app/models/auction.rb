@@ -84,7 +84,7 @@ class Auction < ActiveRecord::Base
   #end
   
   # Returns the appropriate auctions based on the user's selected auction status preference.
-  def self.sort_auctions(status, current_user)
+  def self.sort_auctions(status, sort, current_user)
     @auctions = []
     # If the status == "Ended" return all Won, Lost, and Ended
     if status == "Ended"
@@ -100,15 +100,28 @@ class Auction < ActiveRecord::Base
           @auctions.push auction
         end
       end
-    else  
+    elsif %w[Won Lost Active Deleted].include? status
       # Else, just match the status
       current_user.auctions.each do |auction|
         if auction.auction_status == status.to_s
           @auctions.push auction
         end
       end
+    else
+      # The user messed with the status param. Just display all auctions.
+      current_user.auctions.each do |auction|
+        if auction.auction_status != "Deleted"
+          @auctions.push auction
+        end
+      end
     end
-    @auctions
+    
+    if sort == "max_bid"
+      @auctions = @auctions.sort_by { |a| a[:max_bid] }
+    else
+      # Sort by auctions ending soonest
+      @auctions
+    end
   end
   
   # Calculates the time remaining on the auction minus 5 minutes

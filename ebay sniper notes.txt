@@ -45,7 +45,9 @@ Override links that have already been clicked. Color shouldn't change.
 
 Thumbnail hover background color shouldn't be black
 
-Auction sorting by name, time left, current price, and max bid
+Auction sorting by name, time left, current price, and max bid. (Have to figure out how to sort an array by a nested hash's value.)
+
+Workover auction bidder to perfect timing. Aim for under 3-4 seconds before auction end every time with no losses (if I'm the only bidder).
 
 
 Hours worked: 84.5 over first 2 weeks

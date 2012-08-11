@@ -27,7 +27,7 @@
   </div>
 
   <div class="span8">
-	<h1><u><%= @auction.item[:get_item_response][:item][:title] %></u></h1>
+	<h1><u><%= link_to @auction.item[:get_item_response][:item][:title], @auction.item[:get_item_response][:item][:listing_details][:view_item_url], :target => '_blank' %></u></h1>
 	<br>
 	<%= sanitize(@auction.item[:get_item_response][:item][:description])%>
 	<br>

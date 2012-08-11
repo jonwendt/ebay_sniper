@@ -36,10 +36,14 @@ class AuctionUpdater
   def self.find_status(auction, username)
     # If the auction is over, check if we won or lost
     if auction.item[:get_item_response][:item][:time_left] == "PT0S"
-      # Checks if the highest bidder's username is the user's username
-      if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == username
-        auction.auction_status = "Won"
-      else
+      # Checks if the highest bidder's username is the user's username. If undefined method is thrown, then there is no high bidder.
+      begin
+        if auction.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == username
+          auction.auction_status = "Won"
+        else
+          auction.auction_status = "Lost"
+        end
+      rescue  
         auction.auction_status = "Lost"
       end
     else

@@ -9,3 +9,9 @@ queue_auction_bidders:
   class: QueueAuctionBidder
   queue: queue_auction_bidder
   description: "This will ensure that auction bidder's are queued at the necessary time."
+  
+auction_adder:
+  every: 30m
+  class: AuctionAdder
+  queue: auction_adder
+  description: "Adds an auction to our test account."

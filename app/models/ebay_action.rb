@@ -50,9 +50,11 @@ class EbayAction
   
   # Separate output_selector with , and no spaces. Format like XML (ex: "timeleft,title")
   def get_item(item_id, output_selector)
+    output_selector ||= "currency,description,itemid,endtime,viewitemurl,bidcount,bidincrement,convertedcurrentprice,
+      shippingservicecost,timeleft,title,picturedetails,userid"
     response = self.request :endpoint => "GetItem",
       :body => { "ItemID" => item_id, "DetailLevel" => "ItemReturnDescription",
-        "OutputSelector" => "currency,description,itemid,endtime,viewitemurl,bidcount,bidincrement,convertedcurrentprice,shippingservicecost,timeleft,title,picturedetails" }
+        "OutputSelector" => output_selector }
     response.body
   end
   

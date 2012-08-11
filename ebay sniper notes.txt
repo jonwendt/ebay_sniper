@@ -1,7 +1,3 @@
-Maintain the full abstraction to the ebay API request function, and build around it in the ebay_action model
-
-Thoughts about calculating best bid: take average of all bid increases, check last bid increase. Find out how MaxBid works in "chinese" auctions
-
 Make sure to change the currency based on get_item location (I think I got this to work, test currencies other than USD)
 
 Use OutputSelector on get_item requests once I know all of the required field for the layout to shorten response time and server load
@@ -45,15 +41,14 @@ Go through the other generated devise views and bootstrapify them.
 
 Check if has_reserve_price == true, then if converted_reserve_price is higher than max bid. If yes, notify the user.
 
-
 Override links that have already been clicked. Color shouldn't change.
 
 Thumbnail hover background color shouldn't be black
 
+Auction sorting by name, time left, current price, and max bid
+
 
 Hours worked: 84.5 over first 2 weeks
-
-Start 9:30 pm
 
 
 

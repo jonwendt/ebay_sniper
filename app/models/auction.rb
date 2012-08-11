@@ -35,7 +35,7 @@ class Auction < ActiveRecord::Base
     puts "Prepare is being called."
     # Parse the eBay item URL for the item's ID, then get the item's info
     self.item_id = self.parse_url_for_item_id
-    self.item = EbayAction.new(self.user).get_item(self.item_id, "")
+    self.item = EbayAction.new(self.user).get_item(self.item_id, nil)
 
     # If the auction is real
     if self.item[:get_item_response][:ack] == "Success"

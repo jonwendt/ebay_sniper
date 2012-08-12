@@ -4,7 +4,7 @@
 <div class="row">
   <div class="span4" align="center">
 	<div class="vcenter">
-	  <div class="canvas">
+	  <div class="canvas" id="ebay_pic">
 		<%= image_tag @auction.picture[@picture_id] %>
 	  </div>
 	<br>
@@ -12,7 +12,10 @@
 	  <ul class="thumbnails">
 	    <% @auction.picture.each do |pic| %>
 	      <li class="span1">
-		    <%= link_to image_tag(pic), edit_auction_path(:pic => hash[pic]), :class => "thumbnail" %>
+			<%= link_to image_tag(pic), edit_auction_path(:pic => hash[pic]), :class => "thumbnail", :remote => true %>
+		    <!--
+			<%= link_to image_tag(pic), edit_auction_path(:pic => hash[pic]), :class => "thumbnail" %>
+			-->
 	      </li>
 	    <% end %>
 	  </ul>

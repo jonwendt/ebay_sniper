@@ -15,7 +15,6 @@ EbaySniper::Application.routes.draw do
     end
     member do
       post :restore
-      post :update_auction
     end
   end
   resources :notifications

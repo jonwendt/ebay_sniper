@@ -12,8 +12,9 @@ class AuctionUpdater
             find_status(auction, user.username)
           end
           
-          # --------------- Handle Notifications --------------- #
-          # If the item's current price is above max_bid, send notification to user.
+          # --------------- Active Auction Notifications --------------- #
+          # If the item's current price is above max_bid, and the user wishes to be notified about auction updates, but
+          # hasn't yet received an update regarding this issue, send notification to user.
           if auction.item[:get_item_response][:item][:selling_status][:converted_current_price].to_i > auction.max_bid &&
           auction.user_notification == "Text Message" && auction.user.phone_number != "" &&
           auction.been_notified.to_s.split(",")[0] != auction.id && auction.been_notified.to_s.split(",")[1] != "outbid"
@@ -26,7 +27,6 @@ class AuctionUpdater
             Resque.enqueue(NotificationSender, auction.id, @message)
             auction.been_notified = auction.id.to_s + ",outbid"
           end
-          
           auction.save
         end
       end
@@ -46,6 +46,14 @@ class AuctionUpdater
       rescue  
         auction.auction_status = "Lost"
       end
+      # Send a notification to the user saying if they won or lost the auction.
+      if auction.auction_status == "Won"
+        @message = "Congratulations! You won the auction for \"#{auction.item[:get_item_response][:item][:title][0,113]}\"! :)"
+      else
+        @message = "Sorry, but you have lost the auction for \"#{auction.item[:get_item_response][:item][:title][0,113]}\". :("
+      end
+      Resque.enqueue(NotificationSender, auction.id, @message)
+      auction.been_notified = auction.id.to_s + ",#{auction.auction_status.downcase}"
     else
       auction.auction_status = "Active"
     end

@@ -24,16 +24,21 @@ class Notification
       rescue
         return "There was an error. Please reply with HELP if you need assistance."
       end
-    # To impliment
-    #elsif body.downcase.match(/lead/)
-    #  begin
-    #    body = body.split(",")
-    #    @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
-    #    @auction.destroy
-    #    return "The auction \"#{@auction.item[:get_item_response][:item][:title][0,97]}\" has been removed from your auction list."
-    #  rescue
-    #    return "There was an error. Please reply with HELP if you need assistance."
-    #  end
+    elsif body.downcase.match(/lead/)
+      # If the user types lead, check for any decimal or integer value. If it's between 0 and 3, apply it to lead_time.
+      begin
+        body = body.split(",")
+        @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
+        @lead_time = body[2].match(/\d+\.?\d*/).to_s.to_f
+        if (0..3).include?(@lead_time)
+          @auction.update_attributes :lead_time => @lead_time
+          return "The lead time for the auction \"#{@auction.item[:get_item_response][:item][:title][0,100]}\"" +
+            " has been changed to #{@lead_time.to_s[0,6]}."
+        else
+          return "Please use a lead time between 0 and 3 seconds."
+      rescue
+        return "There was an error. Please reply with HELP if you need assistance."
+      end
     elsif body.downcase.match(/info/)
       # If the user types info, return the auction's title, price, max_bid, and time remaining.
       begin

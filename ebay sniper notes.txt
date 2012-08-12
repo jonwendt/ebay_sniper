@@ -57,7 +57,7 @@ Refine searching to match for at least 3-5 characters in a row to be somewhere i
 
 Hours worked: 84.5 over first 2 weeks
 
-Add 1 hour to hours (spent testing and optimizing auctionupdater a bit and trying out some AJAX)
+Add 1 hour (up to 6 pm) to hours (spent testing and optimizing auctionupdater a bit and trying out some AJAX)
 
 
 

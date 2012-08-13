@@ -17,10 +17,10 @@ class Notification
       # If the user types bid, try to change the auction's max bid. If there's an error, return the error message.
       begin
         body = body.split(",")
-        @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
-        @auction.update_attributes :max_bid => body[2].match(/\d+/).to_s.to_i
-        return "Your max bid for the auction \"#{@auction.item[:get_item_response][:item][:title][0,97]}\"" +
-          " has been changed to #{@auction.max_bid.to_s[0,10]}."
+        auction = Auction.where(:item_id => body[1], :user_id => user_id).first
+        auction.update_attributes :max_bid => body[2].match(/\d+/).to_s.to_i
+        return "Your max bid for the auction \"#{auction.item[:get_item_response][:item][:title][0,97]}\"" +
+          " has been changed to #{auction.max_bid.to_s[0,10]}."
       rescue
         return "There was an error. Please reply with HELP if you need assistance."
       end
@@ -28,14 +28,15 @@ class Notification
       # If the user types lead, check for any decimal or integer value. If it's between 0 and 3, apply it to lead_time.
       begin
         body = body.split(",")
-        @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
-        @lead_time = body[2].match(/\d+\.?\d*/).to_s.to_f
-        if (0..3).include?(@lead_time)
-          @auction.update_attributes :lead_time => @lead_time
-          return "The lead time for the auction \"#{@auction.item[:get_item_response][:item][:title][0,100]}\"" +
-            " has been changed to #{@lead_time.to_s[0,6]}."
+        auction = Auction.where(:item_id => body[1], :user_id => user_id).first
+        lead_time = body[2].match(/\d+\.?\d*/).to_s.to_f
+        if (0..3).include?(lead_time)
+          auction.update_attributes :lead_time => lead_time
+          return "The lead time for the auction \"#{auction.item[:get_item_response][:item][:title][0,100]}\"" +
+            " has been changed to #{lead_time.to_s[0,6]}."
         else
           return "Please use a lead time between 0 and 3 seconds."
+        end
       rescue
         return "There was an error. Please reply with HELP if you need assistance."
       end
@@ -43,22 +44,22 @@ class Notification
       # If the user types info, return the auction's title, price, max_bid, and time remaining.
       begin
         body = body.split(",")
-        @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
-        @title = @auction.item[:get_item_response][:item][:title]
-        if @title.length > 40
-          @title = @title[0, 37] + "..."
+        auction = Auction.where(:item_id => body[1], :user_id => user_id).first
+        title = auction.item[:get_item_response][:item][:title]
+        if title.length > 40
+          title = title[0, 37] + "..."
         end
         
         # Gets the time remaining. If the auction is over, tells user if they won or lost. Else, tells user time remaining
-        @time_remaining = get_time_remaining @auction
-        if @time_remaining == "0 seconds"
-          @time_remaining = "You have #{@auction.auction_status.downcase} the auction."
+        time_remaining = get_time_remaining auction
+        if time_remaining == "0 seconds"
+          time_remaining = "You have #{auction.auction_status.downcase} the auction."
         else
-          @time_remaining = "The auction ends in #{@time_remaining}."
+          time_remaining = "The auction ends in #{time_remaining}."
         end
         
-        return "The auction \"#{@title}\" has a current price of #{@auction.item[:get_item_response][:item][:selling_status][:current_price][0,15]}." +
-          " Your max bid is #{@auction.max_bid.to_s[0,15]}. #{@time_remaining}"
+        return "The auction \"#{title}\" has a current price of #{auction.item[:get_item_response][:item][:selling_status][:current_price][0,15]}." +
+          " Your max bid is #{auction.max_bid.to_s[0,15]}. #{time_remaining}"
       rescue
         return "There was an error. Please reply with HELP if you need assistance."
       end
@@ -66,9 +67,9 @@ class Notification
       # If the user types cancel, try to remove the appropriate auction.
       begin
         body = body.split(",")
-        @auction = Auction.where(:item_id => body[1], :user_id => user_id).first
-        @auction.destroy
-        return "The auction \"#{@auction.item[:get_item_response][:item][:title][0,97]}\" has been removed from your auction list."
+        auction = Auction.where(:item_id => body[1], :user_id => user_id).first
+        auction.destroy
+        return "The auction \"#{auction.item[:get_item_response][:item][:title][0,97]}\" has been removed from your auction list."
       rescue
         return "There was an error. Please reply with HELP if you need assistance."
       end
@@ -86,7 +87,7 @@ class Notification
   end
   
   def build_sms(message)
-    @xml = Twilio::TwiML::Response.new do |r|
+    xml = Twilio::TwiML::Response.new do |r|
       if message.respond_to?(:each)
         message.each do |sms|
           r.Sms sms
@@ -98,14 +99,14 @@ class Notification
   end
   
   def respond(from, body)
-    @user = User.where(:phone_number => from).first
+    user = User.where(:phone_number => from).first
     # If there is no user account with the phone number
-    if @user == nil
-      @xml = build_sms "This phone number is not associated with any user account for Levion's eBay Sniper. Please register an account or add this phone number to your current account."
+    if user == nil
+      xml = build_sms "This phone number is not associated with any user account for Levion's eBay Sniper. Please register an account or add this phone number to your current account."
     else
       # If there is a user, try to parse their text and generate a response
-      @response_text = read_sms(body, @user.id)
-      @xml = build_sms @response_text
+      response_text = read_sms(body, user.id)
+      xml = build_sms response_text
     end
   end
 

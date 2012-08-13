@@ -48,13 +48,13 @@ class Auction < ActiveRecord::Base
       if self.item[:get_item_response][:item][:picture_details][:photo_display] == "None"
         self.picture.push "http://p.ebaystatic.com/aw/pics/nextGenVit/imgNoImg.gif"
       else
-        @pictures = self.item[:get_item_response][:item][:picture_details][:picture_url]
-        if @pictures.respond_to?(:each)
-          @pictures.each do |pic|
+        pictures = self.item[:get_item_response][:item][:picture_details][:picture_url]
+        if pictures.respond_to?(:each)
+          pictures.each do |pic|
             self.picture.push pic.to_s
           end
         else
-          self.picture.push @pictures.to_s
+          self.picture.push pictures.to_s
         end
       end
     else  
@@ -85,42 +85,59 @@ class Auction < ActiveRecord::Base
   
   # Returns the appropriate auctions based on the user's selected auction status preference.
   def self.sort_auctions(status, sort, current_user)
-    @auctions = []
+    auctions = []
     # If the status == "Ended" return all Won, Lost, and Ended
     if status == "Ended"
       status = %w[Won Lost Ended]
       current_user.auctions.each do |auction|
         if status.include? auction.auction_status
-          @auctions.push auction
+          auctions.push auction
         end
       end
     elsif status == nil || status == "All"
       current_user.auctions.each do |auction|
         if auction.auction_status != "Deleted"
-          @auctions.push auction
+          auctions.push auction
         end
       end
     elsif %w[Won Lost Active Deleted].include? status
       # Else, just match the status
       current_user.auctions.each do |auction|
         if auction.auction_status == status.to_s
-          @auctions.push auction
+          auctions.push auction
         end
       end
     else
       # The user messed with the status param. Just display all auctions.
       current_user.auctions.each do |auction|
         if auction.auction_status != "Deleted"
-          @auctions.push auction
+          auctions.push auction
         end
       end
     end
     
-    if sort == "max_bid"
-      @auctions = @auctions.sort_by { |a| a[:max_bid] }
+    if sort == "max_bid_asc"
+      auctions = auctions.sort_by { |a| [a[:max_bid],
+                                         a.item[:get_item_response][:item][:title]] }
+    elsif sort == "price_asc"
+      auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:selling_status][:converted_current_price],
+                                         a.item[:get_item_response][:item][:title]] }
+    elsif sort == "time_asc"
+      auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:listing_details][:end_time],
+                                         a.item[:get_item_response][:item][:title]] }
+    elsif sort == "title_desc"
+      auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:title]] }.reverse
+    elsif sort == "max_bid_desc"
+      auctions = auctions.sort_by { |a| [-a[:max_bid],
+                                         a.item[:get_item_response][:item][:title]] }
+    elsif sort == "price_desc"
+      auctions = auctions.sort_by { |a| [-a.item[:get_item_response][:item][:selling_status][:converted_current_price].to_f,
+                                         a.item[:get_item_response][:item][:title]] }
+    elsif sort == "time_desc"
+      auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:listing_details][:end_time],
+                                         a.item[:get_item_response][:item][:title]] }.reverse
     else
-      # Sort by auctions ending soonest
-      @auctions
+      auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:title]] }
     end
   end
   

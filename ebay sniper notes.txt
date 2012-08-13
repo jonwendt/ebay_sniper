@@ -45,19 +45,20 @@ Override links that have already been clicked. Color shouldn't change.
 
 Thumbnail hover background color shouldn't be black
 
-Auction sorting by name, time left, current price, and max bid. (Have to figure out how to sort an array by a nested hash's value.)
-
 Workover auction bidder to perfect timing. Aim for under 3-4 seconds before auction end every time with no losses (if I'm the only bidder).
 
 Maybe queue QueueAuctionUpdater every 3 minutes which splits up the active auctions into sub jobs that update them?
 
-
 Refine searching to match for at least 3-5 characters in a row to be somewhere in the collection being searched.
+
+Fix variable scoping. Used too many object variables that do not need to be accessed outside object (change to local)
+
+
+
+Uncomment the lines in AuctionUpdater that notify user if they won/lost an auction. (Commented because I don't want 50 texts about my test auctions)
 
 
 Hours worked: 84.5 over first 2 weeks
-
-Add 1 hour (up to 6 pm) to hours (spent testing and optimizing auctionupdater a bit and trying out some AJAX)
 
 
 

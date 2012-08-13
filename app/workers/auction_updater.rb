@@ -6,7 +6,6 @@ class AuctionUpdater
     User.currently_online.each do |user|
       user.auctions.each do |auction|
         if auction.auction_status.to_s == "Active"
-          #auction.item.merge! EbayAction.new.get_item(auction.item_id, "timeleft,bidcount,currentprice,userid")
           auction.item = EbayAction.new(user).get_item(auction.item_id, nil)
           if auction.item[:get_item_response][:item][:time_left] == "PT0S"
             # Send a notification to the user saying if they won or lost the auction.

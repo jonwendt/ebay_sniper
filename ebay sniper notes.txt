@@ -1,23 +1,14 @@
-Make sure to change the currency based on get_item location (I think I got this to work, test currencies other than USD)
-
-Use OutputSelector on get_item requests once I know all of the required field for the layout to shorten response time and server load
-
 Ajax not working properly for edit auction pic cycle buttons. Add remote: true to link_to in _edit and retry
-Redo buttons in edit auction page to cycle through pics
 
 Center listing pictures vertically in auction index and edit
 
 Change color of divider on auctions/edit, maybe add a different background color to listing details and snipe options to differentiate?
 
-Fix update_auctions to only update online users' auctions using OutputSelector
-
 Auction price being returned in Notification is not formatted to currency
 
-Remove mechanize gem
+When an auction fails verification of uniqueness, try to link to the pre-existing auction.
 
-Adding items uniqueness validation fails when auction status is deleted. Include "unless" check in validation and figure out how to alter the already existing entry's attributes on uniqueness fail.
-
-Possible rare bug: If the user stays signed in and passes the auth_token_exp date, then all eBay API calls will fail without notice to user. Handle by checking exp date on calls?
+Find out how to force user signout and add to ebayaction request auth_token_exp check.
 
 Add search function that searches through existing auctions, matching for attributes such as Title (use a match to see if title contains like 80% of search query anywhere in it, so user doesn't have to spell it perfectly. Also, not case sensitive. Everything else should be exact.), Item ID, Max_bid.
 

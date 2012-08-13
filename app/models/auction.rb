@@ -32,10 +32,11 @@ class Auction < ActiveRecord::Base
   end
   
   def prepare
-    puts "Prepare is being called."
     # Parse the eBay item URL for the item's ID, then get the item's info
     self.item_id = self.parse_url_for_item_id
-    self.item = EbayAction.new(self.user).get_item(self.item_id, nil)
+    if self.auction_status == "Active" || self.auction_status == nil
+      self.item = EbayAction.new(self.user).get_item(self.item_id, nil)
+    end
 
     # If the auction is real
     if self.item[:get_item_response][:ack] == "Success"
@@ -116,14 +117,13 @@ class Auction < ActiveRecord::Base
       end
     end
     
-    if sort == "max_bid_asc"
+    if sort == "title_asc" || sort == nil
+      auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:title]] }
+    elsif sort == "max_bid_asc"
       auctions = auctions.sort_by { |a| [a[:max_bid],
                                          a.item[:get_item_response][:item][:title]] }
     elsif sort == "price_asc"
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:selling_status][:converted_current_price],
-                                         a.item[:get_item_response][:item][:title]] }
-    elsif sort == "time_asc"
-      auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:listing_details][:end_time],
                                          a.item[:get_item_response][:item][:title]] }
     elsif sort == "title_desc"
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:title]] }.reverse
@@ -137,7 +137,8 @@ class Auction < ActiveRecord::Base
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:listing_details][:end_time],
                                          a.item[:get_item_response][:item][:title]] }.reverse
     else
-      auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:title]] }
+      auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:listing_details][:end_time],
+                                         a.item[:get_item_response][:item][:title]] }
     end
   end
   
@@ -158,7 +159,7 @@ class Auction < ActiveRecord::Base
   # Finds the current status of the auction (active, won, lost, etc)
   def find_status
     # If the auction is over, check if we won or lost
-    if self.item[:get_item_response][:item][:time_left] == "PT0S"
+    if self.item[:get_item_response][:item][:time_left] == "PT0S" && self.auction_status != "Deleted"
       begin
         if self.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == self.user.username
           self.auction_status = "Won"

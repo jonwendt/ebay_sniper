@@ -105,6 +105,7 @@ class AuctionsController < ApplicationController
   def restore
     @auction = Auction.find(params[:id])
     Resque.remove_delayed(AuctionBidder, @auction.id)
+    @auction.auction_status = "Active" # So find_status won't ignore it.
     @auction.find_status
     
     respond_to do |format|

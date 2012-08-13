@@ -46,8 +46,8 @@ class Notification
         body = body.split(",")
         auction = Auction.where(:item_id => body[1], :user_id => user_id).first
         title = auction.item[:get_item_response][:item][:title]
-        if title.length > 40
-          title = title[0, 37] + "..."
+        if title.length > 46
+          title = title[0, 43] + "..."
         end
         
         # Gets the time remaining. If the auction is over, tells user if they won or lost. Else, tells user time remaining

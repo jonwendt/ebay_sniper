@@ -11,10 +11,18 @@
 <li class="<%= 'active' if params[:status] == 'Lost' %>"><a href="?status=Lost">Lost</a></li>
 <li class="<%= 'active' if params[:status] == 'Ended' %>"><a href="?status=Ended">Ended</a></li>
 <li class="<%= 'active' if params[:status] == 'Deleted' %>"><a href="?status=Deleted">Deleted</a></li>
-<li class="pull-right"><b>Sort by </b><select id="select01"><option>Time: sooner-later</option>
-	<option>Time: later-sooner</option><option>Title: A-Z</option><option>Title: Z-A</option>  
-    <option>Current Price: low-high</option><option>Current Price: high-low</option><option>Max Bid: low-high</option>
-	<option>Max Bid: high-low</option></select></li>
+<li class="pull-right"><b>Sort by:</b>
+	<%= form_tag(auctions_path, :method => :get) do |f| %>
+	<%= select_tag :sort, "<option value='time_asc'>Time: sooner-later</option>
+	  <option value='time_desc'>Time: later-sooner</option><option value='title_asc'>Title: A-Z</option>
+	  <option value='title_desc'>Title: Z-A</option><option value='price_asc'>Current Price: low-high</option>
+	  <option value='price_desc'>Current Price: high-low</option><option value='max_bid_asc'>Max Bid: low-high</option>
+	  <option value='max_bid_desc'>Max Bid: high-low</option>".html_safe,
+	  :onchange => "this.form.submit();",
+	  :with => "'sort='+this.options[this.selectedIndex].value",
+	  :method => :post,
+	  :prompt => "Sort by" %>
+	<% end %></li>
 </ul>  
 </div>  
 </div>  

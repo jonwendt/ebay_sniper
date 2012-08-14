@@ -1,18 +1,19 @@
+<div class="pull-right"><%= link_to 'Refresh Auction', update_info_auction_path, :class => "btn btn-success" %></div>
 <h1 align="center">Listing Details</h1>
 <br>
 <br>
 <div class="row">
   <div class="span4" align="center">
 	<div class="vcenter">
-	  <div class="canvas" style="vertical-align: middle;">
-		<%= image_tag @auction.picture[@picture_id] %>
+	  <div class="canvas" style="vertical-align: middle;" id="ebay_pic">
+		<%= render :partial => 'ebay_pic' %>
 	  </div>
 	<br>
 	  <% hash = Hash[@auction.picture.map.with_index{|*ki| ki}] %>
 	  <ul class="thumbnails">
 	    <% @auction.picture.each do |pic| %>
 	      <li class="span1">
-			<%= link_to image_tag(pic), edit_auction_path(:pic => hash[pic]), :class => "thumbnail" %>
+			<%= link_to image_tag(pic), edit_auction_path(:pic => hash[pic]), :class => "thumbnail", :remote => true %>
 	      </li>
 	    <% end %>
 	  </ul>

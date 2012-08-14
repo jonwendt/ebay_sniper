@@ -71,18 +71,13 @@ class Auction < ActiveRecord::Base
     end
   end
 
-  #def update_auction
-  #  if self.auction_status == "Active"
-      # Sadly, this doesn't work because of the nested hashes.
-      # auction.item.merge! EbayAction.new.get_item(auction.item_id, "timeleft,bidcount,currentprice,userid")
-      
-      # Figure out how to update while only grabbing values needed
-      #@new_auction = EbayAction.new(self.user).get_item(self.item_id, "")
-  #    self.item = EbayAction.new(self.user).get_item(self.item_id, "")
-  #    self.find_status
-  #    self.save
-  #  end
-  #end
+  def update_auction
+    if self.auction_status == "Active"
+      self.item = EbayAction.new(self.user).get_item(self.item_id, "")
+      self.find_status
+      self.save
+    end
+  end
   
   # Returns the appropriate auctions based on the user's selected auction status preference.
   def self.sort_auctions(status, sort, current_user)

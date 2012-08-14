@@ -1,7 +1,5 @@
 Ajax not working properly for auction thumbnails
 
-Center listing pictures vertically in auction index and edit
-
 Change color of divider on auctions/edit, maybe add a different background color to listing details and snipe options to differentiate?
 
 Auction price being returned in Notification read_sms for info is not formatted to currency
@@ -42,6 +40,15 @@ Refine searching to match for at least 3-5 characters in a row to be somewhere i
 
 Fix variable scoping. Used too many object variables that do not need to be accessed outside object (change to local)
 
+Vertically center auction picture in auctions#edit
+
+Change :confirm popups to modal dialogues.
+
+Validation for user_has_phone_if_notify is only preventing auction save and displaying errors on create. Won't work on updating an existing auction.
+
+"Listing Details" header shouldn't take the Refresh Auction button into account when calculating center. It's off to the left now.
+
+Can link_to point to an object's method? Would probably be faster for Refresh Auctions.
 
 
 Uncomment the lines in AuctionUpdater that notify user if they won/lost an auction. (Commented because I don't want 50 texts about my test auctions)

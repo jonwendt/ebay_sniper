@@ -37,12 +37,11 @@ class AuctionsController < ApplicationController
   # GET /auctions/1/edit
   def edit
     @auction = Auction.find(params[:id])
-    @auction.prepare
     @picture_id = params[:pic].to_i
     
     respond_to do |format|
       format.html
-      format.js
+      format.js { render :layout => false }
     end
   end
 
@@ -115,5 +114,12 @@ class AuctionsController < ApplicationController
         format.html { render action: "edit" }
       end
     end
+  end
+  
+  def update_info
+    @auction = Auction.find(params[:id])
+    @auction.update_auction
+    
+    redirect_to edit_auction_path
   end
 end

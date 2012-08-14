@@ -35,6 +35,10 @@ body { padding-top: 60px; }
   }
 }
 
+.nav-pills > li > a:hover {
+  color: #0000FF;
+}
+
 legend {
   font-size: 30px;
   margin-bottom: 10px;

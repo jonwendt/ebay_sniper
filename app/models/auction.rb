@@ -8,13 +8,13 @@ class Auction < ActiveRecord::Base
   validates_presence_of :user
   
   validate :prepare, :on => :create
-  validate :user_has_phone_if_notify
+  validate :user_has_phone_if_notify, :on => :create
   
   serialize :picture, Array
   
   # If the user specifies that they want to be notified on updates, but didn't provide a number, raise error.
   def user_has_phone_if_notify
-    if user_notification != "Do not notify" && user.phone_number == ""
+    if user_notification != "Do not notify" && user.phone_number == "" || user.phone_number == nil
       errors.add :user_notification, "requires that you provide a phone number under the \"Edit Account\" page."
     end
   end

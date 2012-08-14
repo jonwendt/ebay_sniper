@@ -1,16 +1,14 @@
-Ajax not working properly for edit auction pic cycle buttons. Add remote: true to link_to in _edit and retry
+Ajax not working properly for auction thumbnails
 
 Center listing pictures vertically in auction index and edit
 
 Change color of divider on auctions/edit, maybe add a different background color to listing details and snipe options to differentiate?
 
-Auction price being returned in Notification is not formatted to currency
+Auction price being returned in Notification read_sms for info is not formatted to currency
 
 When an auction fails verification of uniqueness, try to link to the pre-existing auction.
 
 Find out how to force user signout and add to ebayaction request auth_token_exp check.
-
-Add search function that searches through existing auctions, matching for attributes such as Title (use a match to see if title contains like 80% of search query anywhere in it, so user doesn't have to spell it perfectly. Also, not case sensitive. Everything else should be exact.), Item ID, Max_bid.
 
 Search eBay funcationality.
 
@@ -47,9 +45,6 @@ Fix variable scoping. Used too many object variables that do not need to be acce
 
 
 Uncomment the lines in AuctionUpdater that notify user if they won/lost an auction. (Commented because I don't want 50 texts about my test auctions)
-
-
-Hours worked: 84.5 over first 2 weeks
 
 
 

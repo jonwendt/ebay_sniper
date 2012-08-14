@@ -22,8 +22,6 @@ Just start like 50 workers for the auction_bidder job for now, then work on dyna
 # auctions that should be running, but no keys exist pertaining to that auction, then Resque.Enqueue(AuctionBidder, auction.id)
 If auction job failed, kill process by pid
 
-Instead of using buttons to cycle through pics, just have thumbnails of pics under large pic as links.
-
 Go through the other generated devise views and bootstrapify them.
 
 Check if has_reserve_price == true, then if converted_reserve_price is higher than max bid. If yes, notify the user.
@@ -60,6 +58,7 @@ Uncomment the lines in AuctionUpdater that notify user if they won/lost an aucti
 Twilio SMS routing URL
 eBay consent form routing URL https://developer.ebay.com/DevZone/Account/AppSettings/Consent/?id=160565&s=1
 Once app goes live, change all sandbox to production URLs
+The action_mailer host location in environments.
 
 
 

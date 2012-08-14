@@ -82,7 +82,7 @@ EbaySniper::Application.routes.draw do
 
   root :to => "home#index"
 
-  match "user_root", :to => "users#check_token"
+  #match "user_root", :to => "users#check_token"
   
   # See how all your routes lay out with "rake routes"
 

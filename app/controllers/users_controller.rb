@@ -2,15 +2,15 @@ class UsersController < Devise::RegistrationsController
   
   # GET /users
   # GET /users.json
-  def index
-    super
-  end
+  #def index
+  #  super
+  #end
 
   # GET /users/1
   # GET /users/1.json
-  def show
-    super
-  end
+  #def show
+  #  super
+  #end
 
   # GET /users/new
   # GET /users/new.json

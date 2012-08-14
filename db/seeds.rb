@@ -6,7 +6,8 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-ebay = EbayAction.new(User.last)
+# Seller's user account
+ebay = EbayAction.new(User.find(99))
 
 response = ebay.add_item( { "Title" => "Harry Potter and the Something Something Something", "Description" => "This is a long description of the product. " * 30,
   "PrimaryCategory" => { "CategoryID" => "377" }, "StartPrice" => "1", "ConditionID" => "3000", "Currency" => "USD", "Country" => "US",
@@ -23,5 +24,6 @@ auction = Auction.new
 auction.id = auction_id
 auction.item_id = response.body[:add_item_response][:item_id].to_s
 auction.user_id = User.first.id
+auction.user_notification = "Do not notify"
 auction.max_bid = 100
 auction.save

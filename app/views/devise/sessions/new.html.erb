@@ -15,12 +15,12 @@
  	  <%= f.password_field :password %>
     </div>
   </div>
-  <br><br>
+  <br>
   <button type="submit" class="btn btn-primary btn-large">Sign in</button> | 
   <% if devise_mapping.rememberable? -%>
     <%= f.check_box :remember_me %>	Stay signed in?
   <% end -%>
-  <br><br>
+  <br>
 <% end %>
 
 <%= link_to "Forgot your password?", new_password_path(resource_name), :class => "btn btn-info" %> |

@@ -61,7 +61,6 @@ Once app goes live, change all sandbox to production URLs
 The action_mailer host location in environments.
 
 
-
 -------Processes to start----------
 thin start --ssl -p 3001
   - Start web server with thin (for ssl support)

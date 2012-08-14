@@ -9,6 +9,7 @@ class AuctionsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @auctions }
+      format.js { render :layout => false }
     end
   end
 
@@ -104,7 +105,7 @@ class AuctionsController < ApplicationController
   def restore
     @auction = Auction.find(params[:id])
     Resque.remove_delayed(AuctionBidder, @auction.id)
-    @auction.auction_status = "Active" # So find_status won't ignore it.
+    @auction.auction_status = "Ended" # So find_status won't ignore it.
     @auction.find_status
     
     respond_to do |format|

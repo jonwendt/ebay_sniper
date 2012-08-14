@@ -26,7 +26,7 @@
   </div>
   <br>
   <div class="control-group">
-    <label class="control-label" for="item_id">Current password</label>
+    <label class="control-label" for="item_id"><b>Current password</b> (needed to confirm changes)</label>
     <div class="controls">
  	  <%= f.password_field :current_password %>
     </div>
@@ -39,7 +39,7 @@
     </div>
   </div>
 </fieldset>
-  <br><br>
+  <br>
   <button type="submit" class="btn btn-primary">Save changes</button> |
   <%= link_to "Change eBay accounts", user_consent_failed_path + "?user_id=#{@user.id}", :class => "btn btn-inverse" %> |
   <%= link_to "Delete account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete,

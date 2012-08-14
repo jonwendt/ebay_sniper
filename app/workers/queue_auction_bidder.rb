@@ -10,10 +10,9 @@ class QueueAuctionBidder
         #  @auction_keys.delete "ebaysniper:auction:#{auction.id}"
           # Should I delete redis key if it exists and just trust that the bidder will continue? If it fails, there's no point in
           # restarting the bidding process anyways, because the auction will have ended.
-        if $redis.keys("ebay_sniper:auction:*").include? "ebaysniper:auction:#{auction.id}"
-          $redis.del("ebaysniper:auction:#{auction.id}")
-        else
+        unless $redis.keys("ebay_sniper:auction:*").include? "ebaysniper:auction:#{auction.id}"
           Resque.enqueue(AuctionBidder, auction.id)
+          #$redis.del("ebaysniper:auction:#{auction.id}")
         end
       end
     end

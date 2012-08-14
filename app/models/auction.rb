@@ -14,7 +14,7 @@ class Auction < ActiveRecord::Base
   
   # If the user specifies that they want to be notified on updates, but didn't provide a number, raise error.
   def user_has_phone_if_notify
-    if user_notification != "Do not notify" && user.phone_number == "" || user.phone_number == nil
+    if user_notification != "Do not notify" && (user.phone_number == "" || user.phone_number == nil)
       errors.add :user_notification, "requires that you provide a phone number under the \"Edit Account\" page."
     end
   end
@@ -68,14 +68,6 @@ class Auction < ActiveRecord::Base
     # If the auction is still going, enqueue an AuctionBidder worker to bid on the auction
     if self.auction_status == "Active"
       Resque.enqueue_in(self.get_enqueue_time.seconds, AuctionBidder, self.id) # If doesn't work, use enqueue_at and seconds.from_now
-    end
-  end
-
-  def update_auction
-    if self.auction_status == "Active"
-      self.item = EbayAction.new(self.user).get_item(self.item_id, "")
-      self.find_status
-      self.save
     end
   end
   
@@ -150,6 +142,14 @@ class Auction < ActiveRecord::Base
       return self.item_id
     end
   end
+
+  def update_auction
+    if self.auction_status == "Active"
+      self.item = EbayAction.new(self.user).get_item(self.item_id, "")
+      self.find_status
+      self.save
+    end
+  end
   
   # Finds the current status of the auction (active, won, lost, etc)
   def find_status
@@ -158,12 +158,20 @@ class Auction < ActiveRecord::Base
       begin
         if self.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == self.user.username
           self.auction_status = "Won"
+          message = "Congratulations! You won the auction for \"#{auction.item[:get_item_response][:item][:title][0,113]}\"! :)"
         else
           self.auction_status = "Lost"
+          message = "Sorry, but you have lost the auction for \"#{auction.item[:get_item_response][:item][:title][0,113]}\". :("
         end
       rescue
         # There was no high_bidder, which means no one bid.
         self.auction_status = "Lost"
+      end
+      
+      # Send out the notification of win/loss.
+      if self.user_notification == "Text Message"
+        Resque.enqueue(NotificationSender, self.id, message)
+        self.been_notified = self.id.to_s + ",#{self.auction_status.downcase}"
       end
     elsif self.auction_status != "Deleted"
       self.auction_status = "Active"

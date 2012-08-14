@@ -1,0 +1,62 @@
+<div class="container">  
+<div class="row">  
+<div class="span12">  
+<ul class="nav nav-pills">
+  <li class="<%= 'active' if params[:status] == 'All' || params[:status] == nil %>"><%= link_to 'All',
+	auctions_path(:status => "All", :sort => params[:sort]), :method => :get, :remote => true %></li>
+  <li class="<%= 'active' if params[:status] == 'Active' %>"><%= link_to 'Active',
+	auctions_path(:status => "Active", :sort => params[:sort]), :method => :get, :remote => true %></li>
+  <li class="<%= 'active' if params[:status] == 'Won' %>"><%= link_to 'Won',
+	auctions_path(:status => "Won", :sort => params[:sort]), :method => :get, :remote => true %></li>
+  <li class="<%= 'active' if params[:status] == 'Lost' %>"><%= link_to 'Lost',
+	auctions_path(:status => "Lost", :sort => params[:sort]), :method => :get, :remote => true %></li>
+  <li class="<%= 'active' if params[:status] == 'Ended' %>"><%= link_to 'Ended',
+	auctions_path(:status => "Ended", :sort => params[:sort]), :method => :get, :remote => true %></li>
+  <li class="<%= 'active' if params[:status] == 'Deleted' %>"><%= link_to 'Deleted',
+	auctions_path(:status => "Deleted", :sort => params[:sort]), :method => :get, :remote => true %></li>
+  <li class="pull-right">
+  <%= form_tag(auctions_path, :method => :get, :remote => true) do |f| %>
+	<%= hidden_field_tag :status, params[:status] %>
+	<%= select_tag :sort, "<option value='time_asc'>Time: sooner-later</option>
+	  <option value='time_desc'>Time: later-sooner</option><option value='title_asc'>Title: A-Z</option>
+	  <option value='title_desc'>Title: Z-A</option><option value='price_asc'>Current Price: low-high</option>
+	  <option value='price_desc'>Current Price: high-low</option><option value='max_bid_asc'>Max Bid: low-high</option>
+	  <option value='max_bid_desc'>Max Bid: high-low</option>".html_safe,
+	  :onchange => "this.form.submit();",
+	  :method => :get,
+	  :prompt => "Sort auctions by" %>
+	<% end %>
+  </li>
+</ul>
+</div>  
+</div>  
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+	  <th width="10%">Picture</th>
+      <th width="60%">Item</th>
+	  <th width="8%">Time Left</th>
+	  <th>Current price</th>
+      <th>Max bid</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @auctions.each do |auction| %>
+	  <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
+		<td style="vertical-align: middle; text-align: center;"><%= image_tag auction.picture[0], :maxsize => "100x100" %></td>
+		<td>
+		<h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 60) %></h3>
+		<%= truncate(strip_tags(auction.item[:get_item_response][:item][:description]),
+								:length => 300, :separator => ' ') %>
+		</td>
+		<td><%= get_time_remaining auction %></td>
+		<td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %></td>
+		<td><%= number_to_currency auction.max_bid %></td>
+	  </tr>
+	  <% if false %><td><%= check_box_tag 'auction_ids[]', auction.id, false, :id => auction.id %></td><% end %>
+	<% end %>
+  </tbody>
+</table>

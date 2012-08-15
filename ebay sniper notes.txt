@@ -67,8 +67,7 @@ Uncomment the lines in auction.find_status that notify user if they won/lost an 
 Change Add Auction to a modal dialogue pop-up
 
 
-Stop 8:30
-Start 1:10
+Add a sort and status field to User and every time status and sort params are different than fields in user, change them. In sort status, just load from user object.
 
 
 ----------Things to change once app is hosted elsewhere----------------

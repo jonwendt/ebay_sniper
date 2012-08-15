@@ -32,6 +32,15 @@
 </div>  
 </div>
 
+
+<% if params[:status] != "Deleted" %>
+  <% path = remove_multiple_auctions_path %>
+<% else %>
+  <% path = restore_multiple_auctions_path %>
+<% end %>
+
+<%= form_tag path, :method => :post do %>
+
 <% if @auctions != [] %>
   <table class="table table-striped">
     <thead>
@@ -60,7 +69,7 @@
 		  <td><%= get_time_remaining auction %></td>
 		  <td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %></td>
 		  <td><%= number_to_currency auction.max_bid %></td>
-		  <td style="text-align: center;"><%= check_box_tag 'auction_ids[]', auction.id, false, :id => auction.id %></td>
+		  <td style="text-align: center;"><%= check_box_tag 'auction_ids[]', auction.id, false %></td>
 	    </tr>
 	  <% end %>
     </tbody>
@@ -69,10 +78,22 @@
 <% end %>
 
 <%= link_to 'New Auction', new_auction_path, :class => "btn btn-primary" %> |
+
+<% if false %>
 <% if params[:status] != "Deleted" %>
   <%= link_to "Delete Checked Auctions", remove_multiple_auctions_path, :data => {
 	confirm: 'Are you sure you want to delete all checked auctions?' }, :method => :post, :class => "btn btn-danger" %>
 <% else %>
 <%= link_to "Restore Checked Auctions", restore_multiple_auctions_path, :data => {
 	confirm: 'Are you sure you want to delete all checked auctions?' }, :method => :post, :class => "btn btn-danger" %>
+<% end %>
+<% end %>
+
+<% if params[:status] != "Deleted" %>
+  <% button_title = "Delete Checked Auctions" %>
+<% else %>
+  <% button_title = "Restore Checked Auctions" %>
+<% end %>
+<button type="submit" class="btn btn-danger"><%= button_title %></button>
+
 <% end %>

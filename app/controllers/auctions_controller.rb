@@ -87,7 +87,7 @@ class AuctionsController < ApplicationController
   def restore
     @auction = Auction.find(params[:id])
     Resque.remove_delayed(AuctionBidder, @auction.id)
-    @auction.auction_status = "Ended" # So find_status won't ignore it.
+    @auction.auction_status = "Active" # So find_status won't ignore it.
     @auction.find_status
     
     respond_to do |format|
@@ -101,20 +101,21 @@ class AuctionsController < ApplicationController
   
   # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
   def remove_multiple
-    #@auctions = Auction.find(params[:auction_ids])
-    #@auctions.each do |auction|
-    #  auction.update_attributes!(params[:auction].reject { |k,v| v.blank? })
-    #end
+    auctions = Auction.find(params[:auction_ids])
+    auctions.each do |auction|
+      auction.update_attributes :auction_status => "Deleted"
+    end
     
     redirect_to auctions_path
   end
   
   # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
   def restore_multiple
-    #@auctions = Auction.find(params[:auction_ids])
-    #@auctions.each do |auction|
-    #  auction.update_attributes!(params[:auction].reject { |k,v| v.blank? })
-    #end
+    auctions = Auction.find(params[:auction_ids])
+    auctions.each do |auction|
+      auction.update_attributes :auction_status => "Ended"
+      auction.update_auction
+    end
     
     redirect_to auctions_path
   end

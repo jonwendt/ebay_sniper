@@ -12,6 +12,7 @@ EbaySniper::Application.routes.draw do
   resources :auctions do
     collection do
       post :remove_multiple
+      post :restore_multiple
     end
     member do
       post :restore

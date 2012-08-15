@@ -19,7 +19,7 @@ class AuctionBidder
       #time_diff = time_end - time_start
       
       # Sleeps for the time remaining in the auction, and subtracts 4 more seconds just for good measure.
-      sleep_time = Time.now - Time.parse(auction.item[:get_item_response][:item][:listing_details][:end_time]).localtime - 4 - auction.lead_time
+      sleep_time = Time.parse(auction.item[:get_item_response][:item][:listing_details][:end_time]).localtime - Time.now - 4 - auction.lead_time
       unless sleep_time < 0
         sleep(sleep_time)
       end

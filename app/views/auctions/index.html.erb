@@ -2,10 +2,5 @@
 <br>
 
 <div id="auction_index">
-	<%= render :partial => "auction_index" %>
+  <%= render :partial => "auction_index" %>
 </div>
-
-<br>
-
-<%= link_to 'New Auction', new_auction_path, :class => "btn btn-primary" %> |
-<%= link_to "Remove Checked Auctions", remove_multiple_auctions_path, :data => { confirm: 'Are you sure you want to delete all checked auctions?' }, :method => :post, :class => "btn btn-danger" %>

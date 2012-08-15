@@ -2,7 +2,7 @@
 <div class="row">  
 <div class="span12">  
 <ul class="nav nav-pills">
-  <li class="<%= 'active' if params[:status] == 'All' || params[:status] == nil %>"><%= link_to 'All',
+  <li class="<%= 'active' if params[:status] == 'All' || params[:status] == nil || params[:status] == "" %>"><%= link_to 'All',
 	auctions_path(:status => "All", :sort => params[:sort]), :method => :get, :remote => true %></li>
   <li class="<%= 'active' if params[:status] == 'Active' %>"><%= link_to 'Active',
 	auctions_path(:status => "Active", :sort => params[:sort]), :method => :get, :remote => true %></li>
@@ -37,9 +37,14 @@
     <tr>
 	  <th width="10%">Picture</th>
       <th width="60%">Item</th>
-	  <th width="8%">Time Left</th>
-	  <th>Current price</th>
-      <th>Max bid</th>
+	  <th width="9%">Time Left</th>
+	  <th width="9%">Price</th>
+      <th width="9%">Max bid</th>
+	  <% if params[:status] != "Deleted" %>
+	    <th width="3%">Delete</th>
+	  <% else %>
+	    <th width="3%">Restore</th>
+	  <% end %>
     </tr>
   </thead>
 
@@ -49,14 +54,24 @@
 		<td style="vertical-align: middle; text-align: center;"><%= image_tag auction.picture[0], :maxsize => "100x100" %></td>
 		<td>
 		<h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 60) %></h3>
-		<%= truncate(strip_tags(auction.item[:get_item_response][:item][:description]),
-								:length => 300, :separator => ' ') %>
+		<%= truncate(strip_tags(auction.item[:get_item_response][:item][:description]), :length => 300, :separator => ' ') %>
 		</td>
 		<td><%= get_time_remaining auction %></td>
 		<td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %></td>
 		<td><%= number_to_currency auction.max_bid %></td>
+		<td style="text-align: center;"><%= check_box_tag 'auction_ids[]', auction.id, false, :id => auction.id %></td>
 	  </tr>
-	  <% if false %><td><%= check_box_tag 'auction_ids[]', auction.id, false, :id => auction.id %></td><% end %>
 	<% end %>
   </tbody>
 </table>
+
+<br>
+
+<%= link_to 'New Auction', new_auction_path, :class => "btn btn-primary" %> |
+<% if params[:status] != "Deleted" %>
+  <%= link_to "Delete Checked Auctions", remove_multiple_auctions_path, :data => {
+	confirm: 'Are you sure you want to delete all checked auctions?' }, :method => :post, :class => "btn btn-danger" %>
+<% else %>
+<%= link_to "Restore Checked Auctions", restore_multiple_auctions_path, :data => {
+	confirm: 'Are you sure you want to delete all checked auctions?' }, :method => :post, :class => "btn btn-danger" %>
+<% end %>

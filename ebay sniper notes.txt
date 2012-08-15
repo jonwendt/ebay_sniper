@@ -48,8 +48,21 @@ Validation for user_has_phone_if_notify is only preventing auction save and disp
 
 Can link_to point to an object's method? Would probably be faster for Refresh Auctions.
 
+PROBLEM WITH FOREIGN CURRENCY: Auction prices are automatically converted to the locale of the user, but max bid is not. Must convert that to user's locale (grab from ebay?) and then figure out how to convert it from the user's local currency to the buyer's local currency on bidding.
 
-Uncomment the lines in AuctionUpdater that notify user if they won/lost an auction. (Commented because I don't want 50 texts about my test auctions)
+Started to make search bar AJAX, but had problems. Is there a way to send the request as remote if the user is already on the search page, but send it as html if the user is not on the search page? I don't want the user to have to press back a million times if they do a bunch of searches.
+
+Things to add to auction#edit:
+Current price and bidding information (i.e., reserve price status)
+Seller ID and feedback score
+Shipping information
+Payment options
+
+Change link hover effect
+
+Make it so clicking the delete/restore checkbox in auction#index doesn't activate onclick event
+
+Uncomment the lines in auction.find_status that notify user if they won/lost an auction. (Commented because I don't want 50 texts about my test auctions)
 
 
 
@@ -70,8 +83,8 @@ redis-server
 rake resque:scheduler
   - Starts the resque scheduler
 
-COUNT=4 QUEUES=queue_auction_bidder,auction_updater,notification_sender rake environment resque:work
-COUNT=5 QUEUE=auction_bidder rake environment resque:workers
+COUNT=5 QUEUES=queue_auction_bidder,auction_updater,notification_sender rake environment resque:work
+COUNT=10 QUEUE=auction_bidder rake environment resque:workers
   - Starts the resque queue workers
   - Priority (auction_bidder, queue_auction_bidder, auction_updater, notification_sender)
 

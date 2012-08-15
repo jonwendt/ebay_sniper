@@ -71,6 +71,56 @@ class Auction < ActiveRecord::Base
     end
   end
   
+  # Calculates the time remaining on the auction minus 5 minutes
+  def get_enqueue_time
+    return Time.parse(self.item[:get_item_response][:item][:listing_details][:end_time]).localtime - Time.now - 300
+  end
+  
+  # Extracts the item_id from the URL if the entry is not only digits. Otherwise, the entry is just returned.
+  def parse_url_for_item_id
+    if self.item_id.match(/\D*/).to_s.length != 0
+      return self.item_id.match(/item=\d*\D/).to_s.gsub!(/\D+/, "")
+    else
+      return self.item_id
+    end
+  end
+
+  def update_auction
+    if self.auction_status == "Active"
+      self.item = EbayAction.new(self.user).get_item(self.item_id, "")
+      self.find_status
+      self.save
+    end
+  end
+  
+  # Finds the current status of the auction (active, won, lost, etc)
+  def find_status
+    # If the auction is over, check if we won or lost
+    if self.item[:get_item_response][:item][:time_left] == "PT0S" && self.auction_status != "Deleted"
+      message
+      begin
+        if self.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == self.user.username
+          self.auction_status = "Won"
+          message = "Congratulations! You won the auction for \"#{auction.item[:get_item_response][:item][:title][0,113]}\"! :)"
+        else
+          self.auction_status = "Lost"
+          message = "Sorry, but you have lost the auction for \"#{auction.item[:get_item_response][:item][:title][0,113]}\". :("
+        end
+      rescue
+        # There was no high_bidder, which means no one bid.
+        self.auction_status = "Lost"
+      end
+      
+      # Send out the notification of win/loss.
+      if self.user_notification == "Text Message"
+        Resque.enqueue(NotificationSender, self.id, message)
+        self.been_notified = self.id.to_s + ",#{self.auction_status.downcase}"
+      end
+    elsif self.auction_status != "Deleted"
+      self.auction_status = "Active"
+    end
+  end
+  
   # Returns the appropriate auctions based on the user's selected auction status preference.
   def self.sort_auctions(status, sort, current_user)
     auctions = []
@@ -104,7 +154,7 @@ class Auction < ActiveRecord::Base
       end
     end
     
-    if sort == "title_asc" || sort == nil
+    if sort == "title_asc" || sort == nil || sort == ""
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:title]] }
     elsif sort == "max_bid_asc"
       auctions = auctions.sort_by { |a| [a[:max_bid],
@@ -126,55 +176,6 @@ class Auction < ActiveRecord::Base
     else
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:listing_details][:end_time],
                                          a.item[:get_item_response][:item][:title]] }
-    end
-  end
-  
-  # Calculates the time remaining on the auction minus 5 minutes
-  def get_enqueue_time
-    return Time.parse(self.item[:get_item_response][:item][:listing_details][:end_time]).localtime - Time.now - 300
-  end
-  
-  # Extracts the item_id from the URL if the entry is not only digits. Otherwise, the entry is just returned.
-  def parse_url_for_item_id
-    if self.item_id.match(/\D*/).to_s.length != 0
-      return self.item_id.match(/item=\d*\D/).to_s.gsub!(/\D+/, "")
-    else
-      return self.item_id
-    end
-  end
-
-  def update_auction
-    if self.auction_status == "Active"
-      self.item = EbayAction.new(self.user).get_item(self.item_id, "")
-      self.find_status
-      self.save
-    end
-  end
-  
-  # Finds the current status of the auction (active, won, lost, etc)
-  def find_status
-    # If the auction is over, check if we won or lost
-    if self.item[:get_item_response][:item][:time_left] == "PT0S" && self.auction_status != "Deleted"
-      begin
-        if self.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == self.user.username
-          self.auction_status = "Won"
-          message = "Congratulations! You won the auction for \"#{auction.item[:get_item_response][:item][:title][0,113]}\"! :)"
-        else
-          self.auction_status = "Lost"
-          message = "Sorry, but you have lost the auction for \"#{auction.item[:get_item_response][:item][:title][0,113]}\". :("
-        end
-      rescue
-        # There was no high_bidder, which means no one bid.
-        self.auction_status = "Lost"
-      end
-      
-      # Send out the notification of win/loss.
-      if self.user_notification == "Text Message"
-        Resque.enqueue(NotificationSender, self.id, message)
-        self.been_notified = self.id.to_s + ",#{self.auction_status.downcase}"
-      end
-    elsif self.auction_status != "Deleted"
-      self.auction_status = "Active"
     end
   end
   

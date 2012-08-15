@@ -13,17 +13,6 @@ class AuctionsController < ApplicationController
     end
   end
 
-  # GET /auctions/1
-  # GET /auctions/1.json
-  def show
-    @auction = Auction.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @auction }
-    end
-  end
-
   # GET /auctions/new
   # GET /auctions/new.json
   def new
@@ -89,19 +78,12 @@ class AuctionsController < ApplicationController
     @auction.update_attributes :auction_status => "Deleted"
 
     respond_to do |format|
-      format.html { redirect_to auctions_url + "?status=All" }
+      format.html { redirect_to auctions_url }
       format.json { head :no_content }
     end
   end
   
-  # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
-  def remove_multiple
-    @auctions = Auction.find(params[:auction_ids])
-    @auctions.each do |auction|
-      auction.update_attributes!(params[:auction].reject { |k,v| v.blank? })
-    end
-  end
-  
+  # Restores a deleted auction
   def restore
     @auction = Auction.find(params[:id])
     Resque.remove_delayed(AuctionBidder, @auction.id)
@@ -115,6 +97,26 @@ class AuctionsController < ApplicationController
         format.html { render action: "edit" }
       end
     end
+  end
+  
+  # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
+  def remove_multiple
+    #@auctions = Auction.find(params[:auction_ids])
+    #@auctions.each do |auction|
+    #  auction.update_attributes!(params[:auction].reject { |k,v| v.blank? })
+    #end
+    
+    redirect_to auctions_path
+  end
+  
+  # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
+  def restore_multiple
+    #@auctions = Auction.find(params[:auction_ids])
+    #@auctions.each do |auction|
+    #  auction.update_attributes!(params[:auction].reject { |k,v| v.blank? })
+    #end
+    
+    redirect_to auctions_path
   end
   
   def update_info

@@ -1,0 +1,28 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+	  <th width="10%">Picture</th>
+      <th width="60%">Item</th>
+	  <th width="8%">Time Left</th>
+	  <th>Current price</th>
+      <th>Max bid</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @auctions.each do |auction| %>
+	  <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
+		<td style="vertical-align: middle; text-align: center;"><%= image_tag auction.picture[0], :maxsize => "100x100" %></td>
+		<td>
+		<h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 60) %></h3>
+		<%= truncate(strip_tags(auction.item[:get_item_response][:item][:description]),
+								:length => 300, :separator => ' ') %>
+		</td>
+		<td><%= get_time_remaining auction %></td>
+		<td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %></td>
+		<td><%= number_to_currency auction.max_bid %></td>
+	  </tr>
+	  <% if false %><td><%= check_box_tag 'auction_ids[]', auction.id, false, :id => auction.id %></td><% end %>
+	<% end %>
+  </tbody>
+</table>

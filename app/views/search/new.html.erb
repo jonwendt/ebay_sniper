@@ -2,5 +2,13 @@
 <br>
 
 <div id="results">
-  <%= render :partial => "results" %>
+  <% if @auctions != [] %>
+    <%= render :partial => "results" %>
+  <% else %>
+	<div class="alert alert-error">
+	  <strong>Sorry!</strong> Your search returned no results. Try using less words and then work your way up to more specific search terms.
+	  <br><br>
+	  You can search through your added auctions by title, description, item ID, current price, and max bid.
+	</div>
+  <% end %>
 </div>

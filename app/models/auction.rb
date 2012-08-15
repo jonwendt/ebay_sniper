@@ -153,7 +153,7 @@ class Auction < ActiveRecord::Base
         end
       end
     end
-    
+    auctions
     if sort == "title_asc" || sort == nil || sort == ""
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:title]] }
     elsif sort == "max_bid_asc"

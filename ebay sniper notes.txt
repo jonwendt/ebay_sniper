@@ -50,13 +50,13 @@ Can link_to point to an object's method? Would probably be faster for Refresh Au
 
 PROBLEM WITH FOREIGN CURRENCY: Auction prices are automatically converted to the locale of the user, but max bid is not. Must convert that to user's locale (grab from ebay?) and then figure out how to convert it from the user's local currency to the buyer's local currency on bidding.
 
-Started to make search bar AJAX, but had problems. Is there a way to send the request as remote if the user is already on the search page, but send it as html if the user is not on the search page? I don't want the user to have to press back a million times if they do a bunch of searches.
-
 Things to add to auction#edit:
 Current price and bidding information (i.e., reserve price status)
 Seller ID and feedback score
 Shipping information
 Payment options
+
+Started to make search bar AJAX, but had problems. Is there a way to send the request as remote if the user is already on the search page, but send it as html if the user is not on the search page? I don't want the user to have to press back a million times if they do a bunch of searches.
 
 Change link hover effect
 
@@ -64,6 +64,11 @@ Make it so clicking the delete/restore checkbox in auction#index doesn't activat
 
 Uncomment the lines in auction.find_status that notify user if they won/lost an auction. (Commented because I don't want 50 texts about my test auctions)
 
+Change Add Auction to a modal dialogue pop-up
+
+
+Stop 8:30
+Start 1:10
 
 
 ----------Things to change once app is hosted elsewhere----------------

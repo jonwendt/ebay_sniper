@@ -2,7 +2,7 @@
 <h1 align="center">Listing Details</h1>
 <br>
 <br>
-<div class="row">
+<div class="row-fluid">
   <div class="span4" align="center">
 	<div class="vcenter">
 	  <div class="canvas" style="vertical-align: middle;" id="ebay_pic">
@@ -12,7 +12,7 @@
 	  <% hash = Hash[@auction.picture.map.with_index{|*ki| ki}] %>
 	  <ul class="thumbnails">
 	    <% @auction.picture.each do |pic| %>
-	      <li class="span1">
+	      <li class="span3">
 			<%= link_to image_tag(pic), edit_auction_path(:pic => hash[pic]), :class => "thumbnail", :remote => true %>
 	      </li>
 	    <% end %>

@@ -94,5 +94,4 @@ class EbayAction
       end
     end
   end
-  
 end

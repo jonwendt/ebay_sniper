@@ -2,19 +2,18 @@
 <div class="row-fluid">
 <div class="span12">  
 <ul class="nav nav-pills">
-  <li class="<%= 'active' if current_user.preferred_status == 'All' || current_user.preferred_status == nil ||
-	current_user.preferred_status == "" %>"><%= link_to 'All',
-	auctions_path(:status => "All", :sort => params[:sort]), :method => :get, :remote => true %></li>
+  <li class="<%= 'active' if current_user.preferred_status == 'All' %>"><%= link_to 'All',
+	auctions_path(:status => "All"), :method => :get, :remote => true %></li>
   <li class="<%= 'active' if current_user.preferred_status == 'Active' %>"><%= link_to 'Active',
-	auctions_path(:status => "Active", :sort => params[:sort]), :method => :get, :remote => true %></li>
+	auctions_path(:status => "Active"), :method => :get, :remote => true %></li>
   <li class="<%= 'active' if current_user.preferred_status == 'Won' %>"><%= link_to 'Won',
-	auctions_path(:status => "Won", :sort => params[:sort]), :method => :get, :remote => true %></li>
+	auctions_path(:status => "Won"), :method => :get, :remote => true %></li>
   <li class="<%= 'active' if current_user.preferred_status == 'Lost' %>"><%= link_to 'Lost',
-	auctions_path(:status => "Lost", :sort => params[:sort]), :method => :get, :remote => true %></li>
+	auctions_path(:status => "Lost"), :method => :get, :remote => true %></li>
   <li class="<%= 'active' if current_user.preferred_status == 'Ended' %>"><%= link_to 'Ended',
-	auctions_path(:status => "Ended", :sort => params[:sort]), :method => :get, :remote => true %></li>
+	auctions_path(:status => "Ended"), :method => :get, :remote => true %></li>
   <li class="<%= 'active' if current_user.preferred_status == 'Deleted' %>"><%= link_to 'Deleted',
-	auctions_path(:status => "Deleted", :sort => params[:sort]), :method => :get, :remote => true %></li>
+	auctions_path(:status => "Deleted"), :method => :get, :remote => true %></li>
   <li class="pull-right">
   <%= form_tag(auctions_path, :method => :get, :remote => true) do |f| %>
 	<%= select_tag :sort, "<option value='time_asc'>Time: sooner-later</option>
@@ -33,7 +32,7 @@
 </div>
 
 
-<% if params[:status] != "Deleted" %>
+<% if current_user.preferred_status != "Deleted" %>
   <% path = remove_multiple_auctions_path %>
 <% else %>
   <% path = restore_multiple_auctions_path %>
@@ -41,59 +40,49 @@
 
 <%= form_tag path, :method => :post do %>
 
-<% if @auctions != [] %>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-	    <th width="10%">Picture</th>
-        <th width="50%">Item</th>
-	    <th width="9%">Time Left</th>
-	    <th width="9%">Price</th>
-        <th width="9%">Max bid</th>
-	    <% if params[:status] != "Deleted" %>
-	      <th width="3%">Delete</th>
-	    <% else %>
-	      <th width="3%">Restore</th>
+  <% if @auctions != [] %>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+	      <th width="10%">Picture</th>
+          <th width="50%">Item</th>
+	      <th width="9%">Time Left</th>
+	      <th width="9%">Price</th>
+          <th width="9%">Max bid</th>
+	      <% if params[:status] != "Deleted" %>
+	        <th width="3%">Delete</th>
+	      <% else %>
+	        <th width="3%">Restore</th>
+	      <% end %>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @auctions.each do |auction| %>
+	      <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
+		    <td style="vertical-align: middle; text-align: center;"><%= image_tag auction.picture[0] %></td>
+		    <td>
+		    <h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 55) %></h3>
+		    <%= truncate(strip_tags(auction.item[:get_item_response][:item][:description]), :length => 300, :separator => ' ') %>
+		    </td>
+		    <td><%= get_time_remaining auction %></td>
+		    <td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %></td>
+		    <td><%= number_to_currency auction.max_bid %></td>
+		    <td style="text-align: center;"><%= check_box_tag 'auction_ids[]', auction.id, false %></td>
+	      </tr>
 	    <% end %>
-      </tr>
-    </thead>
+      </tbody>
+    </table>
+    <br>
+  <% end %>
 
-    <tbody>
-      <% @auctions.each do |auction| %>
-	    <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
-		  <td style="vertical-align: middle; text-align: center;"><%= image_tag auction.picture[0] %></td>
-		  <td>
-		  <h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 55) %></h3>
-		  <%= truncate(strip_tags(auction.item[:get_item_response][:item][:description]), :length => 300, :separator => ' ') %>
-		  </td>
-		  <td><%= get_time_remaining auction %></td>
-		  <td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %></td>
-		  <td><%= number_to_currency auction.max_bid %></td>
-		  <td style="text-align: center;"><%= check_box_tag 'auction_ids[]', auction.id, false %></td>
-	    </tr>
-	  <% end %>
-    </tbody>
-  </table>
-  <br>
-<% end %>
+  <%= link_to 'New Auction', new_auction_path, :class => "btn btn-primary" %> |
 
-<%= link_to 'New Auction', new_auction_path, :class => "btn btn-primary" %> |
-
-<% if false %>
-<% if params[:status] != "Deleted" %>
-  <%= link_to "Delete Checked Auctions", remove_multiple_auctions_path, :data => {
-	confirm: 'Are you sure you want to delete all checked auctions?' }, :method => :post, :class => "btn btn-danger" %>
-<% else %>
-<%= link_to "Restore Checked Auctions", restore_multiple_auctions_path, :data => {
-	confirm: 'Are you sure you want to delete all checked auctions?' }, :method => :post, :class => "btn btn-danger" %>
-<% end %>
-<% end %>
-
-<% if params[:status] != "Deleted" %>
-  <% button_title = "Delete Checked Auctions" %>
-<% else %>
-  <% button_title = "Restore Checked Auctions" %>
-<% end %>
-<button type="submit" class="btn btn-danger"><%= button_title %></button>
+  <% if current_user.preferred_status != "Deleted" %>
+    <% button_title = "Delete Checked Auctions" %>
+  <% else %>
+    <% button_title = "Restore Checked Auctions" %>
+  <% end %>
+  <button type="submit" class="btn btn-danger"><%= button_title %></button>
 
 <% end %>

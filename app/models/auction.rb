@@ -87,7 +87,7 @@ class Auction < ActiveRecord::Base
 
   def update_auction
     if self.auction_status == "Active"
-      self.item = EbayAction.new(self.user).get_item(self.item_id, "")
+      self.item = EbayAction.new(self.user).get_item(self.item_id, nil)
       self.find_status
       self.save
     end
@@ -101,10 +101,10 @@ class Auction < ActiveRecord::Base
       begin
         if self.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == self.user.username
           self.auction_status = "Won"
-          message = "Congratulations! You won the auction for \"#{auction.item[:get_item_response][:item][:title][0,113]}\"! :)"
+          message = "Congratulations! You won the auction for \"#{self.item[:get_item_response][:item][:title][0,113]}\"! :)"
         else
           self.auction_status = "Lost"
-          message = "Sorry, but you have lost the auction for \"#{auction.item[:get_item_response][:item][:title][0,113]}\". :("
+          message = "Sorry, but you have lost the auction for \"#{self.item[:get_item_response][:item][:title][0,113]}\". :("
         end
       rescue
         # There was no high_bidder, which means no one bid.

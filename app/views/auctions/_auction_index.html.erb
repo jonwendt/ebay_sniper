@@ -2,21 +2,21 @@
 <div class="row-fluid">
 <div class="span12">  
 <ul class="nav nav-pills">
-  <li class="<%= 'active' if params[:status] == 'All' || params[:status] == nil || params[:status] == "" %>"><%= link_to 'All',
+  <li class="<%= 'active' if current_user.preferred_status == 'All' || current_user.preferred_status == nil ||
+	current_user.preferred_status == "" %>"><%= link_to 'All',
 	auctions_path(:status => "All", :sort => params[:sort]), :method => :get, :remote => true %></li>
-  <li class="<%= 'active' if params[:status] == 'Active' %>"><%= link_to 'Active',
+  <li class="<%= 'active' if current_user.preferred_status == 'Active' %>"><%= link_to 'Active',
 	auctions_path(:status => "Active", :sort => params[:sort]), :method => :get, :remote => true %></li>
-  <li class="<%= 'active' if params[:status] == 'Won' %>"><%= link_to 'Won',
+  <li class="<%= 'active' if current_user.preferred_status == 'Won' %>"><%= link_to 'Won',
 	auctions_path(:status => "Won", :sort => params[:sort]), :method => :get, :remote => true %></li>
-  <li class="<%= 'active' if params[:status] == 'Lost' %>"><%= link_to 'Lost',
+  <li class="<%= 'active' if current_user.preferred_status == 'Lost' %>"><%= link_to 'Lost',
 	auctions_path(:status => "Lost", :sort => params[:sort]), :method => :get, :remote => true %></li>
-  <li class="<%= 'active' if params[:status] == 'Ended' %>"><%= link_to 'Ended',
+  <li class="<%= 'active' if current_user.preferred_status == 'Ended' %>"><%= link_to 'Ended',
 	auctions_path(:status => "Ended", :sort => params[:sort]), :method => :get, :remote => true %></li>
-  <li class="<%= 'active' if params[:status] == 'Deleted' %>"><%= link_to 'Deleted',
+  <li class="<%= 'active' if current_user.preferred_status == 'Deleted' %>"><%= link_to 'Deleted',
 	auctions_path(:status => "Deleted", :sort => params[:sort]), :method => :get, :remote => true %></li>
   <li class="pull-right">
   <%= form_tag(auctions_path, :method => :get, :remote => true) do |f| %>
-	<%= hidden_field_tag :status, params[:status] %>
 	<%= select_tag :sort, "<option value='time_asc'>Time: sooner-later</option>
 	  <option value='time_desc'>Time: later-sooner</option><option value='title_asc'>Title: A-Z</option>
 	  <option value='title_desc'>Title: Z-A</option><option value='price_asc'>Current Price: low-high</option>

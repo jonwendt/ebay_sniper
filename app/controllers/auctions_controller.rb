@@ -4,7 +4,13 @@ class AuctionsController < ApplicationController
   # GET /auctions
   # GET /auctions.json
   def index
-    @auctions = Auction.sort_auctions(params[:status], params[:sort], current_user)
+    if params[:status] != nil
+      current_user.update_attributes :preferred_status => params[:status]
+    end
+    if params[:sort] != nil
+      current_user.update_attributes :preferred_sort => params[:sort]
+    end
+    @auctions = Auction.sort_auctions(current_user)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -113,7 +119,7 @@ class AuctionsController < ApplicationController
   def restore_multiple
     auctions = Auction.find(params[:auction_ids])
     auctions.each do |auction|
-      auction.update_attributes :auction_status => "Ended"
+      auction.update_attributes :auction_status => "Active"
       auction.update_auction
     end
     

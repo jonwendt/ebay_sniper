@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :auth_token, :username, :phone_number, :id
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :auth_token, :username, :phone_number, :id, :preferred_status, :preferred_sort
   has_many :auctions, dependent: :destroy
   validates :phone_number, :allow_blank => true, :length => { :is => 12 }, :format => { :with => /^[+]\d+\z/,
     :message => "should include your country code. A US number would be +1##########." }

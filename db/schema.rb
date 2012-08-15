@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120808003831) do
+ActiveRecord::Schema.define(:version => 20120815210307) do
 
   create_table "auctions", :force => true do |t|
     t.string   "item_id"
@@ -51,6 +51,8 @@ ActiveRecord::Schema.define(:version => 20120808003831) do
     t.datetime "auth_token_exp",         :default => '2012-08-13 22:35:03', :null => false
     t.string   "username"
     t.string   "session_id"
+    t.string   "preferred_status",       :default => "All"
+    t.string   "preferred_sort",         :default => "title_asc"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

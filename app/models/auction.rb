@@ -123,26 +123,28 @@ class Auction < ActiveRecord::Base
   end
   
   # Returns the appropriate auctions based on the user's selected auction status preference.
-  def self.sort_auctions(status, sort, current_user)
+  def self.sort_auctions(current_user)
     auctions = []
     # If the status == "Ended" return all Won, Lost, and Ended
-    if status == "Ended"
-      status = %w[Won Lost Ended]
+    if current_user.preferred_status == "Ended"
+      current_user.preferred_status = %w[Won Lost]
       current_user.auctions.each do |auction|
-        if status.include? auction.auction_status
+        if current_user.preferred_status.include? auction.auction_status
           auctions.push auction
         end
       end
-    elsif status == nil || status == "All"
+      # Have to set back to Ended so the nav pills update correctly.
+      current_user.preferred_status = "Ended"
+    elsif current_user.preferred_status == nil || current_user.preferred_status == "All"
       current_user.auctions.each do |auction|
         if auction.auction_status != "Deleted"
           auctions.push auction
         end
       end
-    elsif %w[Won Lost Active Deleted].include? status
+    elsif %w[Won Lost Active Deleted].include? current_user.preferred_status
       # Else, just match the status
       current_user.auctions.each do |auction|
-        if auction.auction_status == status.to_s
+        if auction.auction_status == current_user.preferred_status.to_s
           auctions.push auction
         end
       end
@@ -155,23 +157,23 @@ class Auction < ActiveRecord::Base
       end
     end
     auctions
-    if sort == "title_asc" || sort == nil || sort == ""
+    if current_user.preferred_sort == "title_asc" || current_user.preferred_sort == nil || current_user.preferred_sort == ""
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:title]] }
-    elsif sort == "max_bid_asc"
+    elsif current_user.preferred_sort == "max_bid_asc"
       auctions = auctions.sort_by { |a| [a[:max_bid],
                                          a.item[:get_item_response][:item][:title]] }
-    elsif sort == "price_asc"
+    elsif current_user.preferred_sort == "price_asc"
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:selling_status][:converted_current_price],
                                          a.item[:get_item_response][:item][:title]] }
-    elsif sort == "title_desc"
+    elsif current_user.preferred_sort == "title_desc"
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:title]] }.reverse
-    elsif sort == "max_bid_desc"
+    elsif current_user.preferred_sort == "max_bid_desc"
       auctions = auctions.sort_by { |a| [-a[:max_bid],
                                          a.item[:get_item_response][:item][:title]] }
-    elsif sort == "price_desc"
+    elsif current_user.preferred_sort == "price_desc"
       auctions = auctions.sort_by { |a| [-a.item[:get_item_response][:item][:selling_status][:converted_current_price].to_f,
                                          a.item[:get_item_response][:item][:title]] }
-    elsif sort == "time_desc"
+    elsif current_user.preferred_sort == "time_desc"
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:listing_details][:end_time],
                                          a.item[:get_item_response][:item][:title]] }.reverse
     else

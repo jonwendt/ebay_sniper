@@ -14,21 +14,13 @@ Instead of automatically reloading an active auction's data when it's clicked, m
 
 Just start like 50 workers for the auction_bidder job for now, then work on dynamic worker creation (with a ceiling)
 
-# In AuctionBidder, use $redis.setex("ebaysniper:auction:#{auction.id}") = "#{Socket.gethostname}:#{Process.pid}" to create a key
-# that expires in 6 minutes (or just longer than the job will need to complete). Then, in QueueAuctionBidder, get a collection of
-# all active auctions that end in less than 5 minutes (or auctions that should have their own workers). Then, get a collection of
-# all redis keys pertaining to bidder jobs that should be running by calling $redis.keys("ebaysniper:auction:*"). Then, loop through
-# the collection of redis keys, checking the auction.id in the keys against every auction that should be running. If there are any
-# auctions that should be running, but no keys exist pertaining to that auction, then Resque.Enqueue(AuctionBidder, auction.id)
-If auction job failed, kill process by pid
-
 Go through the other generated devise views and bootstrapify them.
 
 Check if has_reserve_price == true, then if converted_reserve_price is higher than max bid. If yes, notify the user.
 
 Override links that have already been clicked. Color shouldn't change.
 
-Thumbnail hover background color shouldn't be black
+Thumbnail hover background color shouldn't be black (should change with link hover effect)
 
 Workover auction bidder to perfect timing. Aim for under 3-4 seconds before auction end every time with no losses (if I'm the only bidder).
 
@@ -66,8 +58,6 @@ Uncomment the lines in auction.find_status that notify user if they won/lost an 
 
 Change Add Auction to a modal dialogue pop-up
 
-
-Add a sort and status field to User and every time status and sort params are different than fields in user, change them. In sort status, just load from user object.
 
 
 ----------Things to change once app is hosted elsewhere----------------

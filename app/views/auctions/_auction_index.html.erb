@@ -59,9 +59,10 @@
 
       <tbody>
         <% @auctions.each do |auction| %>
-	      <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
-		    <td style="vertical-align: middle; text-align: center;"><%= image_tag auction.picture[0] %></td>
-		    <td>
+	      <tr>
+		    <td style="vertical-align: middle; text-align: center;" onclick="location.href='<%= edit_auction_path(auction) %>'">
+			  <%= image_tag auction.picture[0] %></td>
+		    <td onclick="location.href='<%= edit_auction_path(auction) %>'" onmouseover="this.style.cursor='hand'">
 		    <h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 55) %></h3>
 		    <%= truncate(strip_tags(auction.item[:get_item_response][:item][:description]), :length => 300, :separator => ' ') %>
 		    </td>

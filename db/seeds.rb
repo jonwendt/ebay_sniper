@@ -72,3 +72,5 @@ auction.user_id = User.first.id
 auction.user_notification = "Do not notify"
 auction.max_bid = max_bid
 auction.save
+auction.enqueue_job
+

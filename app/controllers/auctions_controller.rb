@@ -127,8 +127,8 @@ class AuctionsController < ApplicationController
   end
   
   def update_info
-    @auction = Auction.find(params[:id])
-    @auction.update_auction
+    auction = Auction.find(params[:id])
+    auction.update_auction
     
     redirect_to edit_auction_path
   end

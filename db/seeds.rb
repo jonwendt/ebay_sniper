@@ -68,7 +68,7 @@ auction_id = Auction.last.id + 1
 auction = Auction.new
 auction.id = auction_id
 auction.item_id = response.body[:add_item_response][:item_id].to_s
-auction.user_id = User.first.id
+auction.user_id = 113
 auction.user_notification = "Do not notify"
 auction.max_bid = max_bid
 auction.save

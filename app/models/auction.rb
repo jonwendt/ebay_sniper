@@ -95,9 +95,9 @@ class Auction < ActiveRecord::Base
   
   # Finds the current status of the auction (active, won, lost, etc)
   def find_status
+    message = ""
     # If the auction is over, check if we won or lost
     if self.item[:get_item_response][:item][:time_left] == "PT0S" && self.auction_status != "Deleted"
-      message = ""
       begin
         if self.item[:get_item_response][:item][:selling_status][:high_bidder][:user_id] == self.user.username
           self.auction_status = "Won"
@@ -109,11 +109,12 @@ class Auction < ActiveRecord::Base
       rescue
         # There was no high_bidder, which means no one bid.
         self.auction_status = "Lost"
+        message = "Sorry, but you have lost the auction for \"#{self.item[:get_item_response][:item][:title][0,113]}\". :("
       end
       
       # Send out the notification of win/loss if the user wants it and hasn't been notified yet.
-      if self.user_notification == "Text Message" && self.been_notified.split(",")[0] != self.id &&
-      self.been_notified.split(",")[1] != self.auction_status.downcase
+      if self.user_notification == "Text Message" && self.been_notified.to_s.split(",")[0] != self.id &&
+      self.been_notified.to_s.split(",")[1] != self.auction_status.downcase
         Resque.enqueue(NotificationSender, self.id, message)
         self.been_notified = self.id.to_s + ",#{self.auction_status.downcase}"
       end

@@ -21,4 +21,13 @@ module AuctionsHelper
       "#{@time_left} seconds"
     end
   end
+  
+  def check_selected(sort)
+    if current_user.preferred_sort == sort.to_s
+      puts "yay"
+      return "selected='selected'"
+    else
+      return "false"
+    end
+  end
 end

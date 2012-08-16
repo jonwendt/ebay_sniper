@@ -14,3 +14,7 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require_tree .
+
+function deleteAuction(id) {
+	$.ajax({url: "/auctions/" + id + ".json", type: "DELETE"}).done(function() { $("[auction-id='" + id +"']").parent().detach(); });
+}

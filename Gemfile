@@ -32,7 +32,7 @@ gem 'bootstrap-sass'
 gem 'resque'
 gem 'resque-scheduler', :require => 'resque_scheduler'
 gem 'twilio-ruby'
-
+gem 'mechanize'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

@@ -23,7 +23,7 @@
 	      <li class="pull-right"><%= link_to('Login', new_user_session_path) %></li>
 	  	<% end %>
 		<% if user_signed_in? %>
-    	  <li class="pull-right"><%= link_to('Edit Account', edit_user_registration_path) %></li>
+		  <li class="pull-right"><a data-toggle="modal" href="#edit_account">Edit Account</a></li>
   		<% else %>
     	  <li class="pull-right"><%= link_to('Sign up', new_user_registration_path) %></li>
   		<% end %>

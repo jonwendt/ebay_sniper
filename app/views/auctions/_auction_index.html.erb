@@ -15,17 +15,18 @@
   <li class="<%= 'active' if current_user.preferred_status == 'Deleted' %>"><%= link_to 'Deleted',
 	auctions_path(:status => "Deleted"), :method => :get, :remote => true %></li>
   <li class="pull-right">
-  <%= form_tag(auctions_path, :method => :get, :remote => true) do |f| %>
-	<%= select_tag :sort, "<option value='time_asc'>Time: sooner-later</option>
-	  <option value='time_desc' #{ check_selected 'time_desc' }>Time: later-sooner</option>
-	  <option value='title_asc' #{ check_selected 'title_asc' }>Title: A-Z</option>
-	  <option value='title_desc' #{ check_selected 'title_desc' }>Title: Z-A</option>
-	  <option value='price_asc' #{ check_selected 'price_asc' }>Current Price: low-high</option>
-	  <option value='price_desc' #{ check_selected 'price_desc' }>Current Price: high-low</option>
-	  <option value='max_bid_asc' #{ check_selected 'max_bid_asc' }>Max Bid: low-high</option>
-	  <option value='max_bid_desc' #{ check_selected 'max_bid_desc' }>Max Bid: high-low</option>".html_safe,
-	  :onchange => "$(this.form).submit();",
-	  :method => :get %>
+    <%= form_tag(auctions_path, :method => :get, :remote => true) do |f| %>
+      Sort by:
+	  <%= select_tag :sort, "<option value='time_asc'>Time: sooner-later</option>
+	    <option value='time_desc' #{ check_selected 'time_desc' }>Time: later-sooner</option>
+	    <option value='title_asc' #{ check_selected 'title_asc' }>Title: A-Z</option>
+	    <option value='title_desc' #{ check_selected 'title_desc' }>Title: Z-A</option>
+	    <option value='price_asc' #{ check_selected 'price_asc' }>Current Price: low-high</option>
+	    <option value='price_desc' #{ check_selected 'price_desc' }>Current Price: high-low</option>
+	    <option value='max_bid_asc' #{ check_selected 'max_bid_asc' }>Max Bid: low-high</option>
+	    <option value='max_bid_desc' #{ check_selected 'max_bid_desc' }>Max Bid: high-low</option>".html_safe,
+	    :onchange => "$(this.form).submit();",
+	    :method => :get %>
 	<% end %>
   </li>
 </ul>
@@ -80,8 +81,8 @@
     </table>
     <br>
   <% end %>
-
-  <%= link_to 'New Auction', new_auction_path, :class => "btn btn-primary" %> |
+	
+  <a data-toggle="modal" href="#new_auction" class="btn btn-primary">Add Auction</a> |
 
   <button type="submit" class="btn btn-danger"><%= button_title %></button>
 

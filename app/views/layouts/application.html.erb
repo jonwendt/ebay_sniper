@@ -35,13 +35,13 @@
 		    <div>
 			  <a class="close" data-dismiss="modal">×</a>
 		    </div>
-			<% @auction = Auction.new %>
-		  	<%= form_for(@auction) do |f| %>
-			  <% if @auction.errors.any? %>
+			<% auction = Auction.new %>
+		  	<%= form_for(auction) do |f| %>
+			  <% if auction.errors.any? %>
 			    <div id="error_explanation">
-			      <h2><%= pluralize(@auction.errors.count, "error") %> prohibited this auction from being saved:</h2>
+			      <h2><%= pluralize(auction.errors.count, "error") %> prohibited this auction from being saved:</h2>
 			      <ul>
-			  	    <% @auction.errors.full_messages.each do |msg| %>
+			  	    <% auction.errors.full_messages.each do |msg| %>
 			          <li><%= msg %></li>
 			  	    <% end %>
 			  	  </ul>
@@ -55,14 +55,14 @@
 			  	  <label class="control-label" for="item_id">eBay URL or item number</label>
 			  	  <div class="controls">
 			  		<%= f.text_field :item_id %>
-			  	  </div> 
+			  	  </div>
 				</div>
 			    <br>
 			    <div class="control-group">
 			      <label class="control-label" for="max_bid">Max bid</label>
 			      <div class="controls">
 			  	    <%= f.text_field :max_bid %>
-			      </div> 
+			      </div>
 			    </div>
 			    <br>
 			    <div class="control-group">
@@ -84,9 +84,75 @@
 		      <div class="modal-footer" style="text-align: left;">
 			    <button type="submit" class="btn btn-primary">Create Auction</button> |
 		        <a href="#" class="btn" data-dismiss="modal">Close</a>
-		      </div>	
+		      </div>
 			<% end %>
-		  </div>	
+		  </div>
+		
+		  <div id="edit_account" class="modal hide fade in" style="display: none; height: auto;">
+		    <div>
+			  <a class="close" data-dismiss="modal">×</a>
+		    </div>
+			<% user = current_user %>
+		  	<%= form_for(user) do |f| %>
+			  <% if user.errors.any? %>
+			    <div id="error_explanation">
+			      <h2><%= pluralize(user.errors.count, "error") %> prohibited this auction from being saved:</h2>
+			      <ul>
+			  	    <% user.errors.full_messages.each do |msg| %>
+			          <li><%= msg %></li>
+			  	    <% end %>
+			  	  </ul>
+			    </div>
+			    <br>
+			  <% end %>
+			  <div class="modal-body">
+				<legend>Edit Account</legend>
+				<br>
+				<div class="control-group">
+				  <label class="control-label" for="item_id">Email</label>
+			   	  <div class="controls">
+				    <%= f.text_field :email %>
+				  </div>
+				</div>
+				<br>
+				<div class="control-group">
+				  <label class="control-label" for="item_id">Password (leave blank if you don't want to change it)</label>
+				  <div class="controls">
+				    <%= f.password_field :password, :autocomplete => "off" %>
+				  </div>
+				</div>
+				<br>
+				<div class="control-group">
+				  <label class="control-label" for="item_id">Password confirmation</label>
+				  <div class="controls">
+				    <%= f.password_field :password_confirmation %>
+				  </div>
+				</div>
+				<br>
+				<div class="control-group">
+				  <label class="control-label" for="item_id"><b>Current password</b> (needed to confirm changes)</label>
+			   	  <div class="controls">
+				    <%= f.password_field :current_password %>
+				  </div>
+				</div>
+				<br>
+				<div class="control-group">
+				  <label class="control-label" for="item_id">Phone number</label>
+				  <div class="controls">
+				 	<%= f.text_field :phone_number %>
+				  </div>
+				</div>
+				<br>
+		      </div>
+		      <div class="modal-footer" style="text-align: left;">
+			    <button type="submit" class="btn btn-primary">Save Changes</button> |
+				<%= link_to "Change eBay accounts", user_consent_failed_path + "?user_id=#{user.id}", :class => "btn btn-inverse" %> |
+				<%= link_to "Delete account", registration_path(user), :data => { :confirm => "Are you sure?" },
+					:method => :delete, :class => "btn btn-danger" %> |
+		        <a href="#" class="btn" data-dismiss="modal">Close</a>
+		      </div>
+			<% end %>
+		  </div>
 
 
           <footer>

@@ -3,9 +3,9 @@ class AuctionBidder
   
   def self.perform(auction_id)
     
-    $redis.setex("ebay_sniper:auction:#{auction_id}", 6.minutes.to_i, "#{Socket.gethostname}:#{Process.pid}")
     auction = Auction.find(auction_id)
     ebay = EbayAction.new(auction.user)
+    $redis.setex("ebay_sniper:auction:#{auction_id}", 6.minutes.to_i, "#{Socket.gethostname}:#{Process.pid}")
     
     if auction.auction_status != "Deleted"
       # Update auction info

@@ -52,9 +52,11 @@ class AuctionsController < ApplicationController
         # Needs to be enqueued after save so auction has ID
         @auction.enqueue_job
         format.html { redirect_to edit_auction_path(@auction.id), notice: "Auction was successfully created." }
+        format.js { redirect_to edit_auction_path(@auction.id), notice: "Auction was successfully created." }
         format.json { render json: @auction, status: :created, location: @auction }
       else
         format.html { render action: "new" }
+        format.js { render @auction.errors }
         format.json { render json: @auction.errors, status: :unprocessable_entity }
       end
     end
@@ -92,23 +94,18 @@ class AuctionsController < ApplicationController
   # Restores a deleted auction
   def restore
     @auction = Auction.find(params[:id])
-    Resque.remove_delayed(AuctionBidder, @auction.id)
     @auction.auction_status = "Active" # So find_status won't ignore it. --- @auction.activate!
     @auction.find_status
+    @auction.enqueue_job
     
-    respond_to do |format|
-      if @auction.save
-        format.html { redirect_to edit_auction_path, notice: 'Auction was successfully restored.' }
-      else
-        format.html { render action: "edit" }
-      end
-    end
+    redirect_to edit_auction_path, notice: 'Auction was successfully restored.'
   end
   
   # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
   def remove_multiple
     auctions = Auction.find(params[:auction_ids])
     auctions.each do |auction|
+      Resque.remove_delayed(AuctionBidder, auction.id)
       auction.update_attributes :auction_status => "Deleted"
     end
     
@@ -121,14 +118,15 @@ class AuctionsController < ApplicationController
     auctions.each do |auction|
       auction.update_attributes :auction_status => "Active"
       auction.update_auction
+      auction.enqueue_job
     end
     
     redirect_to auctions_path
   end
   
   def update_info
-    auction = Auction.find(params[:id])
-    auction.update_auction
+    @auction = Auction.find(params[:id])
+    @auction.update_auction
     
     redirect_to edit_auction_path
   end

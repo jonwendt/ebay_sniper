@@ -6,6 +6,7 @@ class Auction < ActiveRecord::Base
   validates_presence_of :item_id, :message => "must be entered."
   validates_inclusion_of :lead_time, :in => 0..3, :allow_blank => true, :message => "can only be between 0 and 3 seconds."
   validates_presence_of :user
+  before_destroy :remove_job
   
   validate :prepare, :on => :create
   validate :user_has_phone_if_notify, :on => :create
@@ -17,6 +18,10 @@ class Auction < ActiveRecord::Base
     if user_notification != "Do not notify" && (user.phone_number == "" || user.phone_number == nil)
       errors.add :user_notification, "requires that you provide a phone number under the \"Edit Account\" page."
     end
+  end
+  
+  def remove_job
+    Resque.remove_delayed(AuctionBidder, self.id)
   end
   
   def item=(value)
@@ -34,6 +39,9 @@ class Auction < ActiveRecord::Base
   def prepare
     # Parse the eBay item URL for the item's ID, then get the item's info
     self.item_id = self.parse_url_for_item_id
+    
+    return false if not self.user
+    
     if self.auction_status == "Active" || self.auction_status == nil
       self.item = EbayAction.new(self.user).get_item(self.item_id, nil)
     end
@@ -73,7 +81,7 @@ class Auction < ActiveRecord::Base
   
   # Calculates the time remaining on the auction minus 5 minutes
   def get_enqueue_time
-    return Time.parse(self.item[:get_item_response][:item][:listing_details][:end_time]).localtime - Time.now - 300
+    return Time.parse(self.item[:get_item_response][:item][:listing_details][:end_time]).localtime - Time.now - 300 
   end
   
   # Extracts the item_id from the URL if the entry is not only digits. Otherwise, the entry is just returned.

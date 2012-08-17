@@ -1,5 +1,3 @@
-Ajax not working properly for auction thumbnails
-
 Change color of divider on auctions/edit, maybe add a different background color to listing details and snipe options to differentiate?
 
 Auction price being returned in Notification read_sms for info is not formatted to currency
@@ -10,8 +8,6 @@ Find out how to force user signout and add to ebayaction request auth_token_exp 
 
 Search eBay funcationality.
 
-Instead of automatically reloading an active auction's data when it's clicked, make a button.
-
 Just start like 50 workers for the auction_bidder job for now, then work on dynamic worker creation (with a ceiling)
 
 Go through the other generated devise views and bootstrapify them.
@@ -21,8 +17,6 @@ Check if has_reserve_price == true, then if converted_reserve_price is higher th
 Override links that have already been clicked. Color shouldn't change.
 
 Thumbnail hover background color shouldn't be black (should change with link hover effect)
-
-Workover auction bidder to perfect timing. Aim for under 3-4 seconds before auction end every time with no losses (if I'm the only bidder).
 
 Maybe queue QueueAuctionUpdater every 3 minutes which splits up the active auctions into sub jobs that update them?
 
@@ -57,6 +51,8 @@ Make it so clicking the delete/restore checkbox in auction#index doesn't activat
 Uncomment the lines in auction.find_status that notify user if they won/lost an auction. (Commented because I don't want 50 texts about my test auctions)
 
 Change Add Auction to a modal dialogue pop-up
+
+Change Edit Account to a modal dialogue pop-up
 
 
 

@@ -1,25 +1,25 @@
 class EbayAction
   
   def initialize(user)
+    @user = user
     @client ||= Savon::Client.new do
       wsdl.endpoint = "https://api.sandbox.ebay.com/wsapi"
       wsdl.namespace = "urn:ebay:apis:eBLBaseComponents"
     end
-    @@user = user
   end
   
   def get_session_id
     runame = "Levion-Leviona4d-c40e--xkueiv"
     session_id = self.request :endpoint => "GetSessionID",
-      :body => { "RuName" => runame, "MessageID" => @@user.id },
+      :body => { "RuName" => runame, "MessageID" => @user.id },
       :header => { "ebl:RequesterCredentials" => { "ebl:Credentials" => {
           "AppId" => "Leviona4d-c40e-454f-9d49-dd510693f96",
           "DevId" => "55831621-5890-4bb6-8efb-83e22e4e731b",
           "AuthCert" => "2a4a78d9-3e13-40c1-86eb-5606300231da" }
       } }
     
-    @@user.session_id = session_id.body[:get_session_id_response][:session_id]
-    @@user.save
+    @user.session_id = session_id.body[:get_session_id_response][:session_id]
+    @user.save
     consent_url = "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName=#{runame}" +
                   "&SessID=#{session_id.body[:get_session_id_response][:session_id]}" +
                   "&ruparams=user_id%3D#{session_id.body[:get_session_id_response][:correlation_id]}"
@@ -27,15 +27,15 @@ class EbayAction
   
   def fetch_token
     auth_token = self.request :endpoint => "FetchToken",
-      :body => { "SessionID" => @@user.session_id },
+      :body => { "SessionID" => @user.session_id },
       :header => { "ebl:RequesterCredentials" => { "ebl:Credentials" => {
           "AppId" => "Leviona4d-c40e-454f-9d49-dd510693f96",
           "DevId" => "55831621-5890-4bb6-8efb-83e22e4e731b",
           "AuthCert" => "2a4a78d9-3e13-40c1-86eb-5606300231da" }
       } }
-    @@user.auth_token = auth_token.body[:fetch_token_response][:e_bay_auth_token]  
-    @@user.auth_token_exp = auth_token.body[:fetch_token_response][:hard_expiration_time]
-    @@user.save
+    @user.auth_token = auth_token.body[:fetch_token_response][:e_bay_auth_token]  
+    @user.auth_token_exp = auth_token.body[:fetch_token_response][:hard_expiration_time]
+    @user.save
   end
   
   def ebay_time
@@ -69,17 +69,20 @@ class EbayAction
     
     # Unless the app is trying to link the user to an eBay account, make sure the auth_token has not expired.
     unless values[:endpoint] == "GetSessionID" || values[:endpoint] == "FetchToken"
-      if @@user.auth_token_exp < Time.now
+      if @user and @user.auth_token_exp < Time.now
         # Force user to sign out
+      elsif @user
+      else
+        return nil
       end
     end
     
-    response = @client.request "#{values[:endpoint]}Request" do
+    response = @client.request "#{values[:endpoint]}Request", user = @user do
       soap.endpoint = "https://api.sandbox.ebay.com/wsapi?siteid=0&routing=beta&callname=" + values[:endpoint] +
         "&version=783&appid=Leviona4d-c40e-454f-9d49-dd510693f96"
       soap.body = { :Version => "783" }
       soap.input = "#{values[:endpoint]}Request", { :xmlns => "urn:ebay:apis:eBLBaseComponents" }
-      soap.header = { "ebl:RequesterCredentials" => { "ebl:eBayAuthToken" => @@user.auth_token,
+      soap.header = { "ebl:RequesterCredentials" => { "ebl:eBayAuthToken" => user.auth_token,
         "ebl:Credentials" => {
             "AppId" => "Leviona4d-c40e-454f-9d49-dd510693f96",
             "DevId" => "55831621-5890-4bb6-8efb-83e22e4e731b",

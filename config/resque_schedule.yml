@@ -11,7 +11,7 @@ queue_auction_bidders:
   description: "This will ensure that auction bidder's are queued at the necessary time."
   
 auction_adder:
-  cron: "*/30 10-20 * * *"
+  cron: "*/30 10-20 * * 1-5"
   class: AuctionAdder
   queue: auction_adder
   description: "Adds an auction to our test account."

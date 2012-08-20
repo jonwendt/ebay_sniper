@@ -67,16 +67,6 @@ class EbayAction
     values[:body] ||= {}
     values[:header] ||= {}
     
-    # Unless the app is trying to link the user to an eBay account, make sure the auth_token has not expired.
-    unless values[:endpoint] == "GetSessionID" || values[:endpoint] == "FetchToken"
-      if @user and @user.auth_token_exp < Time.now
-        # Force user to sign out
-      elsif @user
-      else
-        return nil
-      end
-    end
-    
     response = @client.request "#{values[:endpoint]}Request", user = @user do
       soap.endpoint = "https://api.sandbox.ebay.com/wsapi?siteid=0&routing=beta&callname=" + values[:endpoint] +
         "&version=783&appid=Leviona4d-c40e-454f-9d49-dd510693f96"

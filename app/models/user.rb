@@ -117,7 +117,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :ebay_authenticatable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :auth_token, :username, :phone_number, :id, :preferred_status, :preferred_sort
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :auth_token, :auth_token_exp, :username, :phone_number, :id, :preferred_status, :preferred_sort
   has_many :auctions, dependent: :destroy
   validates :phone_number, :allow_blank => true, :length => { :is => 12 }, :format => { :with => /^[+]\d+\z/,
     :message => "should include your country code. A US number would be +1##########." }
@@ -125,13 +125,21 @@ class User < ActiveRecord::Base
   validate :auth_token_exp, :nil => false
   
   def self.currently_online
-    online_ids = $redis.keys("ebaysniper:online_users:*").map { |v| v.gsub("ebaysniper:online_users:", "") }
+    online_ids = $redis.keys("ebay_sniper:online_users:*").map { |v| v.gsub("ebay_sniper:online_users:", "") }
     User.where(:id => online_ids)
+  end
+  
+  def consent_failed?
+    if self.auth_token_exp < Time.now
+      return true
+    else
+      return false
+    end
   end
   
   def online?
     if self.id
-      return $redis.get("ebaysniper:online_users:#{self.id}") == "1"
+      return $redis.get("ebay_sniper:online_users:#{self.id}") == "1"
     end
     return false
   end

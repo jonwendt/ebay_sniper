@@ -5,11 +5,13 @@ class ApplicationController < ActionController::Base
   
   def update_onlineness
     if self.current_user
-      $redis.setex("ebaysniper:online_users:#{self.current_user.id}", 1.hour.to_i, "1")
-      # Check user's consent_failed column (set to true in EbayAction when the auth_token is expired)
-      #if self.consent_failed?
-      #  redirect_to consent_failed_path
-      #end
+      $redis.setex("ebay_sniper:online_users:#{self.current_user.id}", 1.hour.to_i, "1")
+      
+      # Check if the user's auth_token is expired. If so, redirect to consent_failed page.
+      if self.current_user.consent_failed? && params[:action] != "add_token"
+        self.current_user.update_attributes :auth_token_exp => 1.second.from_now
+        redirect_to user_consent_failed_path(:user_id => current_user.id)
+      end
     end
   end
   

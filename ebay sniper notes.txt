@@ -46,13 +46,11 @@ Started to make search bar AJAX, but had problems. Is there a way to send the re
 
 Change link hover effect
 
-Make it so clicking the delete/restore checkbox in auction#index doesn't activate onclick event
-
 Uncomment the lines in auction.find_status that notify user if they won/lost an auction. (Commented because I don't want 50 texts about my test auctions)
 
-Change Add Auction to a modal dialogue pop-up
+Change Add Auction to a modal dialogue pop-up (display errors)
 
-Change Edit Account to a modal dialogue pop-up
+Change Edit Account to a modal dialogue pop-up (display errors)
 
 
 

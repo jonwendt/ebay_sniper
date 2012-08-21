@@ -13,8 +13,32 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap
-//= require_tree .
+//. require_tree .
 
 function deleteAuction(id) {
 	$.ajax({url: "/auctions/" + id + ".json", type: "DELETE"}).done(function() { $("[auction-id='" + id +"']").parent().detach(); });
 }
+
+
+/* Custom way to update page */
+
+// $(document).ready(function() {
+// 	$("#new_auction").submit(function() {
+// 		$.ajax({ url: "/auctions.json", dataType: "json", type: "POST", data: $(this).serialize(), 
+// 			success: function(data) {
+// 				
+// 				message = "<h2>" + $(data).size() + " " + ($(data).size() != 1 ? "errors" : "error") + " prohibited this auction from being saved:</h2><ul>";
+// 				
+// 				list = $("<ul></ul>");
+// 				
+// 				$(data).each(function(index) {
+// 					list.append("<li>" + this + "</li>");
+// 				});
+// 				
+// 				$("#error_explanation").html(message + list.html());
+// 				$("#error_explanation").show();
+// 			}
+// 		});
+// 		return false;
+// 	});
+// });

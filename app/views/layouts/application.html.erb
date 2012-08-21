@@ -30,23 +30,15 @@
             </div>
           </div>
 
-
 		  <div id="new_auction" class="modal hide fade in" style="display: none;">
 		    <div>
 			  <a class="close" data-dismiss="modal">×</a>
 		    </div>
 			<% auction = Auction.new %>
-		  	<%= form_for(auction) do |f| %>
-			  <% if auction.errors.any? %>
-			    <div id="error_explanation">
-			      <h2><%= pluralize(auction.errors.count, "error") %> prohibited this auction from being saved:</h2>
-			      <ul>
-			  	    <% auction.errors.full_messages.each do |msg| %>
-			          <li><%= msg %></li>
-			  	    <% end %>
-			  	  </ul>
-			    </div>
-			    <br>
+		  	<%= form_for(auction, { :remote => true }) do |f| %>
+			  <% if not auction.errors.any? %>
+				<br>
+			    <div id="error_explanation" style="display: none;"></div>
 			  <% end %>
 			  <div class="modal-body">
 				<legend>New Auction</legend>
@@ -83,6 +75,7 @@
 		      </div>
 		      <div class="modal-footer" style="text-align: left;">
 			    <button type="submit" class="btn btn-primary">Create Auction</button> |
+				<%= link_to 'Import Auctions', import_auctions_path, :method => :get, :class => "btn btn-success" %></li> |
 		        <a href="#" class="btn" data-dismiss="modal">Close</a>
 		      </div>
 			<% end %>
@@ -155,7 +148,6 @@
 			  <% end %>
 		    </div>
 		  <% end %>
-
 
           <footer>
           </footer>

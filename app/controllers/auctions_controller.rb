@@ -52,12 +52,11 @@ class AuctionsController < ApplicationController
         # Needs to be enqueued after save so auction has ID
         @auction.enqueue_job
         format.html { redirect_to edit_auction_path(@auction.id), notice: "Auction was successfully created." }
-        format.js { redirect_to edit_auction_path(@auction.id), notice: "Auction was successfully created." }
         format.json { render json: @auction, status: :created, location: @auction }
       else
         format.html { render action: "new" }
-        format.js { render @auction.errors }
-        format.json { render json: @auction.errors, status: :unprocessable_entity }
+        format.js
+        format.json { render json: @auction.errors.full_messages }
       end
     end
   end
@@ -129,5 +128,13 @@ class AuctionsController < ApplicationController
     @auction.update_auction
     
     redirect_to edit_auction_path
+  end
+  
+  def import
+    @auctions = EbayAction.new(current_user).import
+    
+    respond_to do |format|
+      format.html
+    end
   end
 end

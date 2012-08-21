@@ -15,7 +15,6 @@
 		</li>
 	  </ul>
 	  <ul class="nav pull-right">
-		<li class="divider-vertical"></li>
 		
 		<% if user_signed_in? %>
 		  <li class="pull-right"><%= link_to('Logout', destroy_user_session_path, :method=>'delete') %></li>

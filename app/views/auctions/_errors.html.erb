@@ -1,0 +1,6 @@
+<h2><%= pluralize(auction.errors.count, "error") %> prohibited this auction from being saved:</h2>
+<ul>
+  <% auction.errors.full_messages.each do |msg| %>
+    <li><%= msg %></li>
+  <% end %>
+</ul>

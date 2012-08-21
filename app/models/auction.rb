@@ -86,6 +86,7 @@ class Auction < ActiveRecord::Base
   
   # Extracts the item_id from the URL if the entry is not only digits. Otherwise, the entry is just returned.
   def parse_url_for_item_id
+    return nil if not self.item_id 
     if self.item_id.match(/\D*/).to_s.length != 0
       return self.item_id.match(/item=\d*\D/).to_s.gsub!(/\D+/, "")
     else

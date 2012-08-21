@@ -1,0 +1,36 @@
+<%= form_tag auctions_path, :method => :post do %>
+
+  <% if @auctions != nil %>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+	      <th width="10%">Picture</th>
+          <th width="50%">Title</th>
+	      <th width="9%">Time Left</th>
+	      <th width="9%">Price</th>
+          <th width="9%">Max bid</th>
+	      <th width="3%">Add Auction</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @auctions.each do |auction| %>
+	      <tr>
+            <td><%= image_tag auction.picture[0] %></td>
+		    <td><h3><%= auction.item[:get_item_response][:item][:title][0-55] %></h3></td>
+		    <td><%= get_time_remaining auction %></td>
+		    <td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %></td>
+		    <td><%= number_to_currency auction.max_bid %></td>
+		    <td class="delete_auction" style="text-align: center;" auction-id="<%= auction.id %>"><%= check_box_tag 'auction_ids[]', auction.id, false %></td>
+	      </tr>
+	    <% end %>
+      </tbody>
+    </table>
+    <br>
+    <button type="submit" class="btn btn-primary">Add Checked Auctions</button>
+  <% else %>
+	<div class="alert alert-error">
+	  <strong>Sorry!</strong> No auctions were found in your eBay account's WatchList.
+	</div>
+  <% end %>
+<% end %>

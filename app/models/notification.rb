@@ -58,7 +58,7 @@ class Notification
           time_remaining = "The auction ends in #{time_remaining}."
         end
         
-        return "The auction \"#{title}\" has a current price of #{auction.item[:get_item_response][:item][:selling_status][:current_price][0,15]}." +
+        return "The auction \"#{title}\" has a current price of #{auction.item[:get_item_response][:item][:selling_status][:converted_current_price][0,15]}." +
           " Your max bid is #{auction.max_bid.to_s[0,15]}. #{time_remaining}"
       rescue
         return "There was an error. Please reply with HELP if you need assistance."

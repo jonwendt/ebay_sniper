@@ -63,6 +63,26 @@ class EbayAction
       :body => { "ItemID" => item_id, "Offer" => { "Action" => "Bid", "MaxBid" => amount, "Quantity" => "1" }, "EndUserIP" => "127.0.0.1" }
   end
   
+  def import
+    response = self.request :endpoint => "GetMyeBayBuying",
+      :body => { "WatchList" => { "Include" => true } }
+
+    begin
+      auctions = []
+      response.body[:get_mye_bay_buying_response][:watch_list][:item_array].each do |key, value|
+        auction = Auction.new
+        auction.item = { :get_item_response => { :item => { :title => { }, :listing_details => { :end_time => { } } } } }
+        auction.item_id = value[:item_id]
+        auction.item[:get_item_response][:item][:title] = value[:title]
+        auction.item[:get_item_response][:item][:listing_details][:end_time] = value[:listing_details][:end_time]
+        auctions.push auction
+      end
+      return auctions
+    rescue
+      return nil
+    end
+  end
+  
   def request(values={})
     values[:body] ||= {}
     values[:header] ||= {}

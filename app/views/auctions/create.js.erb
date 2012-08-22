@@ -1,6 +1,6 @@
 <% if not @auction.errors.empty? %>
-$("#error_explanation").html("<%= escape_javascript(render('errors', :auction => @auction)) %>");
-$("#error_explanation").show();
+  $("#error_explanation").html("<%= escape_javascript(render('errors', :auction => @auction)) %>");
+  $("#error_explanation").show();
 <% else %>
-document.location = "<%= escape_javascript(edit_auction_path(@auction)) %>";
+  document.location = "<%= escape_javascript(edit_auction_path(@auction)) %>";
 <% end %>

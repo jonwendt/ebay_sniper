@@ -82,22 +82,15 @@
 		  </div>
 			
 		  <% if current_user %>
-		    <div id="edit_account" class="modal hide fade in" style="display: none; height: auto;">
+		    <div id="edit_account" class="modal hide fade in" style="display: none;">
 		      <div>
 			    <a class="close" data-dismiss="modal">×</a>
 		      </div>
 			  <% user = current_user %>
 		  	  <%= form_for(user) do |f| %>
-			    <% if user.errors.any? %>
-			      <div id="error_explanation">
-			        <h2><%= pluralize(user.errors.count, "error") %> prohibited this auction from being saved:</h2>
-			        <ul>
-			  	      <% user.errors.full_messages.each do |msg| %>
-			            <li><%= msg %></li>
-			  	      <% end %>
-			  	    </ul>
-			      </div>
-			      <br>
+			    <% if not user.errors.any? %>
+				  <br>
+			      <div id="user_error_explanation" style="display: none;"></div>
 			    <% end %>
 			    <div class="modal-body">
 				  <legend>Edit Account</legend>

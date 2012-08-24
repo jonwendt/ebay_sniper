@@ -43,7 +43,7 @@
   <% button_title = "Restore Checked Auctions" %>
 <% end %>
 
-<%= form_tag path, :method => :post do %>
+<%= form_tag path, :method => :post, :data => { :confirm => "Are you sure you want to #{button_title.split(' ')[0].downcase} your checked auctions?" } do %>
 
   <% if @auctions != [] %>
     <table class="table table-striped">
@@ -82,9 +82,7 @@
     <br>
   <% end %>
 
-  <div class="pull-right">
     <a data-toggle="modal" href="#new_auction" class="btn btn-primary">Add Auction</a> |
     <button type="submit" class="btn btn-danger"><%= button_title %></button>
-  </div>
 
 <% end %>

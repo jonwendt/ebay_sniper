@@ -103,10 +103,12 @@ class AuctionsController < ApplicationController
 
   # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
   def remove_multiple
-    auctions = Auction.find(params[:auction_ids])
-    auctions.each do |auction|
-      Resque.remove_delayed(AuctionBidder, auction.id)
-      auction.update_attributes :auction_status => "Deleted"
+    if params[:auction_ids]
+      auctions = Auction.find(params[:auction_ids])
+      auctions.each do |auction|
+        Resque.remove_delayed(AuctionBidder, auction.id)
+        auction.update_attributes :auction_status => "Deleted"
+      end
     end
 
     redirect_to auctions_path
@@ -127,20 +129,23 @@ class AuctionsController < ApplicationController
   # POST /auctions
   # POST /auctions.json
   def create_multiple
-    @auctions = []
-    params[:auction].reject! { |a| a[:to_add] != "1" }
+    @auctions = Auction.prepare_multiple params[:auction], current_user
+    # @auctions = []
+    # params[:auction].reject! { |a| a[:to_add] != "1" }
     
-    params[:auction].each do |auction|
-      @auctions << Auction.new(auction)
-    end
+    # params[:auction].each do |auction|
+    #   @auctions << Auction.new(auction)
+    # end
 
-    @auctions.each do |a|
-      a.user = current_user
-      if a.save
-        a.enqueue_job
-      end
-    end
+    # @auctions.each do |a|
+    #   a.user = current_user
+    #   if a.save
+    #     a.enqueue_job
+    #     @auctions.delete a
+    #   end
+    # end
 
+    # If there are errors, re-render the page and show the auctions with errors. Else, show auctions#index.
     if @auctions.detect { |a| not a.errors.empty? }
       respond_to do |format|
         format.html { render 'import' }

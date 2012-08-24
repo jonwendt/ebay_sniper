@@ -34,9 +34,14 @@ Change link hover effect
 
 Fix Edit Account modal dialogue pop-up (display errors)
 
-Had to movde td of import checkbox in Auction Import to before snipe options (some weird bugs going on if after them)
+Had to move td of import checkbox in Auction Import to before snipe options (some weird bugs going on if after them)
 
 Change all form buttons to the side most input fields are on
+
+Reinforce MVC on auction#import
+
+
+Confirm on buttons: onclick="return confirm('Are you sure you want to import your checked auctions?')"
 
 
 ----------Things to change once app is hosted elsewhere----------------

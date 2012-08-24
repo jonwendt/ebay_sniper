@@ -18,7 +18,7 @@
 	      <tr <% if not auction.errors.empty? %> id="error_auction_<%= index %>"<% end %>>
             <td class="auction-link" onclick="window.open('<%= auction.item[:get_item_response][:item][:listing_details][:view_item_url] %>')"
             style="vertical-align: middle; text-align: center;" >
-	            <%= image_tag auction.item[:get_item_response][:item][:picture_details][:picture_url] %></td>
+	          <%= image_tag auction.item[:get_item_response][:item][:picture_details][:picture_url] %></td>
 	  	    <td class="auction-link" style="vertical-align: middle;"
 	  	    onclick="window.open('<%= auction.item[:get_item_response][:item][:listing_details][:view_item_url] %>')">
 	  		  <h3><%= auction.item[:get_item_response][:item][:title] %></h3>
@@ -28,7 +28,7 @@
 	  		  <%= get_time_remaining auction %>
 	  		</td>
 		    <td class="auction-link" style="vertical-align: middle;" onclick="window.open('<%= auction.item[:get_item_response][:item][:listing_details][:view_item_url] %>')">
-		        <%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %>
+		      <%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %>
 			</td>
             <%= fields_for 'auction[]', auction do |auction_fields| %>
 		      <td style="vertical-align: middle; text-align: center;" style="text-align: center;">
@@ -63,7 +63,9 @@
       </tbody>
     </table>
     <br>
-    <button type="submit" class="btn btn-primary pull-right">Add Checked Auctions</button>
+    <button type="submit" class="btn btn-primary pull-right">
+      Add Checked Auctions
+    </button>
   <% end %>
 
 <% else %>

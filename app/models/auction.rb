@@ -73,6 +73,28 @@ class Auction < ActiveRecord::Base
       errors.add :item_id, "does not exist. Please try adding the auction's Item ID or URL."
     end
   end
+
+  def self.prepare_multiple(auctions_to_prepare, current_user)
+    auctions = []
+    auctions_to_prepare.reject! { |a| a[:to_add] != "1" }
+    
+    auctions_to_prepare.each do |auction|
+      auctions << Auction.new(auction)
+    end
+
+    auctions_to_delete = []
+
+    puts auctions.inspect
+    auctions.each_with_index do |auction, index|
+      auction.user = current_user
+      if auction.save
+        auction.enqueue_job
+        auctions_to_delete << auction
+      end
+    end
+
+    return auctions - auctions_to_delete
+  end
   
   def enqueue_job
     # If the auction is still going, enqueue an AuctionBidder worker to bid on the auction

@@ -1,36 +1,73 @@
-<%= form_tag auctions_path, :method => :post do %>
+<% if @auctions != [] %>
 
-  <% if @auctions != nil %>
+  <%= form_for @auctions, :url => { :action => "create_multiple" }, :method => :post do |f| %>
     <table class="table table-striped">
       <thead>
         <tr>
-	      <th width="10%">Picture</th>
-          <th width="50%">Title</th>
-	      <th width="9%">Time Left</th>
-	      <th width="9%">Price</th>
-          <th width="9%">Max bid</th>
-	      <th width="3%">Add Auction</th>
+	      <th width="15%">Picture</th>
+          <th width="55%">Title</th>
+	      <th width="10%">Time Left</th>
+	      <th width="15%">Price</th>
+          <th width="5%">Import</th>
+	      <th width="5%">Snipe options</th>
         </tr>
       </thead>
 
       <tbody>
-        <% @auctions.each do |auction| %>
-	      <tr>
-            <td><%= image_tag auction.picture[0] %></td>
-		    <td><h3><%= auction.item[:get_item_response][:item][:title][0-55] %></h3></td>
-		    <td><%= get_time_remaining auction %></td>
-		    <td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %></td>
-		    <td><%= number_to_currency auction.max_bid %></td>
-		    <td class="delete_auction" style="text-align: center;" auction-id="<%= auction.id %>"><%= check_box_tag 'auction_ids[]', auction.id, false %></td>
+        <% @auctions.each_with_index do |auction, index| %>
+	      <tr <% if not auction.errors.empty? %> id="error_auction_<%= index %>"<% end %>>
+            <td class="auction-link" onclick="window.open('<%= auction.item[:get_item_response][:item][:listing_details][:view_item_url] %>')"
+            style="vertical-align: middle; text-align: center;" >
+	            <%= image_tag auction.item[:get_item_response][:item][:picture_details][:picture_url] %></td>
+	  	    <td class="auction-link" style="vertical-align: middle;"
+	  	    onclick="window.open('<%= auction.item[:get_item_response][:item][:listing_details][:view_item_url] %>')">
+	  		  <h3><%= auction.item[:get_item_response][:item][:title] %></h3>
+	  		</td>
+	  	    <td class="auction-link" style="vertical-align: middle;"
+	  	    onclick="window.open('<%= auction.item[:get_item_response][:item][:listing_details][:view_item_url] %>')">
+	  		  <%= get_time_remaining auction %>
+	  		</td>
+		    <td class="auction-link" style="vertical-align: middle;" onclick="window.open('<%= auction.item[:get_item_response][:item][:listing_details][:view_item_url] %>')">
+		        <%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %>
+			</td>
+            <%= fields_for 'auction[]', auction do |auction_fields| %>
+		      <td style="vertical-align: middle; text-align: center;" style="text-align: center;">
+		        <%= auction_fields.check_box :to_add %>
+		        <%= auction_fields.hidden_field :item_id %>
+			  </td>
+		      <td>
+			    Max bid: <%= auction_fields.text_field :max_bid %>
+			    Lead time (0-3 seconds): <%= auction_fields.text_field :lead_time %>
+			    Notification method: <%= auction_fields.select :user_notification, ["Do not notify", "Call", "Text Message"] %>
+			  </td>
+	        <% end %>
+	        <% if  not auction.errors.empty? %>
+	          <script>
+	      	    $(document).ready(function() { 
+	      	      $($("#error_auction_<%= index %> td")[2]).popover({trigger: 'manual', placement: "left", content: "<ul><% auction.errors.full_messages.each do |msg| %><li>  <%= escape_javascript(msg) %></li><% end %>", title: "<%= pluralize(auction.errors.count, "error") %> prohibited this auction from being saved:"});
+
+	      		  $("#error_auction_<%= index %>").hover(function() {
+	      		    if (! $("#error_auction_<%= index %>").attr("shown")) {
+		      	     $($("#error_auction_<%= index %> td")[2]).popover('show'); 
+		      	     $("#error_auction_<%= index %>").attr("shown", "true");
+	      		    }
+	      		  }, function() { 
+	      	        // $($("#error_auction_<%= index %> td")[2]).popover('hide');
+	      		  });
+	      	    });
+	      	  </script>
+	        <% end %>
 	      </tr>
+
 	    <% end %>
       </tbody>
     </table>
     <br>
-    <button type="submit" class="btn btn-primary">Add Checked Auctions</button>
-  <% else %>
-	<div class="alert alert-error">
-	  <strong>Sorry!</strong> No auctions were found in your eBay account's WatchList.
-	</div>
+    <button type="submit" class="btn btn-primary pull-right">Add Checked Auctions</button>
   <% end %>
+
+<% else %>
+  <div class="alert alert-error">
+	<strong>Sorry!</strong> No auctions were found in your eBay account's WatchList that have not already been added.
+  </div>
 <% end %>

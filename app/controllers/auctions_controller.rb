@@ -34,7 +34,7 @@ class AuctionsController < ApplicationController
   def edit
     @auction = Auction.find(params[:id])
     @picture_id = params[:pic].to_i
-    
+
     respond_to do |format|
       format.html
       format.js { render :layout => false }
@@ -52,6 +52,7 @@ class AuctionsController < ApplicationController
         # Needs to be enqueued after save so auction has ID
         @auction.enqueue_job
         format.html { redirect_to edit_auction_path(@auction.id), notice: "Auction was successfully created." }
+        format.js
         format.json { render json: @auction, status: :created, location: @auction }
       else
         format.html { render action: "new" }
@@ -89,17 +90,17 @@ class AuctionsController < ApplicationController
       format.json { head :no_content }
     end
   end
-  
+
   # Restores a deleted auction
   def restore
     @auction = Auction.find(params[:id])
     @auction.auction_status = "Active" # So find_status won't ignore it. --- @auction.activate!
     @auction.find_status
     @auction.enqueue_job
-    
+
     redirect_to edit_auction_path, notice: 'Auction was successfully restored.'
   end
-  
+
   # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
   def remove_multiple
     auctions = Auction.find(params[:auction_ids])
@@ -107,10 +108,10 @@ class AuctionsController < ApplicationController
       Resque.remove_delayed(AuctionBidder, auction.id)
       auction.update_attributes :auction_status => "Deleted"
     end
-    
+
     redirect_to auctions_path
   end
-  
+
   # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
   def restore_multiple
     auctions = Auction.find(params[:auction_ids])
@@ -119,22 +120,50 @@ class AuctionsController < ApplicationController
       auction.update_auction
       auction.enqueue_job
     end
-    
+
     redirect_to auctions_path
   end
-  
-  def update_info
-    @auction = Auction.find(params[:id])
-    @auction.update_auction
+
+  # POST /auctions
+  # POST /auctions.json
+  def create_multiple
+    @auctions = []
+    params[:auction].reject! { |a| a[:to_add] != "1" }
     
-    redirect_to edit_auction_path
+    params[:auction].each do |auction|
+      @auctions << Auction.new(auction)
+    end
+
+    @auctions.each do |a|
+      a.user = current_user
+      if a.save
+        a.enqueue_job
+      end
+    end
+
+    if @auctions.detect { |a| not a.errors.empty? }
+      respond_to do |format|
+        format.html { render 'import' }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to auctions_path }
+      end
+    end
   end
-  
+
   def import
     @auctions = EbayAction.new(current_user).import
-    
+
     respond_to do |format|
       format.html
     end
+  end
+
+  def update_info
+    @auction = Auction.find(params[:id])
+    @auction.update_auction
+
+    redirect_to edit_auction_path
   end
 end

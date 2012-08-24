@@ -34,6 +34,10 @@ Change link hover effect
 
 Fix Edit Account modal dialogue pop-up (display errors)
 
+Had to movde td of import checkbox in Auction Import to before snipe options (some weird bugs going on if after them)
+
+Change all form buttons to the side most input fields are on
+
 
 ----------Things to change once app is hosted elsewhere----------------
 
@@ -53,7 +57,7 @@ redis-server
 rake resque:scheduler
   - Starts the resque scheduler
 
-COUNT=5 QUEUES=queue_auction_bidder,auction_updater,notification_sender rake environment resque:work
+COUNT=5 QUEUES=queue_auction_bidder,auction_updater,notification_sender,auction_adder rake environment resque:workers
 COUNT=10 QUEUE=auction_bidder rake environment resque:workers
   - Starts the resque queue workers
   - Priority (auction_bidder, queue_auction_bidder, auction_updater, notification_sender)

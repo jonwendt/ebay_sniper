@@ -24,7 +24,6 @@ module AuctionsHelper
   
   def check_selected(sort)
     if current_user.preferred_sort == sort.to_s
-      puts "yay"
       return "selected='selected'"
     else
       return "false"

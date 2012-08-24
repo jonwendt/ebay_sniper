@@ -1,5 +1,5 @@
 class Auction < ActiveRecord::Base
-  attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id, :user, :auction_status, :lead_time
+  attr_accessible :item_id, :max_bid, :user_id, :item, :picture, :user_notification, :id, :user, :auction_status, :lead_time, :to_add
   belongs_to :user
   validates_uniqueness_of :item_id, :scope => :user_id, :message => "has already been added.", :on => :create
   validates_presence_of :max_bid, :message => "must be entered."
@@ -35,6 +35,8 @@ class Auction < ActiveRecord::Base
       nil
     end
   end
+
+  attr_accessor :to_add
   
   def prepare
     # Parse the eBay item URL for the item's ID, then get the item's info

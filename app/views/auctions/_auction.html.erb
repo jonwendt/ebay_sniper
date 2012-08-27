@@ -9,11 +9,10 @@
 		<%= render :partial => "ebay_pic" %>
 	  </div>
 	<br/>
-	  <% hash = Hash[@auction.picture.map.with_index{|*ki| ki}] %>
 	  <ul class="thumbnails">
-	    <% @auction.picture.each do |pic| %>
+	    <% @auction.picture.each_with_index do |pic, index| %>
 	      <li class="span3">
-			<%= link_to image_tag(pic), edit_auction_path(:pic => hash[pic]), :class => "thumbnail", :remote => true %>
+			<%= link_to image_tag(pic), edit_auction_path(:pic => index), :class => "thumbnail", :remote => true %>
 	      </li>
 	    <% end %>
 	  </ul>

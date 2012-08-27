@@ -1,13 +1,13 @@
 module AuctionsHelper
-  
+
   def get_time_remaining(auction)
     # Find the time remaining in seconds
-    @time_left = (Time.parse(auction.item[:get_item_response][:item][:listing_details][:end_time]).localtime - Time.now).to_i
-    if @time_left < 0
+    time_left = (Time.parse(auction.item[:get_item_response][:item][:listing_details][:end_time]).localtime - Time.now).to_i
+    if time_left < 0
       return "0 seconds"
     end
     # Format the time
-    mins = @time_left / 60
+    mins = time_left / 60
     hours = mins / 60
     days = hours / 24
     
@@ -16,9 +16,9 @@ module AuctionsHelper
     elsif hours > 0
       "#{hours}h #{mins % 60}m"
     elsif mins > 0
-      "#{mins}m #{@time_left % 60}s"
+      "#{mins}m #{time_left % 60}s"
     else
-      "#{@time_left} seconds"
+      "#{time_left} seconds"
     end
   end
   
@@ -28,5 +28,10 @@ module AuctionsHelper
     else
       return "false"
     end
+  end
+
+  def format_price(converted_price)
+    # Have to be explicit because number_to_currency helper isn't included.
+    return ActionController::Base.helpers.number_to_currency converted_price
   end
 end

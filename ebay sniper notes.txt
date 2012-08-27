@@ -1,16 +1,8 @@
 Change color of divider on auctions/edit, maybe add a different background color to listing details and snipe options to differentiate?
 
-Auction price being returned in Notification read_sms for info is not formatted to currency
-
 When an auction fails verification of uniqueness, try to link to the pre-existing auction.
 
 Search eBay funcationality.
-
-Just start like 50 workers for the auction_bidder job for now, then work on dynamic worker creation (with a ceiling)
-
-Override links that have already been clicked. Color shouldn't change.
-
-Thumbnail hover background color shouldn't be black (should change with link hover effect)
 
 Maybe queue QueueAuctionUpdater every 3 minutes which splits up the active auctions into sub jobs that update them?
 
@@ -29,8 +21,6 @@ Can link_to point to an object's method? Would probably be faster for Refresh Au
 PROBLEM WITH FOREIGN CURRENCY: Auction prices are automatically converted to the locale of the user, but max bid is not. Must convert that to user's locale (grab from ebay?) and then figure out how to convert it from the user's local currency to the buyer's local currency on bidding.
 
 Started to make search bar AJAX, but had problems. Is there a way to send the request as remote if the user is already on the search page, but send it as html if the user is not on the search page? I don't want the user to have to press back a million times if they do a bunch of searches.
-
-Change link hover effect
 
 Had to move td of import checkbox in Auction Import to before snipe options (some weird bugs going on if after them)
 
@@ -69,7 +59,7 @@ redis-server
 rake resque:scheduler
   - Starts the resque scheduler
 
-COUNT=5 QUEUES=queue_auction_bidder,auctions_updater,notification_sender,auction_adder rake environment resque:workers
+COUNT=5 QUEUES=queue_auction_bidder,auctions_updater,auction_updater,notification_sender,auction_adder rake environment resque:workers
 COUNT=10 QUEUE=auction_bidder rake environment resque:workers
   - Starts the resque queue workers
   - Priority (auction_bidder, queue_auction_bidder, auction_updater, notification_sender)

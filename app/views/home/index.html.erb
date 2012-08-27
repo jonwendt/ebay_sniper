@@ -1,15 +1,12 @@
-<!--
-<h1 align="CENTER">Welcome to the Levion eBay Sniper tool!</h1>
--->
-<legend align="center">Welcome to the Levion eBay Sniper tool!</legend>
+<legend align='center'>Welcome to the Levion eBay Sniper tool!</legend>
 
-<br>
-<br>
+<br/>
+<br/>
 
-Levion is always working to give our customers a leg up on the competition, which is why we made this <%= link_to "eBay sniper", "http://en.wikipedia.org/wiki/Auction_sniping" %>. You can use this to add an item on eBay that you would like to bid on, tell us the maximum amount you're willing to pay, and let the us help you win it! This tool will automatically get information about the auction from eBay, and at the last possible millisecond, place a bid on the item for you (as long as it is within the constraints you specify). If you would like to try it out, visit the <a data-toggle="modal" href="#new_auction">Add Auction</a> page to tell us what eBay item you'd like to win. To view the auctions that you are currently trying to win, along with past auctions, visit the <%= link_to "My Auctions", auctions_path, :method => "get" %> page. From there, you can click on an auction's picture, title, or description to view its listing information and snipe options. All active auctions will update their information for you automatically every three minutes. If you would like to update an auction sooner, simply click the auction to view its details, and then click the Refresh Auction button on the top right.
+Levion is always working to give our customers a leg up on the competition, which is why we made this <%= link_to 'eBay sniper', 'http://en.wikipedia.org/wiki/Auction_sniping', :target => '_blank' %>. You can use this to add an item on eBay that you would like to bid on, tell us the maximum amount you're willing to pay, and let the us help you win it! This tool will automatically get information about the auction from eBay, and at the last possible millisecond, place a bid on the item for you (as long as it is within the constraints you specify). If you would like to try it out, visit the <% if user_signed_in? %><a data-toggle='modal' href='#new_auction'>Add Auction</a><% else %><%= link_to('Add Auction', new_user_session_path) %><% end %> page to tell us what eBay item you'd like to win. To view the auctions that you are currently trying to win, along with past auctions, visit the <%= link_to 'My Auctions', auctions_path, :method => 'get' %> page. From there, you can click on an auction's picture, title, or description to view its listing information and snipe options. All active auctions will update their information for you automatically every three minutes. If you would like to update an auction sooner, simply click the auction to view its details, and then click the Refresh Auction button on the top right.
 
-<br>
-<br>
-<br>
+<br/>
+<br/>
+<br/>
 
-This tool is brought to you by <%= link_to "Levion", "http://www.levion.com" %>.
+This tool is brought to you by <%= link_to 'Levion', 'http://www.levion.com', :target => '_blank' %>.

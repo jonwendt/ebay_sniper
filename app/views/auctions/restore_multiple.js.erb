@@ -1,7 +1,9 @@
 <% if @auction.errors.empty? %>
   $('#new_auction').modal('hide');
   $('#new_auction').detach();
-  window.location.replace("<%= escape_javascript(edit_auction_path(@auction.id)); %>");
+  $('footer').before('<%= escape_javascript(render('auctions/new_auction', :auction => @auction)); %>');
+  $('#auction-update-result').detach();
+  $('#main legend:first').before('<%= escape_javascript(render('auctions/errors', :auction => @auction)) %>');
 <% else %>
   $('#auction-update-result').detach();
   $('#new_auction .modal-body legend').before('<%= escape_javascript(render('auctions/errors', :auction => @auction)) %>');

@@ -3,11 +3,15 @@
 	<div class="container">
 	  <ul class="nav">
 		<li class="active">
-		  <a class="brand" href="http://www.levion.com", target="_blank"><%= image_tag "logo.png", :size => "135x33" %></a>
+		  <a class="brand" href="http://www.levion.com" target="_blank"><%= image_tag "logo.png", :size => "135x33" %></a>
 		</li>
 		<li><%= link_to "Home", root_path %></li>
 		<li><%= link_to "My Auctions", auctions_path %></li>
-		<li><a data-toggle="modal" href="#new_auction">Add Auction</a></li>
+		<% if user_signed_in? %>
+		  <li><a data-toggle="modal" href="#new_auction">Add Auction</a></li>
+		<% else %>
+		  <li><%= link_to('Add Auction', new_user_session_path) %></li>
+		<% end %>
 		<li>
 		  <%= form_tag(new_search_path, { :class => "navbar-search pull-left" }) do |f| %>
 			<%= text_field_tag :search, nil, { :class => "search-query", :placeholder => "Search your auctions" } %>
@@ -23,7 +27,6 @@
 	  	<% end %>
 		<% if user_signed_in? %>
 		  <li class="pull-right"><a data-toggle="modal" href="#edit_account">Edit Account</a></li>
-		  <% if false %><li class="pull-right"><%= link_to('Edit Account', edit_user_registration_path) %></li><% end %>
   		<% else %>
     	  <li class="pull-right"><%= link_to('Sign up', new_user_registration_path) %></li>
   		<% end %>

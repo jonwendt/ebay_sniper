@@ -1,6 +1,17 @@
-<h2><%= pluralize(auction.errors.count, "error") %> prohibited this auction from being saved:</h2>
-<ul>
+<% if auction.errors.empty? %>
+<div id="auction-update-result" class="alert alert-success">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+              <strong>Well done!</strong> Your account was successfully updated.
+</div>
+<% else %>
+<div id="auction-update-result" class="alert alert-error alert-block">
+	              <button type="button" class="close" data-dismiss="alert">×</button>
+
+<h4><%= pluralize(auction.errors.count, "error") %> prohibited this auction from being saved:</h4>
+<ul style="padding-top: 10px">
   <% auction.errors.full_messages.each do |msg| %>
     <li><%= msg %></li>
   <% end %>
 </ul>
+</div>
+<% end %>

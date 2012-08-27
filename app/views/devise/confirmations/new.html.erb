@@ -2,7 +2,7 @@
 
 <%= form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }) do |f| %>
   <%= devise_error_messages! %>
-  <br>
+  <br/>
 
   <div class="control-group">
     <label class="control-label" for="item_id">Email</label>
@@ -10,10 +10,10 @@
 	  <%= f.text_field :email %>
     </div>
   </div>
-  <br>
+  <br/>
 
   <button type="submit" class="btn btn-primary btn-large">Resend confirmation instructions</button>
-  <br>
+  <br/>
 <% end %>
 
 <%= render "devise/shared/links" %>

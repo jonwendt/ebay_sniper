@@ -2,14 +2,14 @@
 
 <%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f| %>
   <%= devise_error_messages! %>
-  <br>
+  <br/>
   <div class="control-group">
     <label class="control-label" for="item_id">Email</label>
     <div class="controls">
 	  <%= f.text_field :email %>
     </div>
   </div>
-  <br>
+  <br/>
   <button type="submit" class="btn btn-warning">Send me password reset instructions</button>
 <% end %>
 

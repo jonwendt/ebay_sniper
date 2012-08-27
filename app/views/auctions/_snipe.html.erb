@@ -9,36 +9,36 @@
       <% end %>
       </ul>
     </div>	
-	<br>
-	<br>
+	<br/>
+	<br/>
   <% end %>
 
   <div class="row">
     <div class="span12">	
 	  <h1 align="center">Snipe Options</h1>
-	  <br>
-	  <br>
+	  <br/>
+	  <br/>
 	  <div class="control-group">  
 	    <label class="control-label" for="max_bid">Max bid</label>  
 	    <div class="controls">  
 	  	  <%= f.text_field :max_bid %>
 	    </div> 
 	  </div>
-	  <br>
+	  <br/>
 	  <div class="control-group">  
 	    <label class="control-label" for="lead_time">Lead time (in seconds from 0 to 3)</label>  
 	    <div class="controls">  
 	  	  <%= f.text_field :lead_time %>
 	    </div> 
 	  </div>
-	  <br>
+	  <br/>
 	  <div class="control-group">  
 	    <label class="control-label" for="select01">How would you like to be notified about critical auction updates (ex: being outbid)?</label>  
 	    <div class="controls">  
 		  <%= f.select :user_notification, ["Do not notify", "Call", "Text Message"] %>
 	    </div>  
 	  </div>
-	  <br>
+	  <br/>
 	  <button type="submit" class="btn btn-primary">Save Changes</button> |
 	
 	  <% if @auction.auction_status != "Deleted" %>

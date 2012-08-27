@@ -6,7 +6,7 @@ class Auction < ActiveRecord::Base
   validates_presence_of :item_id, :message => "must be entered."
   validates_inclusion_of :lead_time, :in => 0..3, :allow_blank => true, :message => "can only be between 0 and 3 seconds."
   validates_presence_of :user
-  before_destroy :remove_job
+  before_destroy :remove_auction
   
   validate :prepare, :on => :create
   validate :user_has_phone_if_notify, :on => :create
@@ -18,10 +18,6 @@ class Auction < ActiveRecord::Base
     if user_notification != "Do not notify" && (user.phone_number == "" || user.phone_number == nil)
       errors.add :user_notification, "requires that you provide a phone number under the \"Edit Account\" page."
     end
-  end
-  
-  def remove_job
-    Resque.remove_delayed(AuctionBidder, self.id)
   end
   
   def item=(value)
@@ -100,6 +96,28 @@ class Auction < ActiveRecord::Base
     # If the auction is still going, enqueue an AuctionBidder worker to bid on the auction
     if self.auction_status == "Active"
       Resque.enqueue_in(self.get_enqueue_time.seconds, AuctionBidder, self.id) # If doesn't work, use enqueue_at and seconds.from_now
+    end
+  end
+  
+  def remove_auction
+    Resque.remove_delayed(AuctionBidder, self.id)
+    self.update_attributes :auction_status => "Deleted"
+  end
+
+  def self.remove_multiple(auction_ids)
+    if auction_ids
+      auctions = Auction.find(auction_ids)
+      auctions.each(&:remove_auction)
+    end
+  end
+
+  def self.restore_multiple(auction_ids)
+    if auction_ids
+      auctions = Auction.find(auction_ids)
+      auctions.each do |auction|
+        auction.update_attributes :auction_status => 'Active'
+        Resque.enqueue(AuctionUpdater)
+      end
     end
   end
   

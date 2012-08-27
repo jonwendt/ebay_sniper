@@ -2,17 +2,17 @@
 
 <%= form_for(resource, :as => resource_name, :url => unlock_path(resource_name), :html => { :method => :post }) do |f| %>
   <%= devise_error_messages! %>
-  <br>
+  <br/>
   <div class="control-group">
     <label class="control-label" for="item_id">Email</label>
     <div class="controls">
 	  <%= f.text_field :email %>
     </div>
   </div>
-  <br><br>
+  <br/><br/>
 
   <button type="submit" class="btn btn-primary btn-large">Resend unlock instructions</button>
-  <br>
+  <br/>
 <% end %>
 
 <%= render "devise/shared/links" %>

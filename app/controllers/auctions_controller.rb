@@ -13,7 +13,7 @@ class AuctionsController < ApplicationController
     @auctions = Auction.sort_auctions(current_user)
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html
       format.json { render json: @auctions }
       format.js { render :layout => false }
     end
@@ -25,7 +25,7 @@ class AuctionsController < ApplicationController
     @auction = Auction.new
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html
       format.json { render json: @auction }
     end
   end
@@ -51,11 +51,11 @@ class AuctionsController < ApplicationController
       if @auction.save
         # Needs to be enqueued after save so auction has ID
         @auction.enqueue_job
-        format.html { redirect_to edit_auction_path(@auction.id), notice: "Auction was successfully created." }
+        format.html { redirect_to edit_auction_path(@auction.id), notice: 'Auction was successfully created.' }
         format.js
         format.json { render json: @auction, status: :created, location: @auction }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.js
         format.json { render json: @auction.errors.full_messages }
       end
@@ -72,7 +72,7 @@ class AuctionsController < ApplicationController
         format.html { redirect_to edit_auction_path, notice: 'Auction was successfully updated.' }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.json { render json: @auction.errors, status: :unprocessable_entity }
       end
     end
@@ -82,8 +82,7 @@ class AuctionsController < ApplicationController
   # DELETE /auctions/1.json
   def destroy
     @auction = Auction.find(params[:id])
-    Resque.remove_delayed(AuctionBidder, @auction.id)
-    @auction.update_attributes :auction_status => "Deleted"
+    @auction.remove_auction
 
     respond_to do |format|
       format.html { redirect_to auctions_url }
@@ -94,56 +93,38 @@ class AuctionsController < ApplicationController
   # Restores a deleted auction
   def restore
     @auction = Auction.find(params[:id])
-    @auction.auction_status = "Active" # So find_status won't ignore it. --- @auction.activate!
-    @auction.find_status
+    @auction.auction_status = 'Active' # So find_status won't ignore it. --- @auction.activate!
+    @auction.update_auction
     @auction.enqueue_job
 
     redirect_to edit_auction_path, notice: 'Auction was successfully restored.'
   end
 
-  # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
   def remove_multiple
-    if params[:auction_ids]
-      auctions = Auction.find(params[:auction_ids])
-      auctions.each do |auction|
-        Resque.remove_delayed(AuctionBidder, auction.id)
-        auction.update_attributes :auction_status => "Deleted"
-      end
-    end
+    Auction.remove_multiple params[:auction_ids]
 
     redirect_to auctions_path
+    
+    # respond_to do |format|
+    #   format.js
+    # end
   end
-
-  # Doesn't work yet. Want to pass in all checkbox values. Checkboxes that are checked with have the auction with their id deleted.
+  
   def restore_multiple
-    auctions = Auction.find(params[:auction_ids])
-    auctions.each do |auction|
-      auction.update_attributes :auction_status => "Active"
-      auction.update_auction
-      auction.enqueue_job
-    end
+    Auction.restore_multiple params[:auction_ids]
 
-    redirect_to auctions_path
+    redirect_to auctions_path 
+
+    # respond_to do |format|
+    #   format.js
+    # end
   end
 
   # POST /auctions
   # POST /auctions.json
   def create_multiple
+    # Get the checked auctions
     @auctions = Auction.prepare_multiple params[:auction], current_user
-    # @auctions = []
-    # params[:auction].reject! { |a| a[:to_add] != "1" }
-    
-    # params[:auction].each do |auction|
-    #   @auctions << Auction.new(auction)
-    # end
-
-    # @auctions.each do |a|
-    #   a.user = current_user
-    #   if a.save
-    #     a.enqueue_job
-    #     @auctions.delete a
-    #   end
-    # end
 
     # If there are errors, re-render the page and show the auctions with errors. Else, show auctions#index.
     if @auctions.detect { |a| not a.errors.empty? }

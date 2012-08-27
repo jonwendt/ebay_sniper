@@ -2,13 +2,12 @@ EbaySniper::Application.routes.draw do
 
   devise_for :users, :controllers => { :registrations => "users", :sessions => "sessions" }
   
-  resources :home
   resources :search do
     member do
       post :new
     end
   end
-  resources :users
+  
   resources :auctions do
     collection do
       post :remove_multiple
@@ -21,6 +20,9 @@ EbaySniper::Application.routes.draw do
       get :update_info
     end
   end
+
+  resources :users
+  resources :home
   resources :notifications
   
   match "call_handler", :to => "notifications#receive"

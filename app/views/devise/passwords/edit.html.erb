@@ -2,7 +2,7 @@
 
 <%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put }) do |f| %>
   <%= devise_error_messages! %>
-  <br>
+  <br/>
   <%= f.hidden_field :reset_password_token %>
 
   <div class="control-group">
@@ -11,14 +11,14 @@
  	  <%= f.password_field :password %>
     </div>
   </div>
-  <br>
+  <br/>
   <div class="control-group">
     <label class="control-label" for="item_id">Confirm new password</label>
     <div class="controls">
  	  <%= f.password_field :password_confirmation %>
     </div>
   </div>
-  <br>
+  <br/>
   <button type="submit" class="btn btn-primary">Change my password</button>
 <% end %>
 

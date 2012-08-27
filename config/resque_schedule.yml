@@ -1,15 +1,15 @@
 update_all_auctions:
   every: 3m
-  class: AuctionUpdater
-  queue: auction_updater
+  class: AuctionsUpdater
+  queue: auctions_updater
   description: "This will update the auction information for all of the online users' auctions."
-  
+
 queue_auction_bidders:
   every: 2m
   class: QueueAuctionBidder
   queue: queue_auction_bidder
   description: "This will ensure that auction bidder's are queued at the necessary time."
-  
+
 auction_adder:
   cron: "*/30 10-19 * * 1-5"
   class: AuctionAdder

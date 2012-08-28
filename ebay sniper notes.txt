@@ -16,8 +16,6 @@ Validation for user_has_phone_if_notify is only preventing auction save and disp
 
 Can link_to point to an object's method? Would probably be faster for Refresh Auctions.
 
-PROBLEM WITH FOREIGN CURRENCY: Auction prices are automatically converted to the locale of the user, but max bid is not. Must convert that from user's local currency to the buyer's local currency on bidding.
-
 Started to make search bar AJAX, but had problems. Is there a way to send the request as remote if the user is already on the search page, but send it as html if the user is not on the search page? I don't want the user to have to press back a million times if they do a bunch of searches.
 
 Had to move td of import checkbox in Auction Import to before snipe options (some weird bugs going on if after them)
@@ -27,6 +25,10 @@ Make removing/restoring auctions AJAX and on successful response remove using jQ
 App has to handle insecure data when showing ebay pics.
 
 Migrate jQuery script from auction#edit.html.erb to edit.js.erb
+
+PROBLEM WITH FOREIGN CURRENCY: Auction prices are automatically converted to the locale of the user, but max bid is not. Must convert that from user's local currency to the buyer's local currency on bidding.
+
+
 
 
 -----------Useful stuff----------------

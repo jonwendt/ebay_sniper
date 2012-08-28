@@ -7,7 +7,6 @@
         <%= form_for user, { :url => users_path, :remote => true } do |f| %>
         <% if not user.errors.any? %>
           <br/>
-          <div id="user_error_explanation" style="display: none;"></div>
         <% end %>
         <div class="modal-body">
           <legend>Edit Account</legend>
@@ -50,6 +49,7 @@
         </div>
         <div class="modal-footer" style="text-align: left;">
           <button type="submit" class="btn btn-primary">Save Changes</button> |
+          <%= link_to "Change eBay accounts", user_consent_failed_path + "?user_id=#{user.id}", :class => "btn btn-inverse" %> |
           <%= link_to "Delete account", registration_path(user), :data => { :confirm => "Are you sure you want to delete your Levion eBay Sniper account?" },
               :method => :delete, :class => "btn btn-danger" %> |
           <a href="#" class="btn" data-dismiss="modal">Close</a>

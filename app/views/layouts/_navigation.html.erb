@@ -13,7 +13,7 @@
 		  <li><%= link_to('Add Auction', new_user_session_path) %></li>
 		<% end %>
 		<li>
-		  <%= form_tag(new_search_path, { :class => "navbar-search pull-left" }) do |f| %>
+		  <%= form_tag(search_index_path, { :method => :get, :class => "navbar-search pull-left" }) do |f| %>
 			<%= text_field_tag :search, nil, { :class => "search-query", :placeholder => "Search your auctions" } %>
 		  <% end %>
 		</li>

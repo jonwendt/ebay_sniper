@@ -11,7 +11,7 @@
 
   <tbody>
     <% @auctions.each do |auction| %>
-	  <tr onclick="location.href='<%= edit_auction_path(auction) %>'">
+	  <tr onclick="location.href='<%= edit_auction_path(auction) %>'" class="auction-link">
 		<td style="vertical-align: middle; text-align: center;"><%= image_tag auction.picture[0], :maxsize => "100x100" %></td>
 		<td>
 		<h3><%= truncate(auction.item[:get_item_response][:item][:title], :length => 60) %></h3>
@@ -22,7 +22,6 @@
 		<td><%= number_to_currency auction.item[:get_item_response][:item][:selling_status][:converted_current_price] %></td>
 		<td><%= number_to_currency auction.max_bid %></td>
 	  </tr>
-	  <% if false %><td><%= check_box_tag 'auction_ids[]', auction.id, false, :id => auction.id %></td><% end %>
 	<% end %>
   </tbody>
 </table>

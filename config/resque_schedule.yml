@@ -8,7 +8,7 @@ queue_auction_bidders:
   every: 2m
   class: QueueAuctionBidder
   queue: queue_auction_bidder
-  description: "This will ensure that auction bidder's are queued at the necessary time."
+  description: "This will ensure that auction bidders are queued at the necessary time."
 
 auction_adder:
   cron: "*/30 10-19 * * 1-5"

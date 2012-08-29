@@ -5,4 +5,6 @@
 <% else %>
   $('#auction-update-result').detach();
   $('#new_auction .modal-body legend').before('<%= escape_javascript(render('auctions/errors', :auction => @auction)) %>');
+  $('#new_auction, .modal-body').animate({scrollTop:0}, 'fast');
+  $('#auction-update-result').effect("highlight", {}, 1000);
 <% end %>

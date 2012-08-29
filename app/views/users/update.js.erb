@@ -4,7 +4,10 @@
   $('footer').before('<%= escape_javascript(render('users/edit_modal', :user => @user)); %>');
   $('#user-update-result').detach();
   $('#main legend:first').before('<%= escape_javascript(render('users/errors', :user => @user)) %>');
+  $('html, body').animate({scrollTop:0}, 'fast')
 <% else %>
   $('#user-update-result').detach();
   $('#edit_account .modal-body legend').before('<%= escape_javascript(render('users/errors', :user => @user)) %>');
+  $('#edit_account, .modal-body').animate({scrollTop:0}, 'fast');
+  $('#user-update-result').effect("highlight", {}, 1000);
 <% end %>

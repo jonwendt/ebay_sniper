@@ -1,6 +1,0 @@
-<% if not @user.errors.empty? %>
-$("#user_error_explanation").html("<%= escape_javascript(render('errors', :user => @user, :id => @user.id)) %>");
-$("#user_error_explanation").show();
-<% else %>
-document.location = "<%= escape_javascript(root_path) %>";
-<% end %>

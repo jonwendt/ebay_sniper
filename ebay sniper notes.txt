@@ -62,7 +62,7 @@ redis-server
 rake resque:scheduler
   - Starts the resque scheduler
 
-COUNT=5 QUEUES=queue_auction_bidder,auctions_updater,auction_updater,notification_sender,auction_adder rake environment resque:workers
+COUNT=10 QUEUES=queue_auction_bidder,auctions_updater,auction_updater,notification_sender,auction_adder rake environment resque:workers
 COUNT=10 QUEUE=auction_bidder rake environment resque:workers
   - Starts the resque queue workers
   - Priority (auction_bidder, queue_auction_bidder, auction_updater, notification_sender)

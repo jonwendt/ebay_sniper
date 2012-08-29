@@ -116,7 +116,7 @@ class Auction < ActiveRecord::Base
       auctions = Auction.find(auction_ids)
       auctions.each do |auction|
         auction.update_attributes :auction_status => 'Active'
-        Resque.enqueue(AuctionUpdater)
+        Resque.enqueue(AuctionUpdater, auction.id)
       end
     end
   end

@@ -47,6 +47,10 @@ a:not(.btn) {
   text-decoration: none;
 }
 
+.auction-link:hover {
+  cursor: pointer;
+}
+
 body {
   color: #333;
   font-family: verdana, arial, helvetica, sans-serif;

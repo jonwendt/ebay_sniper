@@ -43,7 +43,7 @@
   <% button_title = "Restore Checked Auctions" %>
 <% end %>
 
-<%= form_tag path, :method => :post, :data => { :confirm => "Are you sure you want to #{button_title.split(' ')[0].downcase} your checked auctions?" } do %>
+<%= form_tag path, :method => :post, :data => { :confirm => "Are you sure you want to #{button_title.split(' ')[0].downcase} your checked auctions?", :remote => true } do %>
 
   <% if @auctions != [] %>
     <table class="table table-striped">

@@ -102,22 +102,24 @@ class AuctionsController < ApplicationController
 
   def remove_multiple
     Auction.remove_multiple params[:auction_ids]
+    @auctions = Auction.find(params[:auction_ids])
 
-    redirect_to auctions_path
+    # redirect_to auctions_path
     
-    # respond_to do |format|
-    #   format.js
-    # end
+    respond_to do |format|
+      format.js
+    end
   end
   
   def restore_multiple
     Auction.restore_multiple params[:auction_ids]
+    @auctions = Auction.find(params[:auction_ids])
+    
+    # redirect_to auctions_path 
 
-    redirect_to auctions_path 
-
-    # respond_to do |format|
-    #   format.js
-    # end
+    respond_to do |format|
+      format.js
+    end
   end
 
   # POST /auctions

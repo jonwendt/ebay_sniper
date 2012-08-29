@@ -1,3 +1,3 @@
 <% @auctions.each do |auction| %>
-  $('#auction-<%= auction.id %>').fadeOut(1000)
+  $('#auction-' + <%= auction.id %>).fadeOut(250)
 <% end %>

@@ -8,7 +8,7 @@
 $('#ebay-pic').animate({
     width: 0,
     height: 0,
-    marginTop: 150,
+    marginTop: $('#ebay-pic').parent().height() / 2,
     opacity: 0
 }, 100, function() {
     // Animation complete.
@@ -16,7 +16,7 @@ $('#ebay-pic').animate({
 	var width = $('#ebay-pic').width();
 	var height = $('#ebay-pic').height();
 	var marginTop = $('#ebay-pic').parent().height() / 2 - height / 2;
-	$('#ebay-pic').css('marginTop', 150);
+	$('#ebay-pic').css('marginTop', $('#ebay-pic').parent().height() / 2);
 	$('#ebay-pic').css('width', 0);
 	$('#ebay-pic').css('height', 0);
 	$('#ebay-pic').css('opacity', 0);

@@ -1,6 +1,30 @@
 // $(document).ready(function() {
-// 	$('#ebay-pic').css('marginTop', $('#ebay-pic').parent().height() / 2 - $('#ebay-pic').height() / 2);
-//  });
+//   $('#ebay-pic').css('marginTop', $('#ebay-pic').parent().height() / 2 - $('#ebay-pic').height() / 2);
+// });
 
-$('#ebay-pic').parent().html("<%= escape_javascript(render(:partial => 'ebay_pic')) %>");
-$('#ebay-pic').css('marginTop', $('#ebay-pic').parent().height() / 2 - $('#ebay-pic').height() / 2);
+
+// When a thumbnail is clicked, the current ebay-pic is animated to disappear by shrinking in from its center, and the thumbnail's ebay-pic is animated from
+// Being 0x0 in the center to its appropriate height and width, centered on the canvas.
+$('#ebay-pic').animate({
+    width: 0,
+    height: 0,
+    marginTop: 150,
+    opacity: 0
+}, 100, function() {
+    // Animation complete.
+	$('#ebay-pic').parent().html("<%= escape_javascript(render(:partial => 'ebay_pic')) %>");
+	var width = $('#ebay-pic').width();
+	var height = $('#ebay-pic').height();
+	var marginTop = $('#ebay-pic').parent().height() / 2 - height / 2;
+	$('#ebay-pic').css('marginTop', 150);
+	$('#ebay-pic').css('width', 0);
+	$('#ebay-pic').css('height', 0);
+	$('#ebay-pic').css('opacity', 0);
+	$('#ebay-pic').animate({
+    	width: width,
+    	height: height,
+    	marginTop: marginTop,
+    	opacity: 100
+	}, 100, function() {
+	});
+});

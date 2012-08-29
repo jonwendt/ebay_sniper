@@ -29,6 +29,9 @@ Migrate jQuery script from auction#edit.html.erb to edit.js.erb
 PROBLEM WITH FOREIGN CURRENCY: Auction prices are automatically converted to the locale of the user, but max bid is not. Must convert that from user's local currency to the buyer's local currency on bidding.
 
 
+jQuery stuff to do: Import auctions. Maxheight for images
+
+Change style="" to class=""
 
 
 -----------Useful stuff----------------

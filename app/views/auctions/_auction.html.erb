@@ -4,19 +4,17 @@
 <br/>
 <div class="row-fluid">
   <div class="span4" align="center">
-	<div class="vcenter">
-	  <div class="canvas">
-		<%= render :partial => "ebay_pic" %>
-	  </div>
-	<br/>
-	  <ul class="thumbnails">
-	    <% @auction.picture.each_with_index do |pic, index| %>
-	      <li class="span3">
-			<%= link_to image_tag(pic), edit_auction_path(:pic => index), :class => "thumbnail", :remote => true %>
-	      </li>
-	    <% end %>
-	  </ul>
+	<div class="canvas">
+	  <%= render :partial => "ebay_pic" %>
 	</div>
+	<br/>
+	<ul class="thumbnails">
+	  <% @auction.picture.each_with_index do |pic, index| %>
+	    <li class="span3">
+	      <%= link_to image_tag(pic), edit_auction_path(:pic => index), :class => "thumbnail", :remote => true %>
+	    </li>
+	  <% end %>
+	</ul>
 	<br/>
 	<br/>
 	<div align="left">

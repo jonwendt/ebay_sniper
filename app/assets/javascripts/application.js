@@ -20,9 +20,12 @@ function deleteAuction(id) {
 	$.ajax({url: "/auctions/" + id + ".json", type: "DELETE"}).done(function() { $("[auction-id='" + id +"']").parent().detach(); });
 }
 
+$(document).ready(function() {
+	$('#ebay-pic').css('marginTop', $('#ebay-pic').parent().height() / 2 - $('#ebay-pic').height() / 2);
+});
+
 
 /* Custom way to update page */
-
 // $(document).ready(function() {
 // 	$("#new_auction").submit(function() {
 // 		$.ajax({ url: "/auctions.json", dataType: "json", type: "POST", data: $(this).serialize(), 

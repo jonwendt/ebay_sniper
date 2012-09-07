@@ -1,5 +1,5 @@
 class AuctionsController < ApplicationController
-  before_filter :authenticate_user!#, :only => [:index, :show, :new, :edit, :create]
+  before_filter :authenticate_user!
 
   # GET /auctions
   # GET /auctions.json
@@ -93,9 +93,7 @@ class AuctionsController < ApplicationController
   # Restores a deleted auction
   def restore
     @auction = Auction.find(params[:id])
-    @auction.auction_status = 'Active' # So find_status won't ignore it. --- @auction.activate!
-    @auction.update_auction
-    @auction.enqueue_job
+    @auction.restore_auction
 
     redirect_to edit_auction_path, notice: 'Auction was successfully restored.'
   end

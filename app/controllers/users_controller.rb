@@ -10,12 +10,16 @@ class UsersController < Devise::RegistrationsController
     rescue
       # If the user_id doesn't exist, do nothing
     end
-      redirect_to root_path
+    redirect_to root_path
   end
   
   def consent_failed
-    @user = User.find(params[:user_id])
-    @consent_url = EbayAction.new(@user).get_session_id
+    begin
+      @user = User.find(params[:user_id])
+      @consent_url = EbayAction.new(@user).get_session_id
+    rescue
+      redirect_to new_user_session_path
+    end
   end
   
   def check_token

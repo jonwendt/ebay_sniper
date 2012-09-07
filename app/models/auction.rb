@@ -103,6 +103,12 @@ class Auction < ActiveRecord::Base
     Resque.remove_delayed(AuctionBidder, self.id)
     self.update_attributes :auction_status => "Deleted"
   end
+  
+  def restore_auction
+    self.auction_status = 'Active' # So find_status won't ignore it.
+    self.update_auction
+    self.enqueue_job
+  end
 
   def self.remove_multiple(auction_ids)
     if auction_ids
@@ -179,36 +185,13 @@ class Auction < ActiveRecord::Base
     auctions = []
     # If the status == "Ended" return all Won, Lost, and Ended
     if current_user.preferred_status == "Ended"
-      current_user.preferred_status = %w[Won Lost]
-      current_user.auctions.each do |auction|
-        if current_user.preferred_status.include? auction.auction_status
-          auctions.push auction
-        end
-      end
-      # Have to set back to Ended so the nav pills update correctly.
-      current_user.preferred_status = "Ended"
-    elsif current_user.preferred_status == nil || current_user.preferred_status == "All"
-      current_user.auctions.each do |auction|
-        if auction.auction_status != "Deleted"
-          auctions.push auction
-        end
-      end
+      auctions = current_user.auctions.where(:auction_status => %w[Won Lost])
     elsif %w[Won Lost Active Deleted].include? current_user.preferred_status
-      # Else, just match the status
-      current_user.auctions.each do |auction|
-        if auction.auction_status == current_user.preferred_status.to_s
-          auctions.push auction
-        end
-      end
+      # Just match the status
+      auctions = current_user.auctions.where(:auction_status => current_user.preferred_status)
     else
-      # The user messed with the status param. Just display all auctions.
-      current_user.auctions.each do |auction|
-        if auction.auction_status != "Deleted"
-          auctions.push auction
-        end
-      end
+      auctions = current_user.auctions.where(:auction_status => %w[Active Won Lost])
     end
-    auctions
     if current_user.preferred_sort == "title_asc" || current_user.preferred_sort == nil || current_user.preferred_sort == ""
       auctions = auctions.sort_by { |a| [a.item[:get_item_response][:item][:title]] }
     elsif current_user.preferred_sort == "max_bid_asc"

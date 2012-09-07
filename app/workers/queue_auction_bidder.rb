@@ -16,6 +16,3 @@ end
 
 # Delete key
   # $redis.del("ebay_sniper:auction:#{auction.id}")
-
-# Get all auction-related keys
-  # $redis.keys("ebay_sniper:auction:*")

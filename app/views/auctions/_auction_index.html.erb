@@ -51,10 +51,10 @@
 	      <th width="9%">Time Left</th>
 	      <th width="9%">Price</th>
           <th width="9%">Max bid</th>
-	      <% if params[:status] != "Deleted" %>
-	        <th width="3%">Delete</th>
+	      <% if current_user.preferred_status != "Deleted" %>
+	        <th width="3%" class="check-all">Delete</th>
 	      <% else %>
-	        <th width="3%">Restore</th>
+	        <th width="3%" class="check-all">Restore</th>
 	      <% end %>
         </tr>
       </thead>
@@ -79,7 +79,19 @@
     <br/>
   <% end %>
 
-    <a data-toggle="modal" href="#new_auction" class="btn btn-primary">Add Auction</a> |
-    <button type="submit" class="btn btn-danger" data-remote="true"><%= button_title %></button>
+  <a data-toggle="modal" href="#new_auction" class="btn btn-primary">Add Auction</a> |
+  <button type="submit" class="btn btn-danger" data-remote="true"><%= button_title %></button>
+
+  <script>
+    $('.check-all').click(function(event) {
+      // If the amount of checked checkboxes does not equal the amount of checkboxes, then check all of them. Otherwise, uncheck all.
+      if ($('[type="checkbox"]').length != $('input:checked').length) {
+        $('[type="checkbox"]').prop('checked', true);
+      }
+      else {
+        $('[type="checkbox"]').prop('checked', false);
+      }
+    });
+  </script>
 
 <% end %>

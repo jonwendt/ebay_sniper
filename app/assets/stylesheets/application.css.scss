@@ -43,6 +43,16 @@ a:not(.btn) {
   }
 }
 
+.check-all {
+  color: #0066FF;
+  text-decoration: none;
+  &:hover {
+    cursor: pointer;
+    color: #0000CC;
+    text-decoration: underline;
+  }
+}
+
 .btn {
   text-decoration: none;
 }

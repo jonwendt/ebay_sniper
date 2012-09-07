@@ -16,12 +16,22 @@
 //= require bootstrap
 //. require_tree .
 
-function deleteAuction(id) {
-	$.ajax({url: "/auctions/" + id + ".json", type: "DELETE"}).done(function() { $("[auction-id='" + id +"']").parent().detach(); });
-}
+
 
 $(document).ready(function() {
-	$('#ebay-pic').css('marginTop', $('#ebay-pic').parent().height() / 2 - $('#ebay-pic').height() / 2);
+  $('#ebay-pic').css('marginTop', $('#ebay-pic').parent().height() / 2 - $('#ebay-pic').height() / 2);
+
+  // Not being called after the AJAX sorting is done.
+  // $('.check-all').click(function(event) {
+  //   event.stopPropagation(); // Prevent link from following through to its given href
+  //   // If the amount of checked checkboxes does not equal the amount of checkboxes, then check all of them. Otherwise, uncheck all.
+  //   if ($('[type="checkbox"]').length != $('input:checked').length) {
+  //     $('[type="checkbox"]').prop('checked', true);
+  //   }
+  //   else {
+  //     $('[type="checkbox"]').prop('checked', false);
+  //   }
+  // });
 });
 
 

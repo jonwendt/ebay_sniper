@@ -1,3 +1,4 @@
 <% @auctions.each do |auction| %>
   $('#auction-' + <%= auction.id %>).fadeOut(250);
 <% end %>
+$('body').animate({scrollTop:0}, 'fast');

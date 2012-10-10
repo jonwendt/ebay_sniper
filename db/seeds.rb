@@ -7,7 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # Seller's user account
-ebay = EbayAction.new(User.find(99))
+ebay = EbayAction.new(User.where(:username => "testuser_jpwendt3").first)
 
 random_num = 1 + Random.rand(5)
 
@@ -64,7 +64,7 @@ elsif random_num == 5
 end
 
 # Adds the item to my user account
-auction_id = Auction.last.id + 1
+auction_id = Auction.last.id ? Auction.last.id + 1 : 1
 auction = Auction.new
 auction.id = auction_id
 auction.item_id = response.body[:add_item_response][:item_id].to_s

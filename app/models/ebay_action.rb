@@ -67,10 +67,9 @@ class EbayAction
     response = self.request :endpoint => "GetMyeBayBuying", 
       :body => { "WatchList" => { "Include" => true } }
 
-    # return [Auction.find(:last).dup]
-    begin
-      auctions = []
-      response.body[:get_mye_bay_buying_response][:watch_list][:item_array][:item].each do |key, value|
+    auctions = []
+    response.body[:get_mye_bay_buying_response][:watch_list][:item_array][:item].each do |key, value|
+      begin
         auction = Auction.new
         auction.item_id = key[:item_id]
 
@@ -87,21 +86,21 @@ class EbayAction
               :listing_details => { :end_time => key[:listing_details][:end_time], :view_item_url => key[:listing_details][:view_item_url] },
               :selling_status => { :converted_current_price => price },
               :picture_details => { :picture_url => get_item(auction.item_id, "pictureurl")[:get_item_response][:item][:picture_details][:picture_url] }
-              # :picture_details => { :picture_url => "" }
             }
           }
         }
 
         auctions.push auction
+      rescue
+        puts "Failed to import auction from #{key[:listing_details][:view_item_url]}"
       end
-
-      @user.auctions.each do |already_added_auction|
-        auctions.delete_if { |imported_auction| imported_auction.item_id == already_added_auction.item_id }
-      end
-      return auctions
-    rescue
-      return []
     end
+
+    @user.auctions.each do |already_added_auction|
+      auctions.delete_if { |imported_auction| imported_auction.item_id == already_added_auction.item_id }
+    end
+
+    return auctions
   end
 
   def request(values={})

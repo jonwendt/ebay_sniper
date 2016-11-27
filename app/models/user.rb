@@ -116,13 +116,13 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :trackable, :validatable, :ebay_authenticatable
 
-  # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :auth_token, :auth_token_exp, :username, :phone_number, :id, :preferred_status, :preferred_sort
   has_many :auctions, dependent: :destroy
-  validates :phone_number, :allow_blank => true, :length => { :is => 12 }, :format => { :with => /^[+]\d+\z/,
+  validates :phone_number, :allow_blank => true, :length => { :is => 12 }, :format => { :with => /\A[+]\d+\z/,
                                                                                         :message => "should include your country code. A US number would be +1##########." }
   validates_uniqueness_of :phone_number, :allow_blank => true, :message => "is already tied to an account."
-  validate :auth_token_exp, :nil => false
+  before_create do
+    self.auth_token ||= SecureRandom.hex(23)
+  end
 
   def self.currently_online
     online_ids = $redis.keys("ebay_sniper:online_users:*").map { |v| v.gsub("ebay_sniper:online_users:", "") }

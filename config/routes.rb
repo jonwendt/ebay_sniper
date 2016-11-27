@@ -25,13 +25,13 @@ EbaySniper::Application.routes.draw do
   resources :home
   resources :notifications
   
-  match "call_handler", :to => "notifications#receive"
+  get "call_handler", :to => "notifications#receive"
   
   devise_scope :user do
-    match "user_root", :to => "users#check_token"
-    match "user/add_token", :to => "users#add_token"
-    match "user/check_token", :to => "users#check_token"
-    match "user/consent_failed", :to => "users#consent_failed"
+    get "user_root", :to => "users#check_token"
+    get "user/add_token", :to => "users#add_token"
+    get "user/check_token", :to => "users#check_token"
+    get "user/consent_failed", :to => "users#consent_failed"
   end
 
   # The priority is based upon order of creation:

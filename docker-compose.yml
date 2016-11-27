@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  redis:
+    image: redis:3
+    ports:
+      - "6379:6379"
+
+  db:
+   image: mysql:5.7
+   volumes:
+     - db_data:/var/lib/mysql
+   restart: always
+   ports:
+    - "3303:3306"
+   environment:
+     MYSQL_ROOT_PASSWORD: ebay_sniper
+     MYSQL_DATABASE: ebay_sniper_development
+     MYSQL_USER: ebay_sniper
+     MYSQL_PASSWORD: ebay_sniper
+volumes:
+   db_data:
